@@ -1,0 +1,47 @@
+.select2-container {
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    vertical-align: middle;
+
+    box-sizing: border-box;
+
+    @import 'single';
+    @import 'multiple';
+}
+
+@import 'dropdown';
+
+.select2-close-mask {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 99;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    width: auto;
+    min-width: 100%;
+    height: auto;
+    min-height: 100%;
+
+    // styles required for IE to work
+    background-color: #fff;
+    filter: alpha(opacity=0);
+}
+.select2-hidden-accessible {
+    position: absolute !important !important;
+    clip: rect(0 0 0 0) !important;
+    margin: -1px;
+    border: 0 !important;
+    overflow: hidden !important !important;
+    padding: 0;
+    width: 1px !important;
+    height: 1px !important;
+}
+
+@import 'theme/default/layout';
+@import 'theme/classic/layout';
+@import 'theme/bootstrap/layout';
