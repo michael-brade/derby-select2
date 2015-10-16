@@ -1,5 +1,9 @@
 var $ = require('jquery');
-var require = require('./require');
+
+// just for browserify
+function __do_not_call() {
+    require('./i18n/*.js', {mode: 'expand', resolve: 'strip-ext'});
+}
 
 function Translation(dict) {
     this.dict = dict || {};

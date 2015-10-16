@@ -1,4 +1,3 @@
-var require = require('./require');
 var $ = require('jquery');
 var Defaults = require('./defaults');
 var Utils = require('./utils');
@@ -13,7 +12,7 @@ function Options(options, $element) {
     this.options = Defaults.apply(this.options);
 
     if ($element && $element.is('input')) {
-        var InputCompat = require(this.get('amdBase') + 'compat/inputData');
+        var InputCompat = require('./compat/inputData');
 
         this.options.dataAdapter = Utils.Decorate(
             this.options.dataAdapter,

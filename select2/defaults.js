@@ -1,5 +1,4 @@
 var $ = require('jquery');
-var require = require('./require');
 var ResultsList = require('./results');
 var SingleSelection = require('./selection/single');
 var MultipleSelection = require('./selection/multiple');
@@ -77,7 +76,7 @@ Defaults.prototype.apply = function(options) {
         }
 
         if (options.query != null) {
-            var Query = require(options.amdBase + 'compat/query');
+            var Query = require('./compat/query');
 
             options.dataAdapter = Utils.Decorate(
                 options.dataAdapter,
@@ -86,7 +85,7 @@ Defaults.prototype.apply = function(options) {
         }
 
         if (options.initSelection != null) {
-            var InitSelection = require(options.amdBase + 'compat/initSelection');
+            var InitSelection = require('./compat/initSelection');
 
             options.dataAdapter = Utils.Decorate(
                 options.dataAdapter,
@@ -148,7 +147,7 @@ Defaults.prototype.apply = function(options) {
             options.dropdownCss != null ||
             options.adaptDropdownCssClass != null
         ) {
-            var DropdownCSS = require(options.amdBase + 'compat/dropdownCss');
+            var DropdownCSS = require('./compat/dropdownCss');
 
             options.dropdownAdapter = Utils.Decorate(
                 options.dropdownAdapter,
@@ -196,7 +195,7 @@ Defaults.prototype.apply = function(options) {
             options.containerCss != null ||
             options.adaptContainerCssClass != null
         ) {
-            var ContainerCSS = require(options.amdBase + 'compat/containerCss');
+            var ContainerCSS = require('./compat/containerCss');
 
             options.selectionAdapter = Utils.Decorate(
                 options.selectionAdapter,
@@ -262,7 +261,7 @@ Defaults.prototype.apply = function(options) {
         options.translations = languages;
     } else {
         var baseTranslation = Translation.loadPath(
-            this.defaults.amdLanguageBase + 'en'
+            this.defaults.amdLanguageBase + 'en.js'
         );
         var customTranslation = new Translation(options.language);
 
@@ -330,7 +329,6 @@ Defaults.prototype.reset = function() {
     }
 
     this.defaults = {
-        amdBase: './',
         amdLanguageBase: './i18n/',
         closeOnSelect: true,
         debug: false,
