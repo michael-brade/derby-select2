@@ -1,119 +1,118 @@
-define([
-  'jquery'
-], function ($) {
+var $ = require('jquery');
+
   function Tags (decorated, $element, options) {
-    var tags = options.get('tags');
+var tags = options.get('tags');
 
-    var createTag = options.get('createTag');
+var createTag = options.get('createTag');
 
-    if (createTag !== undefined) {
-      this.createTag = createTag;
-    }
+if (createTag !== undefined) {
+  this.createTag = createTag;
+}
 
-    decorated.call(this, $element, options);
+decorated.call(this, $element, options);
 
-    if ($.isArray(tags)) {
-      for (var t = 0; t < tags.length; t++) {
-        var tag = tags[t];
-        var item = this._normalizeItem(tag);
+if ($.isArray(tags)) {
+  for (var t = 0; t < tags.length; t++) {
+    var tag = tags[t];
+    var item = this._normalizeItem(tag);
 
-        var $option = this.option(item);
+    var $option = this.option(item);
 
-        this.$element.append($option);
-      }
-    }
+    this.$element.append($option);
+  }
+}
   }
 
   Tags.prototype.query = function (decorated, params, callback) {
-    var self = this;
+var self = this;
 
-    this._removeOldTags();
+this._removeOldTags();
 
-    if (params.term == null || params.page != null) {
-      decorated.call(this, params, callback);
+if (params.term == null || params.page != null) {
+  decorated.call(this, params, callback);
+  return;
+}
+
+function wrapper (obj, child) {
+  var data = obj.results;
+
+  for (var i = 0; i < data.length; i++) {
+    var option = data[i];
+
+    var checkChildren = (
+      option.children != null &&
+      !wrapper({
+        results: option.children
+      }, true)
+    );
+
+    var checkText = option.text === params.term;
+
+    if (checkText || checkChildren) {
+      if (child) {
+        return false;
+      }
+
+      obj.data = data;
+      callback(obj);
+
       return;
     }
+  }
 
-    function wrapper (obj, child) {
-      var data = obj.results;
+  if (child) {
+    return true;
+  }
 
-      for (var i = 0; i < data.length; i++) {
-        var option = data[i];
+  var tag = self.createTag(params);
 
-        var checkChildren = (
-          option.children != null &&
-          !wrapper({
-            results: option.children
-          }, true)
-        );
+  if (tag != null) {
+    var $option = self.option(tag);
+    $option.attr('data-select2-tag', true);
 
-        var checkText = option.text === params.term;
+    self.addOptions([$option]);
 
-        if (checkText || checkChildren) {
-          if (child) {
-            return false;
-          }
+    self.insertTag(data, tag);
+  }
 
-          obj.data = data;
-          callback(obj);
+  obj.results = data;
 
-          return;
-        }
-      }
+  callback(obj);
+}
 
-      if (child) {
-        return true;
-      }
-
-      var tag = self.createTag(params);
-
-      if (tag != null) {
-        var $option = self.option(tag);
-        $option.attr('data-select2-tag', true);
-
-        self.addOptions([$option]);
-
-        self.insertTag(data, tag);
-      }
-
-      obj.results = data;
-
-      callback(obj);
-    }
-
-    decorated.call(this, params, wrapper);
+decorated.call(this, params, wrapper);
   };
 
   Tags.prototype.createTag = function (decorated, params) {
-    var term = $.trim(params.term);
+var term = $.trim(params.term);
 
-    if (term === '') {
-      return null;
-    }
+if (term === '') {
+  return null;
+}
 
-    return {
-      id: term,
-      text: term
-    };
+return {
+  id: term,
+  text: term
+};
   };
 
   Tags.prototype.insertTag = function (_, data, tag) {
-    data.unshift(tag);
+data.unshift(tag);
   };
 
   Tags.prototype._removeOldTags = function (_) {
-    var tag = this._lastTag;
+var tag = this._lastTag;
 
-    var $options = this.$element.find('option[data-select2-tag]');
+var $options = this.$element.find('option[data-select2-tag]');
 
-    $options.each(function () {
-      if (this.selected) {
-        return;
-      }
+$options.each(function () {
+  if (this.selected) {
+    return;
+  }
 
-      $(this).remove();
-    });
+  $(this).remove();
+});
   };
 
-  return Tags;
-});
+  module.exports = Tags;
+

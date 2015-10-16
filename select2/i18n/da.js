@@ -1,40 +1,41 @@
-define(function () {
+
+
   // Danish
-  return {
-    errorLoading: function () {
-      return 'The results could not be loaded.';
-    },
-    inputTooLong: function (args) {
-      var overChars = args.input.length - args.maximum;
+  module.exports = {
+errorLoading: function () {
+  return 'The results could not be loaded.';
+},
+inputTooLong: function (args) {
+  var overChars = args.input.length - args.maximum;
 
-      var message = 'Angiv venligst ' + overChars + ' tegn mindre';
+  var message = 'Angiv venligst ' + overChars + ' tegn mindre';
 
-      return message;
-    },
-    inputTooShort: function (args) {
-      var remainingChars = args.minimum - args.input.length;
+  return message;
+},
+inputTooShort: function (args) {
+  var remainingChars = args.minimum - args.input.length;
 
-      var message = 'Angiv venligst ' + remainingChars + ' tegn mere';
+  var message = 'Angiv venligst ' + remainingChars + ' tegn mere';
 
-      return message;
-    },
-    loadingMore: function () {
-      return 'Indlæser flere resultater…';
-    },
-    maximumSelected: function (args) {
-      var message = 'Du kan kun vælge ' + args.maximum + ' emne';
+  return message;
+},
+loadingMore: function () {
+  return 'Indlæser flere resultater…';
+},
+maximumSelected: function (args) {
+  var message = 'Du kan kun vælge ' + args.maximum + ' emne';
 
-      if (args.maximum != 1) {
-        message += 'r';
-      }
+  if (args.maximum != 1) {
+    message += 'r';
+  }
 
-      return message;
-    },
-    noResults: function () {
-      return 'Ingen resultater fundet';
-    },
-    searching: function () {
-      return 'Søger…';
-    }
+  return message;
+},
+noResults: function () {
+  return 'Ingen resultater fundet';
+},
+searching: function () {
+  return 'Søger…';
+}
   };
-});
+

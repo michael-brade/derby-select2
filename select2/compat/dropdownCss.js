@@ -1,56 +1,55 @@
-define([
-  'jquery',
-  './utils'
-], function ($, CompatUtils) {
+var $ = require('jquery');
+var CompatUtils = require('./utils');
+
   // No-op CSS adapter that discards all classes by default
   function _dropdownAdapter (clazz) {
-    return null;
+return null;
   }
 
   function DropdownCSS () { }
 
   DropdownCSS.prototype.render = function (decorated) {
-    var $dropdown = decorated.call(this);
+var $dropdown = decorated.call(this);
 
-    var dropdownCssClass = this.options.get('dropdownCssClass') || '';
+var dropdownCssClass = this.options.get('dropdownCssClass') || '';
 
-    if ($.isFunction(dropdownCssClass)) {
-      dropdownCssClass = dropdownCssClass(this.$element);
+if ($.isFunction(dropdownCssClass)) {
+  dropdownCssClass = dropdownCssClass(this.$element);
+}
+
+var dropdownCssAdapter = this.options.get('adaptDropdownCssClass');
+dropdownCssAdapter = dropdownCssAdapter || _dropdownAdapter;
+
+if (dropdownCssClass.indexOf(':all:') !== -1) {
+  dropdownCssClass = dropdownCssClass.replace(':all:', '');
+
+  var _cssAdapter = dropdownCssAdapter;
+
+  dropdownCssAdapter = function (clazz) {
+    var adapted = _cssAdapter(clazz);
+
+    if (adapted != null) {
+      // Append the old one along with the adapted one
+      return adapted + ' ' + clazz;
     }
 
-    var dropdownCssAdapter = this.options.get('adaptDropdownCssClass');
-    dropdownCssAdapter = dropdownCssAdapter || _dropdownAdapter;
+    return clazz;
+  };
+}
 
-    if (dropdownCssClass.indexOf(':all:') !== -1) {
-      dropdownCssClass = dropdownCssClass.replace(':all:', '');
+var dropdownCss = this.options.get('dropdownCss') || {};
 
-      var _cssAdapter = dropdownCssAdapter;
+if ($.isFunction(dropdownCss)) {
+  dropdownCss = dropdownCss(this.$element);
+}
 
-      dropdownCssAdapter = function (clazz) {
-        var adapted = _cssAdapter(clazz);
+CompatUtils.syncCssClasses($dropdown, this.$element, dropdownCssAdapter);
 
-        if (adapted != null) {
-          // Append the old one along with the adapted one
-          return adapted + ' ' + clazz;
-        }
+$dropdown.css(dropdownCss);
+$dropdown.addClass(dropdownCssClass);
 
-        return clazz;
-      };
-    }
-
-    var dropdownCss = this.options.get('dropdownCss') || {};
-
-    if ($.isFunction(dropdownCss)) {
-      dropdownCss = dropdownCss(this.$element);
-    }
-
-    CompatUtils.syncCssClasses($dropdown, this.$element, dropdownCssAdapter);
-
-    $dropdown.css(dropdownCss);
-    $dropdown.addClass(dropdownCssClass);
-
-    return $dropdown;
+return $dropdown;
   };
 
-  return DropdownCSS;
-});
+  module.exports = DropdownCSS;
+

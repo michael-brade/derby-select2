@@ -1,9 +1,8 @@
-define([
-  'jquery',
-  './options',
-  './utils',
-  './keys'
-], function ($, Options, Utils, KEYS) {
+var $ = require('jquery');
+var Options = require('./options');
+var Utils = require('./utils');
+var KEYS = require('./keys');
+
   var Select2 = function ($element, options) {
     if ($element.data('select2') != null) {
       $element.data('select2').destroy();
@@ -537,5 +536,5 @@ define([
     return $container;
   };
 
-  return Select2;
-});
+  module.exports = Select2;
+

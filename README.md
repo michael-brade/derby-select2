@@ -1,4 +1,4 @@
-# Select2 component for Derby Entity
+# Select2 component for Derby JS 
 
 This is a [DerbyJS](http://github.com/codeparty/derby) component for jQuery Select2 4.0.
 It features some improved usability, and it adds support for re-ordering multi-selections with drag-and-drop.
