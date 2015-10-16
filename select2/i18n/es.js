@@ -1,53 +1,50 @@
+// Spanish
+module.exports = {
+    errorLoading: function() {
+        return 'La carga falló';
+    },
+    inputTooLong: function(args) {
+        var remainingChars = args.input.length - args.maximum;
 
+        var message = 'Por favor, elimine ' + remainingChars + ' car';
 
-  // Spanish
-  module.exports = {
-errorLoading: function () {
-  return 'La carga falló';
-},
-inputTooLong: function (args) {
-  var remainingChars = args.input.length - args.maximum;
+        if (remainingChars == 1) {
+            message += 'ácter';
+        } else {
+            message += 'acteres';
+        }
 
-  var message = 'Por favor, elimine ' + remainingChars + ' car';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  if (remainingChars == 1) {
-    message += 'ácter';
-  } else {
-    message += 'acteres';
-  }
+        var message = 'Por favor, introduzca ' + remainingChars + ' car';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        if (remainingChars == 1) {
+            message += 'ácter';
+        } else {
+            message += 'acteres';
+        }
 
-  var message = 'Por favor, introduzca ' + remainingChars + ' car';
+        return message;
+    },
+    loadingMore: function() {
+        return 'Cargando más resultados…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Sólo puede seleccionar ' + args.maximum + ' elemento';
 
-  if (remainingChars == 1) {
-    message += 'ácter';
-  } else {
-    message += 'acteres';
-  }
+        if (args.maximum != 1) {
+            message += 's';
+        }
 
-  return message;
-},
-loadingMore: function () {
-  return 'Cargando más resultados…';
-},
-maximumSelected: function (args) {
-  var message = 'Sólo puede seleccionar ' + args.maximum + ' elemento';
-
-  if (args.maximum != 1) {
-    message += 's';
-  }
-
-  return message;
-},
-noResults: function () {
-  return 'No se encontraron resultados';
-},
-searching: function () {
-  return 'Buscando…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'No se encontraron resultados';
+    },
+    searching: function() {
+        return 'Buscando…';
+    }
+};

@@ -1,59 +1,56 @@
+// Russian
+function ending(count, one, couple, more) {
+    if (count % 10 < 5 && count % 10 > 0 &&
+        count % 100 < 5 || count % 100 > 20) {
+        if (count % 10 > 1) {
+            return couple;
+        }
+    } else {
+        return more;
+    }
 
-
-  // Russian
-  function ending (count, one, couple, more) {
-if (count % 10 < 5 && count % 10 > 0 &&
-    count % 100 < 5 || count % 100 > 20) {
-  if (count % 10 > 1) {
-    return couple;
-  }
-} else {
-  return more;
+    return one;
 }
 
-return one;
-  }
+module.exports = {
+    errorLoading: function() {
+        return 'Невозможно загрузить результаты';
+    },
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
-  module.exports = {
-errorLoading: function () {
-  return 'Невозможно загрузить результаты';
-},
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        var message = 'Пожалуйста, введите на ' + overChars + ' символ';
 
-  var message = 'Пожалуйста, введите на ' + overChars + ' символ';
+        message += ending(overChars, '', 'a', 'ов');
 
-  message += ending(overChars, '', 'a', 'ов');
+        message += ' меньше';
 
-  message += ' меньше';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        var message = 'Пожалуйста, введите еще хотя бы ' + remainingChars +
+            ' символ';
 
-  var message = 'Пожалуйста, введите еще хотя бы ' + remainingChars +
-    ' символ';
+        message += ending(remainingChars, '', 'a', 'ов');
 
-  message += ending(remainingChars, '', 'a', 'ов');
+        return message;
+    },
+    loadingMore: function() {
+        return 'Загрузка данных…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Вы можете выбрать не более ' + args.maximum + ' элемент';
 
-  return message;
-},
-loadingMore: function () {
-  return 'Загрузка данных…';
-},
-maximumSelected: function (args) {
-  var message = 'Вы можете выбрать не более ' + args.maximum + ' элемент';
+        message += ending(args.maximum, '', 'a', 'ов');
 
-  message += ending(args.maximum, '', 'a', 'ов');
-
-  return message;
-},
-noResults: function () {
-  return 'Совпадений не найдено';
-},
-searching: function () {
-  return 'Поиск…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Совпадений не найдено';
+    },
+    searching: function() {
+        return 'Поиск…';
+    }
+};

@@ -2,77 +2,76 @@ var SelectAdapter = require('./select');
 var Utils = require('../utils');
 var $ = require('jquery');
 
-  function ArrayAdapter ($element, options) {
-var data = options.get('data') || [];
+function ArrayAdapter($element, options) {
+    var data = options.get('data') || [];
 
-ArrayAdapter.__super__.constructor.call(this, $element, options);
+    ArrayAdapter.__super__.constructor.call(this, $element, options);
 
-this.addOptions(this.convertToOptions(data));
-  }
-
-  Utils.Extend(ArrayAdapter, SelectAdapter);
-
-  ArrayAdapter.prototype.select = function (data) {
-var $option = this.$element.find('option').filter(function (i, elm) {
-  return elm.value == data.id.toString();
-});
-
-if ($option.length === 0) {
-  $option = this.option(data);
-
-  this.addOptions($option);
+    this.addOptions(this.convertToOptions(data));
 }
 
-ArrayAdapter.__super__.select.call(this, data);
-  };
+Utils.Extend(ArrayAdapter, SelectAdapter);
 
-  ArrayAdapter.prototype.convertToOptions = function (data) {
-var self = this;
+ArrayAdapter.prototype.select = function(data) {
+    var $option = this.$element.find('option').filter(function(i, elm) {
+        return elm.value == data.id.toString();
+    });
 
-var $existing = this.$element.find('option');
-var existingIds = $existing.map(function () {
-  return self.item($(this)).id;
-}).get();
+    if ($option.length === 0) {
+        $option = this.option(data);
 
-var $options = [];
+        this.addOptions($option);
+    }
 
-// Filter out all items except for the one passed in the argument
-function onlyItem (item) {
-  return function () {
-    return $(this).val() == item.id;
-  };
-}
+    ArrayAdapter.__super__.select.call(this, data);
+};
 
-for (var d = 0; d < data.length; d++) {
-  var item = this._normalizeItem(data[d]);
+ArrayAdapter.prototype.convertToOptions = function(data) {
+    var self = this;
 
-  // Skip items which were pre-loaded, only merge the data
-  if ($.inArray(item.id, existingIds) >= 0) {
-    var $existingOption = $existing.filter(onlyItem(item));
+    var $existing = this.$element.find('option');
+    var existingIds = $existing.map(function() {
+        return self.item($(this)).id;
+    }).get();
 
-    var existingData = this.item($existingOption);
-    var newData = $.extend(true, {}, existingData, item);
+    var $options = [];
 
-    var $newOption = this.option(newData);
+    // Filter out all items except for the one passed in the argument
+    function onlyItem(item) {
+        return function() {
+            return $(this).val() == item.id;
+        };
+    }
 
-    $existingOption.replaceWith($newOption);
+    for (var d = 0; d < data.length; d++) {
+        var item = this._normalizeItem(data[d]);
 
-    continue;
-  }
+        // Skip items which were pre-loaded, only merge the data
+        if ($.inArray(item.id, existingIds) >= 0) {
+            var $existingOption = $existing.filter(onlyItem(item));
 
-  var $option = this.option(item);
+            var existingData = this.item($existingOption);
+            var newData = $.extend(true, {}, existingData, item);
 
-  if (item.children) {
-    var $children = this.convertToOptions(item.children);
+            var $newOption = this.option(newData);
 
-    Utils.appendMany($option, $children);
-  }
+            $existingOption.replaceWith($newOption);
 
-  $options.push($option);
-}
+            continue;
+        }
 
-return $options;
-  };
+        var $option = this.option(item);
 
-  module.exports = ArrayAdapter;
+        if (item.children) {
+            var $children = this.convertToOptions(item.children);
 
+            Utils.appendMany($option, $children);
+        }
+
+        $options.push($option);
+    }
+
+    return $options;
+};
+
+module.exports = ArrayAdapter;

@@ -1,34 +1,31 @@
+// Thai
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'โปรดลบออก ' + overChars + ' ตัวอักษร';
 
-  // Thai
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  var message = 'โปรดลบออก ' + overChars + ' ตัวอักษร';
+        var message = 'โปรดพิมพ์เพิ่มอีก ' + remainingChars + ' ตัวอักษร';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        return message;
+    },
+    loadingMore: function() {
+        return 'กำลังค้นข้อมูลเพิ่ม…';
+    },
+    maximumSelected: function(args) {
+        var message = 'คุณสามารถเลือกได้ไม่เกิน ' + args.maximum + ' รายการ';
 
-  var message = 'โปรดพิมพ์เพิ่มอีก ' + remainingChars + ' ตัวอักษร';
-
-  return message;
-},
-loadingMore: function () {
-  return 'กำลังค้นข้อมูลเพิ่ม…';
-},
-maximumSelected: function (args) {
-  var message = 'คุณสามารถเลือกได้ไม่เกิน ' + args.maximum + ' รายการ';
-
-  return message;
-},
-noResults: function () {
-  return 'ม่พบข้อมูล';
-},
-searching: function () {
-  return 'กำลังค้นข้อมูล…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'ม่พบข้อมูล';
+    },
+    searching: function() {
+        return 'กำลังค้นข้อมูล…';
+    }
+};

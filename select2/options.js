@@ -3,119 +3,118 @@ var $ = require('jquery');
 var Defaults = require('./defaults');
 var Utils = require('./utils');
 
-  function Options (options, $element) {
-this.options = options;
+function Options(options, $element) {
+    this.options = options;
 
-if ($element != null) {
-  this.fromElement($element);
+    if ($element != null) {
+        this.fromElement($element);
+    }
+
+    this.options = Defaults.apply(this.options);
+
+    if ($element && $element.is('input')) {
+        var InputCompat = require(this.get('amdBase') + 'compat/inputData');
+
+        this.options.dataAdapter = Utils.Decorate(
+            this.options.dataAdapter,
+            InputCompat
+        );
+    }
 }
 
-this.options = Defaults.apply(this.options);
+Options.prototype.fromElement = function($e) {
+    var excludedData = ['select2'];
 
-if ($element && $element.is('input')) {
-  var InputCompat = require(this.get('amdBase') + 'compat/inputData');
+    if (this.options.multiple == null) {
+        this.options.multiple = $e.prop('multiple');
+    }
 
-  this.options.dataAdapter = Utils.Decorate(
-    this.options.dataAdapter,
-    InputCompat
-  );
-}
-  }
+    if (this.options.disabled == null) {
+        this.options.disabled = $e.prop('disabled');
+    }
 
-  Options.prototype.fromElement = function ($e) {
-var excludedData = ['select2'];
+    if (this.options.language == null) {
+        if ($e.prop('lang')) {
+            this.options.language = $e.prop('lang').toLowerCase();
+        } else if ($e.closest('[lang]').prop('lang')) {
+            this.options.language = $e.closest('[lang]').prop('lang');
+        }
+    }
 
-if (this.options.multiple == null) {
-  this.options.multiple = $e.prop('multiple');
-}
+    if (this.options.dir == null) {
+        if ($e.prop('dir')) {
+            this.options.dir = $e.prop('dir');
+        } else if ($e.closest('[dir]').prop('dir')) {
+            this.options.dir = $e.closest('[dir]').prop('dir');
+        } else {
+            this.options.dir = 'ltr';
+        }
+    }
 
-if (this.options.disabled == null) {
-  this.options.disabled = $e.prop('disabled');
-}
+    $e.prop('disabled', this.options.disabled);
+    $e.prop('multiple', this.options.multiple);
 
-if (this.options.language == null) {
-  if ($e.prop('lang')) {
-    this.options.language = $e.prop('lang').toLowerCase();
-  } else if ($e.closest('[lang]').prop('lang')) {
-    this.options.language = $e.closest('[lang]').prop('lang');
-  }
-}
+    if ($e.data('select2Tags')) {
+        if (this.options.debug && window.console && console.warn) {
+            console.warn(
+                'Select2: The `data-select2-tags` attribute has been changed to ' +
+                'use the `data-data` and `data-tags="true"` attributes and will be ' +
+                'removed in future versions of Select2.'
+            );
+        }
 
-if (this.options.dir == null) {
-  if ($e.prop('dir')) {
-    this.options.dir = $e.prop('dir');
-  } else if ($e.closest('[dir]').prop('dir')) {
-    this.options.dir = $e.closest('[dir]').prop('dir');
-  } else {
-    this.options.dir = 'ltr';
-  }
-}
+        $e.data('data', $e.data('select2Tags'));
+        $e.data('tags', true);
+    }
 
-$e.prop('disabled', this.options.disabled);
-$e.prop('multiple', this.options.multiple);
+    if ($e.data('ajaxUrl')) {
+        if (this.options.debug && window.console && console.warn) {
+            console.warn(
+                'Select2: The `data-ajax-url` attribute has been changed to ' +
+                '`data-ajax--url` and support for the old attribute will be removed' +
+                ' in future versions of Select2.'
+            );
+        }
 
-if ($e.data('select2Tags')) {
-  if (this.options.debug && window.console && console.warn) {
-    console.warn(
-      'Select2: The `data-select2-tags` attribute has been changed to ' +
-      'use the `data-data` and `data-tags="true"` attributes and will be ' +
-      'removed in future versions of Select2.'
-    );
-  }
+        $e.attr('ajax--url', $e.data('ajaxUrl'));
+        $e.data('ajax--url', $e.data('ajaxUrl'));
+    }
 
-  $e.data('data', $e.data('select2Tags'));
-  $e.data('tags', true);
-}
+    var dataset = {};
 
-if ($e.data('ajaxUrl')) {
-  if (this.options.debug && window.console && console.warn) {
-    console.warn(
-      'Select2: The `data-ajax-url` attribute has been changed to ' +
-      '`data-ajax--url` and support for the old attribute will be removed' +
-      ' in future versions of Select2.'
-    );
-  }
+    // Prefer the element's `dataset` attribute if it exists
+    // jQuery 1.x does not correctly handle data attributes with multiple dashes
+    if ($.fn.jquery && $.fn.jquery.substr(0, 2) == '1.' && $e[0].dataset) {
+        dataset = $.extend(true, {}, $e[0].dataset, $e.data());
+    } else {
+        dataset = $e.data();
+    }
 
-  $e.attr('ajax--url', $e.data('ajaxUrl'));
-  $e.data('ajax--url', $e.data('ajaxUrl'));
-}
+    var data = $.extend(true, {}, dataset);
 
-var dataset = {};
+    data = Utils._convertData(data);
 
-// Prefer the element's `dataset` attribute if it exists
-// jQuery 1.x does not correctly handle data attributes with multiple dashes
-if ($.fn.jquery && $.fn.jquery.substr(0, 2) == '1.' && $e[0].dataset) {
-  dataset = $.extend(true, {}, $e[0].dataset, $e.data());
-} else {
-  dataset = $e.data();
-}
+    for (var key in data) {
+        if ($.inArray(key, excludedData) > -1) {
+            continue;
+        }
 
-var data = $.extend(true, {}, dataset);
+        if ($.isPlainObject(this.options[key])) {
+            $.extend(this.options[key], data[key]);
+        } else {
+            this.options[key] = data[key];
+        }
+    }
 
-data = Utils._convertData(data);
+    return this;
+};
 
-for (var key in data) {
-  if ($.inArray(key, excludedData) > -1) {
-    continue;
-  }
+Options.prototype.get = function(key) {
+    return this.options[key];
+};
 
-  if ($.isPlainObject(this.options[key])) {
-    $.extend(this.options[key], data[key]);
-  } else {
-    this.options[key] = data[key];
-  }
-}
+Options.prototype.set = function(key, val) {
+    this.options[key] = val;
+};
 
-return this;
-  };
-
-  Options.prototype.get = function (key) {
-return this.options[key];
-  };
-
-  Options.prototype.set = function (key, val) {
-this.options[key] = val;
-  };
-
-  module.exports = Options;
-
+module.exports = Options;

@@ -1,86 +1,87 @@
 var $ = require('jquery');
 
-  function InfiniteScroll (decorated, $element, options, dataAdapter) {
-this.lastParams = {};
+function InfiniteScroll(decorated, $element, options, dataAdapter) {
+    this.lastParams = {};
 
-decorated.call(this, $element, options, dataAdapter);
+    decorated.call(this, $element, options, dataAdapter);
 
-this.$loadingMore = this.createLoadingMore();
-this.loading = false;
-  }
-
-  InfiniteScroll.prototype.append = function (decorated, data) {
-this.$loadingMore.remove();
-this.loading = false;
-
-decorated.call(this, data);
-
-if (this.showLoadingMore(data)) {
-  this.$results.append(this.$loadingMore);
+    this.$loadingMore = this.createLoadingMore();
+    this.loading = false;
 }
-  };
 
-  InfiniteScroll.prototype.bind = function (decorated, container, $container) {
-var self = this;
+InfiniteScroll.prototype.append = function(decorated, data) {
+    this.$loadingMore.remove();
+    this.loading = false;
 
-decorated.call(this, container, $container);
+    decorated.call(this, data);
 
-container.on('query', function (params) {
-  self.lastParams = params;
-  self.loading = true;
-});
+    if (this.showLoadingMore(data)) {
+        this.$results.append(this.$loadingMore);
+    }
+};
 
-container.on('query:append', function (params) {
-  self.lastParams = params;
-  self.loading = true;
-});
+InfiniteScroll.prototype.bind = function(decorated, container, $container) {
+    var self = this;
 
-this.$results.on('scroll', function () {
-  var isLoadMoreVisible = $.contains(
-    document.documentElement,
-    self.$loadingMore[0]
-  );
+    decorated.call(this, container, $container);
 
-  if (self.loading || !isLoadMoreVisible) {
-    return;
-  }
+    container.on('query', function(params) {
+        self.lastParams = params;
+        self.loading = true;
+    });
 
-  var currentOffset = self.$results.offset().top +
-    self.$results.outerHeight(false);
-  var loadingMoreOffset = self.$loadingMore.offset().top +
-    self.$loadingMore.outerHeight(false);
+    container.on('query:append', function(params) {
+        self.lastParams = params;
+        self.loading = true;
+    });
 
-  if (currentOffset + 50 >= loadingMoreOffset) {
-    self.loadMore();
-  }
-});
-  };
+    this.$results.on('scroll', function() {
+        var isLoadMoreVisible = $.contains(
+            document.documentElement,
+            self.$loadingMore[0]
+        );
 
-  InfiniteScroll.prototype.loadMore = function () {
-this.loading = true;
+        if (self.loading || !isLoadMoreVisible) {
+            return;
+        }
 
-var params = $.extend({}, {page: 1}, this.lastParams);
+        var currentOffset = self.$results.offset().top +
+            self.$results.outerHeight(false);
+        var loadingMoreOffset = self.$loadingMore.offset().top +
+            self.$loadingMore.outerHeight(false);
 
-params.page++;
+        if (currentOffset + 50 >= loadingMoreOffset) {
+            self.loadMore();
+        }
+    });
+};
 
-this.trigger('query:append', params);
-  };
+InfiniteScroll.prototype.loadMore = function() {
+    this.loading = true;
 
-  InfiniteScroll.prototype.showLoadingMore = function (_, data) {
-return data.pagination && data.pagination.more;
-  };
+    var params = $.extend({}, {
+        page: 1
+    }, this.lastParams);
 
-  InfiniteScroll.prototype.createLoadingMore = function () {
-var $option = $(
-  '<li class="option load-more" role="treeitem"></li>'
-);
+    params.page++;
 
-var message = this.options.get('translations').get('loadingMore');
+    this.trigger('query:append', params);
+};
 
-$option.html(message(this.lastParams));
+InfiniteScroll.prototype.showLoadingMore = function(_, data) {
+    return data.pagination && data.pagination.more;
+};
 
-return $option;
-  };
+InfiniteScroll.prototype.createLoadingMore = function() {
+    var $option = $(
+        '<li class="option load-more" role="treeitem"></li>'
+    );
 
-  module.exports = InfiniteScroll;
+    var message = this.options.get('translations').get('loadingMore');
 
+    $option.html(message(this.lastParams));
+
+    return $option;
+};
+
+module.exports = InfiniteScroll;

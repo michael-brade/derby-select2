@@ -1,45 +1,42 @@
+// Hebrew
+module.exports = {
+    errorLoading: function() {
+        return 'התוצאות לא נטענו בהלכה';
+    },
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'נא למחוק ' + overChars + ' תווים';
 
-  // Hebrew
-  module.exports = {
-errorLoading: function () {
-  return 'התוצאות לא נטענו בהלכה';
-},
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        if (overChars != 1) {
+            message += 's';
+        }
 
-  var message = 'נא למחוק ' + overChars + ' תווים';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  if (overChars != 1) {
-    message += 's';
-  }
+        var message = 'נא להכניס ' + remainingChars + ' תווים או יותר';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        return message;
+    },
+    loadingMore: function() {
+        return 'טען תוצאות נוספות…';
+    },
+    maximumSelected: function(args) {
+        var message = 'באפשרותך לבחור רק ' + args.maximum + ' פריטים';
 
-  var message = 'נא להכניס ' + remainingChars + ' תווים או יותר';
+        if (args.maximum != 1) {
+            message += 's';
+        }
 
-  return message;
-},
-loadingMore: function () {
-  return 'טען תוצאות נוספות…';
-},
-maximumSelected: function (args) {
-  var message = 'באפשרותך לבחור רק ' + args.maximum + ' פריטים';
-
-  if (args.maximum != 1) {
-    message += 's';
-  }
-
-  return message;
-},
-noResults: function () {
-  return 'לא נמצאו תוצאות';
-},
-searching: function () {
-  return 'מחפש…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'לא נמצאו תוצאות';
+    },
+    searching: function() {
+        return 'מחפש…';
+    }
+};

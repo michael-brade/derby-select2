@@ -1,34 +1,31 @@
+// Turkish
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = overChars + ' karakter daha girmelisiniz';
 
-  // Turkish
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  var message = overChars + ' karakter daha girmelisiniz';
+        var message = 'En az ' + remainingChars + ' karakter daha girmelisiniz';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        return message;
+    },
+    loadingMore: function() {
+        return 'Daha fazla…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Sadece ' + args.maximum + ' seçim yapabilirsiniz';
 
-  var message = 'En az ' + remainingChars + ' karakter daha girmelisiniz';
-
-  return message;
-},
-loadingMore: function () {
-  return 'Daha fazla…';
-},
-maximumSelected: function (args) {
-  var message = 'Sadece ' + args.maximum + ' seçim yapabilirsiniz';
-
-  return message;
-},
-noResults: function () {
-  return 'Sonuç bulunamadı';
-},
-searching: function () {
-  return 'Aranıyor…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Sonuç bulunamadı';
+    },
+    searching: function() {
+        return 'Aranıyor…';
+    }
+};

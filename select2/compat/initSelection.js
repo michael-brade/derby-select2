@@ -1,41 +1,40 @@
 var $ = require('jquery');
 
-  function InitSelection (decorated, $element, options) {
-if (options.get('debug') && window.console && console.warn) {
-  console.warn(
-    'Select2: The `initSelection` option has been deprecated in favor' +
-    ' of a custom data adapter that overrides the `current` method. ' +
-    'This method is now called multiple times instead of a single ' +
-    'time when the instance is initialized. Support will be removed ' +
-    'for the `initSelection` option in future versions of Select2'
-  );
+function InitSelection(decorated, $element, options) {
+    if (options.get('debug') && window.console && console.warn) {
+        console.warn(
+            'Select2: The `initSelection` option has been deprecated in favor' +
+            ' of a custom data adapter that overrides the `current` method. ' +
+            'This method is now called multiple times instead of a single ' +
+            'time when the instance is initialized. Support will be removed ' +
+            'for the `initSelection` option in future versions of Select2'
+        );
+    }
+
+    this.initSelection = options.get('initSelection');
+    this._isInitialized = false;
+
+    decorated.call(this, $element, options);
 }
 
-this.initSelection = options.get('initSelection');
-this._isInitialized = false;
+InitSelection.prototype.current = function(decorated, callback) {
+    var self = this;
 
-decorated.call(this, $element, options);
-  }
+    if (this._isInitialized) {
+        decorated.call(this, callback);
 
-  InitSelection.prototype.current = function (decorated, callback) {
-var self = this;
+        return;
+    }
 
-if (this._isInitialized) {
-  decorated.call(this, callback);
+    this.initSelection.call(null, this.$element, function(data) {
+        self._isInitialized = true;
 
-  return;
-}
+        if (!$.isArray(data)) {
+            data = [data];
+        }
 
-this.initSelection.call(null, this.$element, function (data) {
-  self._isInitialized = true;
+        callback(data);
+    });
+};
 
-  if (!$.isArray(data)) {
-    data = [data];
-  }
-
-  callback(data);
-});
-  };
-
-  module.exports = InitSelection;
-
+module.exports = InitSelection;

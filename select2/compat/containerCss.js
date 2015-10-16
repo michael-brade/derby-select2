@@ -1,55 +1,54 @@
 var $ = require('jquery');
 var CompatUtils = require('./utils');
 
-  // No-op CSS adapter that discards all classes by default
-  function _containerAdapter (clazz) {
-return null;
-  }
-
-  function ContainerCSS () { }
-
-  ContainerCSS.prototype.render = function (decorated) {
-var $container = decorated.call(this);
-
-var containerCssClass = this.options.get('containerCssClass') || '';
-
-if ($.isFunction(containerCssClass)) {
-  containerCssClass = containerCssClass(this.$element);
+// No-op CSS adapter that discards all classes by default
+function _containerAdapter(clazz) {
+    return null;
 }
 
-var containerCssAdapter = this.options.get('adaptContainerCssClass');
-containerCssAdapter = containerCssAdapter || _containerAdapter;
+function ContainerCSS() {}
 
-if (containerCssClass.indexOf(':all:') !== -1) {
-  containerCssClass = containerCssClass.replace(':all:', '');
+ContainerCSS.prototype.render = function(decorated) {
+    var $container = decorated.call(this);
 
-  var _cssAdapter = containerCssAdapter;
+    var containerCssClass = this.options.get('containerCssClass') || '';
 
-  containerCssAdapter = function (clazz) {
-    var adapted = _cssAdapter(clazz);
-
-    if (adapted != null) {
-      // Append the old one along with the adapted one
-      return adapted + ' ' + clazz;
+    if ($.isFunction(containerCssClass)) {
+        containerCssClass = containerCssClass(this.$element);
     }
 
-    return clazz;
-  };
-}
+    var containerCssAdapter = this.options.get('adaptContainerCssClass');
+    containerCssAdapter = containerCssAdapter || _containerAdapter;
 
-var containerCss = this.options.get('containerCss') || {};
+    if (containerCssClass.indexOf(':all:') !== -1) {
+        containerCssClass = containerCssClass.replace(':all:', '');
 
-if ($.isFunction(containerCss)) {
-  containerCss = containerCss(this.$element);
-}
+        var _cssAdapter = containerCssAdapter;
 
-CompatUtils.syncCssClasses($container, this.$element, containerCssAdapter);
+        containerCssAdapter = function(clazz) {
+            var adapted = _cssAdapter(clazz);
 
-$container.css(containerCss);
-$container.addClass(containerCssClass);
+            if (adapted != null) {
+                // Append the old one along with the adapted one
+                return adapted + ' ' + clazz;
+            }
 
-return $container;
-  };
+            return clazz;
+        };
+    }
 
-  module.exports = ContainerCSS;
+    var containerCss = this.options.get('containerCss') || {};
 
+    if ($.isFunction(containerCss)) {
+        containerCss = containerCss(this.$element);
+    }
+
+    CompatUtils.syncCssClasses($container, this.$element, containerCssAdapter);
+
+    $container.css(containerCss);
+    $container.addClass(containerCssClass);
+
+    return $container;
+};
+
+module.exports = ContainerCSS;

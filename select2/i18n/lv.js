@@ -1,52 +1,49 @@
+// Latvian
+function ending(count, eleven, singular, other) {
+    if (count === 11) {
+        return eleven;
+    }
 
+    if (count % 10 === 1) {
+        return singular;
+    }
 
-  // Latvian
-  function ending (count, eleven, singular, other) {
-if (count === 11) {
-  return eleven;
+    return other;
 }
 
-if (count % 10 === 1) {
-  return singular;
-}
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
-return other;
-  }
+        var message = 'Lūdzu ievadiet par  ' + overChars;
 
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        message += ' simbol' + ending(overChars, 'iem', 'u', 'iem');
 
-  var message = 'Lūdzu ievadiet par  ' + overChars;
+        return message + ' mazāk';
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  message += ' simbol' + ending(overChars, 'iem', 'u', 'iem');
+        var message = 'Lūdzu ievadiet vēl ' + remainingChars;
 
-  return message + ' mazāk';
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        message += ' simbol' + ending(remainingChars, 'us', 'u', 'us');
 
-  var message = 'Lūdzu ievadiet vēl ' + remainingChars;
+        return message;
+    },
+    loadingMore: function() {
+        return 'Datu ielāde…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Jūs varat izvēlēties ne vairāk kā ' + args.maximum;
 
-  message += ' simbol' + ending(remainingChars, 'us', 'u', 'us');
+        message += ' element' + ending(args.maximum, 'us', 'u', 'us');
 
-  return message;
-},
-loadingMore: function () {
-  return 'Datu ielāde…';
-},
-maximumSelected: function (args) {
-  var message = 'Jūs varat izvēlēties ne vairāk kā ' + args.maximum;
-
-  message += ' element' + ending(args.maximum, 'us', 'u', 'us');
-
-  return message;
-},
-noResults: function () {
-  return 'Sakritību nav';
-},
-searching: function () {
-  return 'Meklēšana…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Sakritību nav';
+    },
+    searching: function() {
+        return 'Meklēšana…';
+    }
+};

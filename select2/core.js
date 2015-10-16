@@ -3,9 +3,9 @@ var Options = require('./options');
 var Utils = require('./utils');
 var KEYS = require('./keys');
 
-  var Select2 = function ($element, options) {
+var Select2 = function($element, options) {
     if ($element.data('select2') != null) {
-      $element.data('select2').destroy();
+        $element.data('select2').destroy();
     }
 
     this.$element = $element;
@@ -69,10 +69,10 @@ var KEYS = require('./keys');
     this._registerEvents();
 
     // Set the initial state
-    this.dataAdapter.current(function (initialData) {
-      self.trigger('selection:update', {
-        data: initialData
-      });
+    this.dataAdapter.current(function(initialData) {
+        self.trigger('selection:update', {
+            data: initialData
+        });
     });
 
     // Hide the original select
@@ -83,418 +83,418 @@ var KEYS = require('./keys');
     this._syncAttributes();
 
     $element.data('select2', this);
-  };
+};
 
-  Utils.Extend(Select2, Utils.Observable);
+Utils.Extend(Select2, Utils.Observable);
 
-  Select2.prototype._generateId = function ($element) {
+
+Select2.prototype._generateId = function($element) {
     var id = '';
 
     if ($element.attr('id') != null) {
-      id = $element.attr('id');
+        id = $element.attr('id');
     } else if ($element.attr('name') != null) {
-      id = $element.attr('name') + '-' + Utils.generateChars(2);
+        id = $element.attr('name') + '-' + Utils.generateChars(2);
     } else {
-      id = Utils.generateChars(4);
+        id = Utils.generateChars(4);
     }
 
     id = 'select2-' + id;
 
     return id;
-  };
+};
 
-  Select2.prototype._placeContainer = function ($container) {
+Select2.prototype._placeContainer = function($container) {
     $container.insertAfter(this.$element);
 
     var width = this._resolveWidth(this.$element, this.options.get('width'));
 
     if (width != null) {
-      $container.css('width', width);
+        $container.css('width', width);
     }
-  };
+};
 
-  Select2.prototype._resolveWidth = function ($element, method) {
+Select2.prototype._resolveWidth = function($element, method) {
     var WIDTH = /^width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/i;
 
     if (method == 'resolve') {
-      var styleWidth = this._resolveWidth($element, 'style');
+        var styleWidth = this._resolveWidth($element, 'style');
 
-      if (styleWidth != null) {
-        return styleWidth;
-      }
+        if (styleWidth != null) {
+            return styleWidth;
+        }
 
-      return this._resolveWidth($element, 'element');
+        return this._resolveWidth($element, 'element');
     }
 
     if (method == 'element') {
-      var elementWidth = $element.outerWidth(false);
+        var elementWidth = $element.outerWidth(false);
 
-      if (elementWidth <= 0) {
-        return 'auto';
-      }
+        if (elementWidth <= 0) {
+            return 'auto';
+        }
 
-      return elementWidth + 'px';
+        return elementWidth + 'px';
     }
 
     if (method == 'style') {
-      var style = $element.attr('style');
+        var style = $element.attr('style');
 
-      if (typeof(style) !== 'string') {
-        return null;
-      }
-
-      var attrs = style.split(';');
-
-      for (var i = 0, l = attrs.length; i < l; i = i + 1) {
-        var attr = attrs[i].replace(/\s/g, '');
-        var matches = attr.match(WIDTH);
-
-        if (matches !== null && matches.length >= 1) {
-          return matches[1];
+        if (typeof(style) !== 'string') {
+            return null;
         }
-      }
 
-      return null;
+        var attrs = style.split(';');
+
+        for (var i = 0, l = attrs.length; i < l; i = i + 1) {
+            var attr = attrs[i].replace(/\s/g, '');
+            var matches = attr.match(WIDTH);
+
+            if (matches !== null && matches.length >= 1) {
+                return matches[1];
+            }
+        }
+
+        return null;
     }
 
     return method;
-  };
+};
 
-  Select2.prototype._bindAdapters = function () {
+Select2.prototype._bindAdapters = function() {
     this.dataAdapter.bind(this, this.$container);
     this.selection.bind(this, this.$container);
 
     this.dropdown.bind(this, this.$container);
     this.results.bind(this, this.$container);
-  };
+};
 
-  Select2.prototype._registerDomEvents = function () {
+Select2.prototype._registerDomEvents = function() {
     var self = this;
 
-    this.$element.on('change.select2', function () {
-      self.dataAdapter.current(function (data) {
-        self.trigger('selection:update', {
-          data: data
+    this.$element.on('change.select2', function() {
+        self.dataAdapter.current(function(data) {
+            self.trigger('selection:update', {
+                data: data
+            });
         });
-      });
     });
 
     this._sync = Utils.bind(this._syncAttributes, this);
 
     if (this.$element[0].attachEvent) {
-      this.$element[0].attachEvent('onpropertychange', this._sync);
+        this.$element[0].attachEvent('onpropertychange', this._sync);
     }
 
     var observer = window.MutationObserver ||
-      window.WebKitMutationObserver ||
-      window.MozMutationObserver
-    ;
+        window.WebKitMutationObserver ||
+        window.MozMutationObserver;
 
     if (observer != null) {
-      this._observer = new observer(function (mutations) {
-        $.each(mutations, self._sync);
-      });
-      this._observer.observe(this.$element[0], {
-        attributes: true,
-        subtree: false
-      });
+        this._observer = new observer(function(mutations) {
+            $.each(mutations, self._sync);
+        });
+        this._observer.observe(this.$element[0], {
+            attributes: true,
+            subtree: false
+        });
     } else if (this.$element[0].addEventListener) {
-      this.$element[0].addEventListener('DOMAttrModified', self._sync, false);
+        this.$element[0].addEventListener('DOMAttrModified', self._sync, false);
     }
-  };
+};
 
-  Select2.prototype._registerDataEvents = function () {
+Select2.prototype._registerDataEvents = function() {
     var self = this;
 
-    this.dataAdapter.on('*', function (name, params) {
-      self.trigger(name, params);
+    this.dataAdapter.on('*', function(name, params) {
+        self.trigger(name, params);
     });
-  };
+};
 
-  Select2.prototype._registerSelectionEvents = function () {
+Select2.prototype._registerSelectionEvents = function() {
     var self = this;
     var nonRelayEvents = ['toggle', 'focus'];
 
-    this.selection.on('toggle', function () {
-      self.toggleDropdown();
+    this.selection.on('toggle', function() {
+        self.toggleDropdown();
     });
 
-    this.selection.on('focus', function (params) {
-      self.focus(params);
+    this.selection.on('focus', function(params) {
+        self.focus(params);
     });
 
-    this.selection.on('*', function (name, params) {
-      if ($.inArray(name, nonRelayEvents) !== -1) {
-        return;
-      }
-
-      self.trigger(name, params);
-    });
-  };
-
-  Select2.prototype._registerDropdownEvents = function () {
-    var self = this;
-
-    this.dropdown.on('*', function (name, params) {
-      self.trigger(name, params);
-    });
-  };
-
-  Select2.prototype._registerResultsEvents = function () {
-    var self = this;
-
-    this.results.on('*', function (name, params) {
-      self.trigger(name, params);
-    });
-  };
-
-  Select2.prototype._registerEvents = function () {
-    var self = this;
-
-    this.on('open', function () {
-      self.$container.addClass('select2-container--open');
-    });
-
-    this.on('close', function () {
-      self.$container.removeClass('select2-container--open');
-    });
-
-    this.on('enable', function () {
-      self.$container.removeClass('select2-container--disabled');
-    });
-
-    this.on('disable', function () {
-      self.$container.addClass('select2-container--disabled');
-    });
-
-    this.on('blur', function () {
-      self.$container.removeClass('select2-container--focus');
-    });
-
-    this.on('query', function (params) {
-      if (!self.isOpen()) {
-        self.trigger('open', {});
-      }
-
-      this.dataAdapter.query(params, function (data) {
-        self.trigger('results:all', {
-          data: data,
-          query: params
-        });
-      });
-    });
-
-    this.on('query:append', function (params) {
-      this.dataAdapter.query(params, function (data) {
-        self.trigger('results:append', {
-          data: data,
-          query: params
-        });
-      });
-    });
-
-    this.on('keypress', function (evt) {
-      var key = evt.which;
-
-      if (self.isOpen()) {
-        if (key === KEYS.ESC || key === KEYS.TAB ||
-            (key === KEYS.UP && evt.altKey)) {
-          self.close();
-
-          evt.preventDefault();
-        } else if (key === KEYS.ENTER) {
-          self.trigger('results:select', {});
-
-          evt.preventDefault();
-        } else if ((key === KEYS.SPACE && evt.ctrlKey)) {
-          self.trigger('results:toggle', {});
-
-          evt.preventDefault();
-        } else if (key === KEYS.UP) {
-          self.trigger('results:previous', {});
-
-          evt.preventDefault();
-        } else if (key === KEYS.DOWN) {
-          self.trigger('results:next', {});
-
-          evt.preventDefault();
+    this.selection.on('*', function(name, params) {
+        if ($.inArray(name, nonRelayEvents) !== -1) {
+            return;
         }
-      } else {
-        if (key === KEYS.ENTER || key === KEYS.SPACE ||
-            (key === KEYS.DOWN && evt.altKey)) {
-          self.open();
 
-          evt.preventDefault();
-        }
-      }
+        self.trigger(name, params);
     });
-  };
+};
 
-  Select2.prototype._syncAttributes = function () {
+Select2.prototype._registerDropdownEvents = function() {
+    var self = this;
+
+    this.dropdown.on('*', function(name, params) {
+        self.trigger(name, params);
+    });
+};
+
+Select2.prototype._registerResultsEvents = function() {
+    var self = this;
+
+    this.results.on('*', function(name, params) {
+        self.trigger(name, params);
+    });
+};
+
+Select2.prototype._registerEvents = function() {
+    var self = this;
+
+    this.on('open', function() {
+        self.$container.addClass('select2-container--open');
+    });
+
+    this.on('close', function() {
+        self.$container.removeClass('select2-container--open');
+    });
+
+    this.on('enable', function() {
+        self.$container.removeClass('select2-container--disabled');
+    });
+
+    this.on('disable', function() {
+        self.$container.addClass('select2-container--disabled');
+    });
+
+    this.on('blur', function() {
+        self.$container.removeClass('select2-container--focus');
+    });
+
+    this.on('query', function(params) {
+        if (!self.isOpen()) {
+            self.trigger('open', {});
+        }
+
+        this.dataAdapter.query(params, function(data) {
+            self.trigger('results:all', {
+                data: data,
+                query: params
+            });
+        });
+    });
+
+    this.on('query:append', function(params) {
+        this.dataAdapter.query(params, function(data) {
+            self.trigger('results:append', {
+                data: data,
+                query: params
+            });
+        });
+    });
+
+    this.on('keypress', function(evt) {
+        var key = evt.which;
+
+        if (self.isOpen()) {
+            if (key === KEYS.ESC || key === KEYS.TAB ||
+                (key === KEYS.UP && evt.altKey)) {
+                self.close();
+
+                evt.preventDefault();
+            } else if (key === KEYS.ENTER) {
+                self.trigger('results:select', {});
+
+                evt.preventDefault();
+            } else if ((key === KEYS.SPACE && evt.ctrlKey)) {
+                self.trigger('results:toggle', {});
+
+                evt.preventDefault();
+            } else if (key === KEYS.UP) {
+                self.trigger('results:previous', {});
+
+                evt.preventDefault();
+            } else if (key === KEYS.DOWN) {
+                self.trigger('results:next', {});
+
+                evt.preventDefault();
+            }
+        } else {
+            if (key === KEYS.ENTER || key === KEYS.SPACE ||
+                (key === KEYS.DOWN && evt.altKey)) {
+                self.open();
+
+                evt.preventDefault();
+            }
+        }
+    });
+};
+
+Select2.prototype._syncAttributes = function() {
     this.options.set('disabled', this.$element.prop('disabled'));
 
     if (this.options.get('disabled')) {
-      if (this.isOpen()) {
-        this.close();
-      }
+        if (this.isOpen()) {
+            this.close();
+        }
 
-      this.trigger('disable', {});
+        this.trigger('disable', {});
     } else {
-      this.trigger('enable', {});
+        this.trigger('enable', {});
     }
-  };
+};
 
-  /**
-   * Override the trigger method to automatically trigger pre-events when
-   * there are events that can be prevented.
-   */
-  Select2.prototype.trigger = function (name, args) {
+/**
+ * Override the trigger method to automatically trigger pre-events when
+ * there are events that can be prevented.
+ */
+Select2.prototype.trigger = function(name, args) {
     var actualTrigger = Select2.__super__.trigger;
     var preTriggerMap = {
-      'open': 'opening',
-      'close': 'closing',
-      'select': 'selecting',
-      'unselect': 'unselecting'
+        'open': 'opening',
+        'close': 'closing',
+        'select': 'selecting',
+        'unselect': 'unselecting'
     };
 
     if (name in preTriggerMap) {
-      var preTriggerName = preTriggerMap[name];
-      var preTriggerArgs = {
-        prevented: false,
-        name: name,
-        args: args
-      };
+        var preTriggerName = preTriggerMap[name];
+        var preTriggerArgs = {
+            prevented: false,
+            name: name,
+            args: args
+        };
 
-      actualTrigger.call(this, preTriggerName, preTriggerArgs);
+        actualTrigger.call(this, preTriggerName, preTriggerArgs);
 
-      if (preTriggerArgs.prevented) {
-        args.prevented = true;
+        if (preTriggerArgs.prevented) {
+            args.prevented = true;
 
-        return;
-      }
+            return;
+        }
     }
 
     actualTrigger.call(this, name, args);
-  };
+};
 
-  Select2.prototype.toggleDropdown = function () {
+Select2.prototype.toggleDropdown = function() {
     if (this.options.get('disabled')) {
-      return;
+        return;
     }
 
     if (this.isOpen()) {
-      this.close();
+        this.close();
     } else {
-      this.open();
+        this.open();
     }
-  };
+};
 
-  Select2.prototype.open = function () {
+Select2.prototype.open = function() {
     if (this.isOpen()) {
-      return;
+        return;
     }
 
     this.trigger('query', {});
-  };
+};
 
-  Select2.prototype.close = function () {
+Select2.prototype.close = function() {
     if (!this.isOpen()) {
-      return;
+        return;
     }
 
     this.trigger('close', {});
-  };
+};
 
-  Select2.prototype.isOpen = function () {
+Select2.prototype.isOpen = function() {
     return this.$container.hasClass('select2-container--open');
-  };
+};
 
-  Select2.prototype.hasFocus = function () {
+Select2.prototype.hasFocus = function() {
     return this.$container.hasClass('select2-container--focus');
-  };
+};
 
-  Select2.prototype.focus = function (data) {
+Select2.prototype.focus = function(data) {
     // No need to re-trigger focus events if we are already focused
     if (this.hasFocus()) {
-      return;
+        return;
     }
 
     this.$container.addClass('select2-container--focus');
     this.trigger('focus', {});
-  };
+};
 
-  Select2.prototype.enable = function (args) {
+Select2.prototype.enable = function(args) {
     if (this.options.get('debug') && window.console && console.warn) {
-      console.warn(
-        'Select2: The `select2("enable")` method has been deprecated and will' +
-        ' be removed in later Select2 versions. Use $element.prop("disabled")' +
-        ' instead.'
-      );
+        console.warn(
+            'Select2: The `select2("enable")` method has been deprecated and will' +
+            ' be removed in later Select2 versions. Use $element.prop("disabled")' +
+            ' instead.'
+        );
     }
 
     if (args == null || args.length === 0) {
-      args = [true];
+        args = [true];
     }
 
     var disabled = !args[0];
 
     this.$element.prop('disabled', disabled);
-  };
+};
 
-  Select2.prototype.data = function () {
+Select2.prototype.data = function() {
     if (this.options.get('debug') &&
         arguments.length > 0 && window.console && console.warn) {
-      console.warn(
-        'Select2: Data can no longer be set using `select2("data")`. You ' +
-        'should consider setting the value instead using `$element.val()`.'
-      );
+        console.warn(
+            'Select2: Data can no longer be set using `select2("data")`. You ' +
+            'should consider setting the value instead using `$element.val()`.'
+        );
     }
 
     var data = [];
 
-    this.dataAdapter.current(function (currentData) {
-      data = currentData;
+    this.dataAdapter.current(function(currentData) {
+        data = currentData;
     });
 
     return data;
-  };
+};
 
-  Select2.prototype.val = function (args) {
+Select2.prototype.val = function(args) {
     if (this.options.get('debug') && window.console && console.warn) {
-      console.warn(
-        'Select2: The `select2("val")` method has been deprecated and will be' +
-        ' removed in later Select2 versions. Use $element.val() instead.'
-      );
+        console.warn(
+            'Select2: The `select2("val")` method has been deprecated and will be' +
+            ' removed in later Select2 versions. Use $element.val() instead.'
+        );
     }
 
     if (args == null || args.length === 0) {
-      return this.$element.val();
+        return this.$element.val();
     }
 
     var newVal = args[0];
 
     if ($.isArray(newVal)) {
-      newVal = $.map(newVal, function (obj) {
-        return obj.toString();
-      });
+        newVal = $.map(newVal, function(obj) {
+            return obj.toString();
+        });
     }
 
     this.$element.val(newVal).trigger('change');
-  };
+};
 
-  Select2.prototype.destroy = function () {
+Select2.prototype.destroy = function() {
     this.$container.remove();
 
     if (this.$element[0].detachEvent) {
-      this.$element[0].detachEvent('onpropertychange', this._sync);
+        this.$element[0].detachEvent('onpropertychange', this._sync);
     }
 
     if (this._observer != null) {
-      this._observer.disconnect();
-      this._observer = null;
+        this._observer.disconnect();
+        this._observer = null;
     } else if (this.$element[0].removeEventListener) {
-      this.$element[0]
-        .removeEventListener('DOMAttrModified', this._sync, false);
+        this.$element[0]
+            .removeEventListener('DOMAttrModified', this._sync, false);
     }
 
     this._sync = null;
@@ -515,14 +515,14 @@ var KEYS = require('./keys');
     this.selection = null;
     this.dropdown = null;
     this.results = null;
-  };
+};
 
-  Select2.prototype.render = function () {
+Select2.prototype.render = function() {
     var $container = $(
-      '<span class="select2 select2-container">' +
+        '<span class="select2 select2-container">' +
         '<span class="selection"></span>' +
         '<span class="dropdown-wrapper" aria-hidden="true"></span>' +
-      '</span>'
+        '</span>'
     );
 
     $container.attr('dir', this.options.get('dir'));
@@ -534,7 +534,6 @@ var KEYS = require('./keys');
     $container.data('element', this.$element);
 
     return $container;
-  };
+};
 
-  module.exports = Select2;
-
+module.exports = Select2;

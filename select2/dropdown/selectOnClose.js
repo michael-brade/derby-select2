@@ -1,28 +1,25 @@
+function SelectOnClose() {}
 
+SelectOnClose.prototype.bind = function(decorated, container, $container) {
+    var self = this;
 
-  function SelectOnClose () { }
+    decorated.call(this, container, $container);
 
-  SelectOnClose.prototype.bind = function (decorated, container, $container) {
-var self = this;
+    container.on('close', function() {
+        self._handleSelectOnClose();
+    });
+};
 
-decorated.call(this, container, $container);
+SelectOnClose.prototype._handleSelectOnClose = function() {
+    var $highlightedResults = this.getHighlightedResults();
 
-container.on('close', function () {
-  self._handleSelectOnClose();
-});
-  };
+    if ($highlightedResults.length < 1) {
+        return;
+    }
 
-  SelectOnClose.prototype._handleSelectOnClose = function () {
-var $highlightedResults = this.getHighlightedResults();
+    this.trigger('select', {
+        data: $highlightedResults.data('data')
+    });
+};
 
-if ($highlightedResults.length < 1) {
-  return;
-}
-
-this.trigger('select', {
-    data: $highlightedResults.data('data')
-});
-  };
-
-  module.exports = SelectOnClose;
-
+module.exports = SelectOnClose;

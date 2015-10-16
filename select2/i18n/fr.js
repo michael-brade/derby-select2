@@ -1,47 +1,44 @@
+// French
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'Supprimez ' + overChars + ' caractère';
 
-  // French
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        if (overChars !== 1) {
+            message += 's';
+        }
 
-  var message = 'Supprimez ' + overChars + ' caractère';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  if (overChars !== 1) {
-    message += 's';
-  }
+        var message = 'Saisissez ' + remainingChars + ' caractère';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        if (remainingChars !== 1) {
+            message += 's';
+        }
 
-  var message = 'Saisissez ' + remainingChars + ' caractère';
+        return message;
+    },
+    loadingMore: function() {
+        return 'Chargement de résultats supplémentaires…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Vous pouvez seulement sélectionner ' +
+            args.maximum + ' élément';
 
-  if (remainingChars !== 1) {
-    message += 's';
-  }
+        if (args.maximum !== 1) {
+            message += 's';
+        }
 
-  return message;
-},
-loadingMore: function () {
-  return 'Chargement de résultats supplémentaires…';
-},
-maximumSelected: function (args) {
-  var message = 'Vous pouvez seulement sélectionner ' +
-    args.maximum + ' élément';
-
-  if (args.maximum !== 1) {
-    message += 's';
-  }
-
-  return message;
-},
-noResults: function () {
-  return 'Aucun résultat trouvé';
-},
-searching: function () {
-  return 'Recherche en cours…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Aucun résultat trouvé';
+    },
+    searching: function() {
+        return 'Recherche en cours…';
+    }
+};

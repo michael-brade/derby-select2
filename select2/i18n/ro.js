@@ -1,49 +1,46 @@
+// Romanian
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'Vă rugăm să introduceți mai puțin de ' + overChars;
+        message += ' caracter';
 
-  // Romanian
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        if (message !== 1) {
+            message += 'e';
+        }
 
-  var message = 'Vă rugăm să introduceți mai puțin de ' + overChars;
-  message += ' caracter';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  if (message !== 1) {
-    message += 'e';
-  }
+        var message = 'Vă rugăm să introduceți incă ' + remainingChars;
+        message += ' caracter';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        if (message !== 1) {
+            message += 'e';
+        }
 
-  var message = 'Vă rugăm să introduceți incă ' + remainingChars;
-  message += ' caracter';
+        return message;
+    },
+    loadingMore: function() {
+        return 'Se încarcă…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Aveți voie să selectați cel mult ' + args.maximum;
+        message += ' element';
 
-  if (message !== 1) {
-    message += 'e';
-  }
+        if (message !== 1) {
+            message += 'e';
+        }
 
-  return message;
-},
-loadingMore: function () {
-  return 'Se încarcă…';
-},
-maximumSelected: function (args) {
-  var message = 'Aveți voie să selectați cel mult ' + args.maximum;
-  message += ' element';
-
-  if (message !== 1) {
-    message += 'e';
-  }
-
-  return message;
-},
-noResults: function () {
-  return 'Nu a fost găsit nimic';
-},
-searching: function () {
-  return 'Căutare…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Nu a fost găsit nimic';
+    },
+    searching: function() {
+        return 'Căutare…';
+    }
+};

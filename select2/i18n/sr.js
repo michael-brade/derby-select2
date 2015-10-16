@@ -1,53 +1,50 @@
+// Serbian
+function ending(count, one, some, many) {
+    if (count % 10 == 1 && count % 100 != 11) {
+        return one;
+    }
 
+    if (count % 10 >= 2 && count % 10 <= 4 &&
+        (count % 100 < 12 || count % 100 > 14)) {
+        return some;
+    }
 
-  // Serbian
-  function ending (count, one, some, many) {
-if (count % 10 == 1 && count % 100 != 11) {
-  return one;
+    return many;
 }
 
-if (count % 10 >= 2 && count % 10 <= 4 &&
-  (count % 100 < 12 || count % 100 > 14)) {
-    return some;
-}
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
-return many;
-  }
+        var message = 'Obrišite ' + overChars + ' simbol';
 
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        message += ending(overChars, '', 'a', 'a');
 
-  var message = 'Obrišite ' + overChars + ' simbol';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  message += ending(overChars, '', 'a', 'a');
+        var message = 'Ukucajte bar još ' + remainingChars + ' simbol';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        message += ending(remainingChars, '', 'a', 'a');
 
-  var message = 'Ukucajte bar još ' + remainingChars + ' simbol';
+        return message;
+    },
+    loadingMore: function() {
+        return 'Preuzimanje još rezultata…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Možete izabrati samo ' + args.maximum + ' stavk';
 
-  message += ending(remainingChars, '', 'a', 'a');
+        message += ending(args.maximum, 'u', 'e', 'i');
 
-  return message;
-},
-loadingMore: function () {
-  return 'Preuzimanje još rezultata…';
-},
-maximumSelected: function (args) {
-  var message = 'Možete izabrati samo ' + args.maximum + ' stavk';
-
-  message += ending(args.maximum, 'u', 'e', 'i');
-
-  return message;
-},
-noResults: function () {
-  return 'Ništa nije pronađeno';
-},
-searching: function () {
-  return 'Pretraga…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Ništa nije pronađeno';
+    },
+    searching: function() {
+        return 'Pretraga…';
+    }
+};

@@ -1,36 +1,33 @@
+// Norwegian (Bokmål)
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        return 'Vennligst fjern ' + overChars + ' tegn';
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  // Norwegian (Bokmål)
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        var message = 'Vennligst skriv inn ';
 
-  return 'Vennligst fjern ' + overChars + ' tegn';
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        if (remainingChars > 1) {
+            message += ' flere tegn';
+        } else {
+            message += ' tegn til';
+        }
 
-  var message = 'Vennligst skriv inn ';
-
-  if (remainingChars > 1) {
-    message += ' flere tegn';
-  } else {
-    message += ' tegn til';
-  }
-
-  return message;
-},
-loadingMore: function () {
-  return 'Laster flere resultater…';
-},
-maximumSelected: function (args) {
-  return 'Du kan velge maks ' + args.maximum + ' elementer';
-},
-noResults: function () {
-  return 'Ingen treff';
-},
-searching: function () {
-  return 'Søker…';
-}
-  };
-
+        return message;
+    },
+    loadingMore: function() {
+        return 'Laster flere resultater…';
+    },
+    maximumSelected: function(args) {
+        return 'Du kan velge maks ' + args.maximum + ' elementer';
+    },
+    noResults: function() {
+        return 'Ingen treff';
+    },
+    searching: function() {
+        return 'Søker…';
+    }
+};

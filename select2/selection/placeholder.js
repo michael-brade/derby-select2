@@ -1,48 +1,47 @@
 var Utils = require('../utils');
 
-  function Placeholder (decorated, $element, options) {
-this.placeholder = this.normalizePlaceholder(options.get('placeholder'));
+function Placeholder(decorated, $element, options) {
+    this.placeholder = this.normalizePlaceholder(options.get('placeholder'));
 
-decorated.call(this, $element, options);
-  }
-
-  Placeholder.prototype.normalizePlaceholder = function (_, placeholder) {
-if (typeof placeholder === 'string') {
-  placeholder = {
-    id: '',
-    text: placeholder
-  };
+    decorated.call(this, $element, options);
 }
 
-return placeholder;
-  };
+Placeholder.prototype.normalizePlaceholder = function(_, placeholder) {
+    if (typeof placeholder === 'string') {
+        placeholder = {
+            id: '',
+            text: placeholder
+        };
+    }
 
-  Placeholder.prototype.createPlaceholder = function (decorated, placeholder) {
-var $placeholder = this.selectionContainer();
+    return placeholder;
+};
 
-$placeholder.html(this.display(placeholder));
-$placeholder.addClass('select2-selection__placeholder')
-            .removeClass('select2-selection__choice');
+Placeholder.prototype.createPlaceholder = function(decorated, placeholder) {
+    var $placeholder = this.selectionContainer();
 
-return $placeholder;
-  };
+    $placeholder.html(this.display(placeholder));
+    $placeholder.addClass('select2-selection__placeholder')
+        .removeClass('select2-selection__choice');
 
-  Placeholder.prototype.update = function (decorated, data) {
-var singlePlaceholder = (
-  data.length == 1 && data[0].id != this.placeholder.id
-);
-var multipleSelections = data.length > 1;
+    return $placeholder;
+};
 
-if (multipleSelections || singlePlaceholder) {
-  return decorated.call(this, data);
-}
+Placeholder.prototype.update = function(decorated, data) {
+    var singlePlaceholder = (
+        data.length == 1 && data[0].id != this.placeholder.id
+    );
+    var multipleSelections = data.length > 1;
 
-this.clear();
+    if (multipleSelections || singlePlaceholder) {
+        return decorated.call(this, data);
+    }
 
-var $placeholder = this.createPlaceholder(this.placeholder);
+    this.clear();
 
-this.$selection.find('.select2-selection__rendered').append($placeholder);
-  };
+    var $placeholder = this.createPlaceholder(this.placeholder);
 
-  module.exports = Placeholder;
+    this.$selection.find('.select2-selection__rendered').append($placeholder);
+};
 
+module.exports = Placeholder;

@@ -1,11 +1,9 @@
+function StopPropagation() {}
 
+StopPropagation.prototype.bind = function(decorated, container, $container) {
+    decorated.call(this, container, $container);
 
-  function StopPropagation () { }
-
-  StopPropagation.prototype.bind = function (decorated, container, $container) {
-decorated.call(this, container, $container);
-
-var stoppedEvents = [
+    var stoppedEvents = [
 'blur',
 'change',
 'click',
@@ -28,10 +26,9 @@ var stoppedEvents = [
 'touchstart'
 ];
 
-this.$dropdown.on(stoppedEvents.join(' '), function (evt) {
-  evt.stopPropagation();
-});
-  };
+    this.$dropdown.on(stoppedEvents.join(' '), function(evt) {
+        evt.stopPropagation();
+    });
+};
 
-  module.exports = StopPropagation;
-
+module.exports = StopPropagation;

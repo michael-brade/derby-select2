@@ -1,41 +1,38 @@
+// European Portuguese
+module.exports = {
+    errorLoading: function() {
+        return 'Os resultados não puderam ser carregados.';
+    },
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'Por favor apague ' + overChars + ' ';
 
-  // European Portuguese
-  module.exports = {
-errorLoading: function () {
-  return 'Os resultados não puderam ser carregados.';
-},
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        message += overChars != 1 ? 'caracteres' : 'carácter';
 
-  var message = 'Por favor apague ' + overChars + ' ';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  message += overChars != 1 ? 'caracteres' : 'carácter';
+        var message = 'Introduza ' + remainingChars + ' ou mais caracteres';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        return message;
+    },
+    loadingMore: function() {
+        return 'A carregar mais resultados…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Apenas pode seleccionar ' + args.maximum + ' ';
 
-  var message = 'Introduza ' + remainingChars + ' ou mais caracteres';
+        message += args.maximum != 1 ? 'itens' : 'item';
 
-  return message;
-},
-loadingMore: function () {
-  return 'A carregar mais resultados…';
-},
-maximumSelected: function (args) {
-  var message = 'Apenas pode seleccionar ' + args.maximum + ' ';
-
-  message += args.maximum != 1 ? 'itens' : 'item';
-
-  return message;
-},
-noResults: function () {
-  return 'Sem resultados';
-},
-searching: function () {
-  return 'A procurar…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Sem resultados';
+    },
+    searching: function() {
+        return 'A procurar…';
+    }
+};

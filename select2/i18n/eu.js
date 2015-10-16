@@ -1,52 +1,49 @@
+// Basque
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'Idatzi ';
 
-  // Basque
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        if (overChars == 1) {
+            message += 'karaktere bat';
+        } else {
+            message += overChars + ' karaktere';
+        }
 
-  var message = 'Idatzi ';
+        message += ' gutxiago';
 
-  if (overChars == 1) {
-    message += 'karaktere bat';
-  } else {
-    message += overChars + ' karaktere';
-  }
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  message += ' gutxiago';
+        var message = 'Idatzi ';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        if (remainingChars == 1) {
+            message += 'karaktere bat';
+        } else {
+            message += remainingChars + ' karaktere';
+        }
 
-  var message = 'Idatzi ';
+        message += ' gehiago';
 
-  if (remainingChars == 1) {
-    message += 'karaktere bat';
-  } else {
-    message += remainingChars + ' karaktere';
-  }
-
-  message += ' gehiago';
-
-  return message;
-},
-loadingMore: function () {
-  return 'Emaitza gehiago kargatzen…';
-},
-maximumSelected: function (args) {
-  if (args.maximum === 1) {
-    return 'Elementu bakarra hauta dezakezu';
-  } else {
-    return args.maximum + ' elementu hauta ditzakezu soilik';
-  }
-},
-noResults: function () {
-  return 'Ez da bat datorrenik aurkitu';
-},
-searching: function () {
-  return 'Bilatzen…';
-}
-  };
-
+        return message;
+    },
+    loadingMore: function() {
+        return 'Emaitza gehiago kargatzen…';
+    },
+    maximumSelected: function(args) {
+        if (args.maximum === 1) {
+            return 'Elementu bakarra hauta dezakezu';
+        } else {
+            return args.maximum + ' elementu hauta ditzakezu soilik';
+        }
+    },
+    noResults: function() {
+        return 'Ez da bat datorrenik aurkitu';
+    },
+    searching: function() {
+        return 'Bilatzen…';
+    }
+};

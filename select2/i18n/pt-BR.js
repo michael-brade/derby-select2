@@ -1,47 +1,44 @@
+// Brazilian Portuguese
+module.exports = {
+    errorLoading: function() {
+        return 'Os resultados não puderam ser carregados.';
+    },
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'Apague ' + overChars + ' caracter';
 
-  // Brazilian Portuguese
-  module.exports = {
-errorLoading: function () {
-  return 'Os resultados não puderam ser carregados.';
-},
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        if (overChars != 1) {
+            message += 'es';
+        }
 
-  var message = 'Apague ' + overChars + ' caracter';
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  if (overChars != 1) {
-    message += 'es';
-  }
+        var message = 'Digite ' + remainingChars + ' ou mais caracteres';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        return message;
+    },
+    loadingMore: function() {
+        return 'Carregando mais resultados…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Você só pode selecionar ' + args.maximum + ' ite';
 
-  var message = 'Digite ' + remainingChars + ' ou mais caracteres';
+        if (args.maximum == 1) {
+            message += 'm';
+        } else {
+            message += 'ns';
+        }
 
-  return message;
-},
-loadingMore: function () {
-  return 'Carregando mais resultados…';
-},
-maximumSelected: function (args) {
-  var message = 'Você só pode selecionar ' + args.maximum + ' ite';
-
-  if (args.maximum == 1) {
-    message += 'm';
-  } else {
-    message += 'ns';
-  }
-
-  return message;
-},
-noResults: function () {
-  return 'Nenhum resultado encontrado';
-},
-searching: function () {
-  return 'Buscando…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Nenhum resultado encontrado';
+    },
+    searching: function() {
+        return 'Buscando…';
+    }
+};

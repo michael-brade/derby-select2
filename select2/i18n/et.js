@@ -1,54 +1,51 @@
+// Estonian
+module.exports = {
+    inputTooLong: function(args) {
+        var overChars = args.input.length - args.maximum;
 
+        var message = 'Sisesta ' + overChars + ' täht';
 
-  // Estonian
-  module.exports = {
-inputTooLong: function (args) {
-  var overChars = args.input.length - args.maximum;
+        if (overChars != 1) {
+            message += 'e';
+        }
 
-  var message = 'Sisesta ' + overChars + ' täht';
+        message += ' vähem';
 
-  if (overChars != 1) {
-    message += 'e';
-  }
+        return message;
+    },
+    inputTooShort: function(args) {
+        var remainingChars = args.minimum - args.input.length;
 
-  message += ' vähem';
+        var message = 'Sisesta ' + remainingChars + ' täht';
 
-  return message;
-},
-inputTooShort: function (args) {
-  var remainingChars = args.minimum - args.input.length;
+        if (remainingChars != 1) {
+            message += 'e';
+        }
 
-  var message = 'Sisesta ' + remainingChars + ' täht';
+        message += ' rohkem';
 
-  if (remainingChars != 1) {
-    message += 'e';
-  }
+        return message;
+    },
+    loadingMore: function() {
+        return 'Laen tulemusi…';
+    },
+    maximumSelected: function(args) {
+        var message = 'Saad vaid ' + args.maximum + ' tulemus';
 
-  message += ' rohkem';
+        if (args.maximum == 1) {
+            message += 'e';
+        } else {
+            message += 't';
+        }
 
-  return message;
-},
-loadingMore: function () {
-  return 'Laen tulemusi…';
-},
-maximumSelected: function (args) {
-  var message = 'Saad vaid ' + args.maximum + ' tulemus';
+        message += ' valida';
 
-  if (args.maximum == 1) {
-    message += 'e';
-  } else {
-    message += 't';
-  }
-
-  message += ' valida';
-
-  return message;
-},
-noResults: function () {
-  return 'Tulemused puuduvad';
-},
-searching: function () {
-  return 'Otsin…';
-}
-  };
-
+        return message;
+    },
+    noResults: function() {
+        return 'Tulemused puuduvad';
+    },
+    searching: function() {
+        return 'Otsin…';
+    }
+};
