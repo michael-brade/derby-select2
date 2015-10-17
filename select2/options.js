@@ -10,15 +10,6 @@ function Options(options, $element) {
     }
 
     this.options = Defaults.apply(this.options);
-
-    if ($element && $element.is('input')) {
-        var InputCompat = require('./compat/inputData');
-
-        this.options.dataAdapter = Utils.Decorate(
-            this.options.dataAdapter,
-            InputCompat
-        );
-    }
 }
 
 Options.prototype.fromElement = function($e) {
@@ -53,31 +44,6 @@ Options.prototype.fromElement = function($e) {
     $e.prop('disabled', this.options.disabled);
     $e.prop('multiple', this.options.multiple);
 
-    if ($e.data('select2Tags')) {
-        if (this.options.debug && window.console && console.warn) {
-            console.warn(
-                'Select2: The `data-select2-tags` attribute has been changed to ' +
-                'use the `data-data` and `data-tags="true"` attributes and will be ' +
-                'removed in future versions of Select2.'
-            );
-        }
-
-        $e.data('data', $e.data('select2Tags'));
-        $e.data('tags', true);
-    }
-
-    if ($e.data('ajaxUrl')) {
-        if (this.options.debug && window.console && console.warn) {
-            console.warn(
-                'Select2: The `data-ajax-url` attribute has been changed to ' +
-                '`data-ajax--url` and support for the old attribute will be removed' +
-                ' in future versions of Select2.'
-            );
-        }
-
-        $e.attr('ajax--url', $e.data('ajaxUrl'));
-        $e.data('ajax--url', $e.data('ajaxUrl'));
-    }
 
     var dataset = {};
 

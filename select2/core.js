@@ -3,6 +3,9 @@ var Options = require('./options');
 var Utils = require('./utils');
 var KEYS = require('./keys');
 
+// TODO: this should be the index.ls code, the component itself
+
+// TODO: this should be the init() function - or the create() function....
 var Select2 = function($element, options) {
     if ($element.data('select2') != null) {
         $element.data('select2').destroy();
@@ -75,7 +78,7 @@ var Select2 = function($element, options) {
         });
     });
 
-    // Hide the original select
+    // Hide the original select  TODO: not needed anymore
     $element.addClass('select2-hidden-accessible');
     $element.attr('aria-hidden', 'true');
 
@@ -88,6 +91,7 @@ var Select2 = function($element, options) {
 Utils.Extend(Select2, Utils.Observable);
 
 
+// TODO: use model.id()?
 Select2.prototype._generateId = function($element) {
     var id = '';
 
@@ -330,6 +334,7 @@ Select2.prototype._registerEvents = function() {
     });
 };
 
+// TODO: replace with Derby; need to close when prop is set to disabled
 Select2.prototype._syncAttributes = function() {
     this.options.set('disabled', this.$element.prop('disabled'));
 
@@ -423,64 +428,6 @@ Select2.prototype.focus = function(data) {
     this.trigger('focus', {});
 };
 
-Select2.prototype.enable = function(args) {
-    if (this.options.get('debug') && window.console && console.warn) {
-        console.warn(
-            'Select2: The `select2("enable")` method has been deprecated and will' +
-            ' be removed in later Select2 versions. Use $element.prop("disabled")' +
-            ' instead.'
-        );
-    }
-
-    if (args == null || args.length === 0) {
-        args = [true];
-    }
-
-    var disabled = !args[0];
-
-    this.$element.prop('disabled', disabled);
-};
-
-Select2.prototype.data = function() {
-    if (this.options.get('debug') &&
-        arguments.length > 0 && window.console && console.warn) {
-        console.warn(
-            'Select2: Data can no longer be set using `select2("data")`. You ' +
-            'should consider setting the value instead using `$element.val()`.'
-        );
-    }
-
-    var data = [];
-
-    this.dataAdapter.current(function(currentData) {
-        data = currentData;
-    });
-
-    return data;
-};
-
-Select2.prototype.val = function(args) {
-    if (this.options.get('debug') && window.console && console.warn) {
-        console.warn(
-            'Select2: The `select2("val")` method has been deprecated and will be' +
-            ' removed in later Select2 versions. Use $element.val() instead.'
-        );
-    }
-
-    if (args == null || args.length === 0) {
-        return this.$element.val();
-    }
-
-    var newVal = args[0];
-
-    if ($.isArray(newVal)) {
-        newVal = $.map(newVal, function(obj) {
-            return obj.toString();
-        });
-    }
-
-    this.$element.val(newVal).trigger('change');
-};
 
 Select2.prototype.destroy = function() {
     this.$container.remove();

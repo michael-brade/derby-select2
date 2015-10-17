@@ -75,23 +75,6 @@ Defaults.prototype.apply = function(options) {
             );
         }
 
-        if (options.query != null) {
-            var Query = require('./compat/query');
-
-            options.dataAdapter = Utils.Decorate(
-                options.dataAdapter,
-                Query
-            );
-        }
-
-        if (options.initSelection != null) {
-            var InitSelection = require('./compat/initSelection');
-
-            options.dataAdapter = Utils.Decorate(
-                options.dataAdapter,
-                InitSelection
-            );
-        }
     }
 
     if (options.resultsAdapter == null) {
@@ -142,19 +125,6 @@ Defaults.prototype.apply = function(options) {
             );
         }
 
-        if (
-            options.dropdownCssClass != null ||
-            options.dropdownCss != null ||
-            options.adaptDropdownCssClass != null
-        ) {
-            var DropdownCSS = require('./compat/dropdownCss');
-
-            options.dropdownAdapter = Utils.Decorate(
-                options.dropdownAdapter,
-                DropdownCSS
-            );
-        }
-
         options.dropdownAdapter = Utils.Decorate(
             options.dropdownAdapter,
             AttachBody
@@ -187,19 +157,6 @@ Defaults.prototype.apply = function(options) {
             options.selectionAdapter = Utils.Decorate(
                 options.selectionAdapter,
                 SelectionSearch
-            );
-        }
-
-        if (
-            options.containerCssClass != null ||
-            options.containerCss != null ||
-            options.adaptContainerCssClass != null
-        ) {
-            var ContainerCSS = require('./compat/containerCss');
-
-            options.selectionAdapter = Utils.Decorate(
-                options.selectionAdapter,
-                ContainerCSS
             );
         }
 
