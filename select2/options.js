@@ -2,50 +2,53 @@ var $ = require('jquery');
 var Defaults = require('./defaults');
 var Utils = require('./utils');
 
+// options is the ChildModel.at "options"
 function Options(options, $element) {
     this.options = options;
 
     if ($element != null) {
-        this.fromElement($element);
+        this.fromElement($element); // TODO: really needed?
     }
 
-    this.options = Defaults.apply(this.options);
+    Defaults.apply(this.options);
 }
 
 Options.prototype.fromElement = function($e) {
     var excludedData = ['select2'];
 
-    if (this.options.multiple == null) {
-        this.options.multiple = $e.prop('multiple');
+    if (this.get('multiple') == null) {
+        this.set('multiple', $e.prop('multiple'));
     }
 
-    if (this.options.disabled == null) {
-        this.options.disabled = $e.prop('disabled');
+    if (this.get('disabled') == null) {
+        this.set('disabled', $e.prop('disabled'));
     }
 
-    if (this.options.language == null) {
+    if (this.get('language') == null) {
         if ($e.prop('lang')) {
-            this.options.language = $e.prop('lang').toLowerCase();
+            this.set('language', $e.prop('lang').toLowerCase());
         } else if ($e.closest('[lang]').prop('lang')) {
-            this.options.language = $e.closest('[lang]').prop('lang');
+            this.set('language', $e.closest('[lang]').prop('lang'));
         }
     }
 
-    if (this.options.dir == null) {
+    if (this.get('dir') == null) {
         if ($e.prop('dir')) {
-            this.options.dir = $e.prop('dir');
+            this.set('dir', $e.prop('dir'));
         } else if ($e.closest('[dir]').prop('dir')) {
-            this.options.dir = $e.closest('[dir]').prop('dir');
+            this.set('dir', $e.closest('[dir]').prop('dir'));
         } else {
-            this.options.dir = 'ltr';
+            this.set('dir', 'ltr');
         }
     }
 
-    $e.prop('disabled', this.options.disabled);
-    $e.prop('multiple', this.options.multiple);
+    $e.prop('disabled', this.get('disabled'));
+    $e.prop('multiple', this.get('multiple'));
 
 
     var dataset = {};
+
+    // TODO: what about this code?
 
     // Prefer the element's `dataset` attribute if it exists
     // jQuery 1.x does not correctly handle data attributes with multiple dashes
@@ -64,10 +67,10 @@ Options.prototype.fromElement = function($e) {
             continue;
         }
 
-        if ($.isPlainObject(this.options[key])) {
-            $.extend(this.options[key], data[key]);
+        if ($.isPlainObject(this.get(key))) {
+            $.extend(this.get(key), data[key]);  //TODO where does extend write to??
         } else {
-            this.options[key] = data[key];
+            this.set(key, data[key]);
         }
     }
 
@@ -75,11 +78,11 @@ Options.prototype.fromElement = function($e) {
 };
 
 Options.prototype.get = function(key) {
-    return this.options[key];
+    return this.options.get(key);
 };
 
 Options.prototype.set = function(key, val) {
-    this.options[key] = val;
+    this.options.set(key, val);
 };
 
 module.exports = Options;

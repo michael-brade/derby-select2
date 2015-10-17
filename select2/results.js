@@ -9,21 +9,21 @@ function Results($element, options, dataAdapter) {
     Results.__super__.constructor.call(this);
 }
 
+module.exports = Results;
+
 Utils.Extend(Results, Utils.Observable);
 
-Results.prototype.render = function() {
-    var $results = $(
-        '<ul class="select2-results__options" role="tree"></ul>'
-    );
 
-    if (this.options.get('multiple')) {
-        $results.attr('aria-multiselectable', 'true');
-    }
+Results.prototype.view = __dirname + "/results.html";
 
-    this.$results = $results;
+Results.prototype.init = function(model) {
+    // TODO: set options here
+}
 
-    return $results;
+Results.prototype.create = function(model) {
+    this.$results = $(this.results);
 };
+
 
 Results.prototype.clear = function() {
     this.$results.empty();
@@ -42,7 +42,7 @@ Results.prototype.displayMessage = function(params) {
     var message = this.options.get('translations').get(params.message);
 
     $message.append(
-        escapeMarkup(
+        escapeMarkup(               // TODO: escape not needed
             message(params.args)
         )
     );
@@ -136,6 +136,7 @@ Results.prototype.setClasses = function() {
     });
 };
 
+// TODO
 Results.prototype.showLoading = function(params) {
     this.hideLoading();
 
@@ -152,10 +153,12 @@ Results.prototype.showLoading = function(params) {
     this.$results.prepend($loading);
 };
 
+// TODO
 Results.prototype.hideLoading = function() {
     this.$results.find('.loading-results').remove();
 };
 
+// TODO: done, delete except for $.data(option, 'data', data);
 Results.prototype.option = function(data) {
     var option = document.createElement('li');
     option.className = 'select2-results__option';
@@ -225,7 +228,7 @@ Results.prototype.option = function(data) {
         this.template(data, option);
     }
 
-    $.data(option, 'data', data);
+    $.data(option, 'data', data);   // TODO: do that in the view
 
     return option;
 };
@@ -495,20 +498,3 @@ Results.prototype.ensureHighlightVisible = function() {
         this.$results.scrollTop(nextOffset);
     }
 };
-
-Results.prototype.template = function(result, container) {
-    var template = this.options.get('templateResult');
-    var escapeMarkup = this.options.get('escapeMarkup');
-
-    var content = template(result);
-
-    if (content == null) {
-        container.style.display = 'none';
-    } else if (typeof content === 'string') {
-        container.innerHTML = escapeMarkup(content);
-    } else {
-        $(container).append(content);
-    }
-};
-
-module.exports = Results;

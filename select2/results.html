@@ -1,0 +1,51 @@
+<!-- results needs to have its own controller; used model paths:
+    * results
+    * options.multiple
+    * message
+-->
+
+<results:>
+    <ul as="results" class="select2-results__options" role="tree"
+        aria-multiselectable="{{if options.multiple}}true{{/if}}">
+
+        <!-- set in append() and showLoading() TODO: use results in the code, too -->
+        {{each results as #data}}
+            <view name="results-option" data="{{#data}}" />
+        {{/each}}
+
+        {{if message}}
+            <li role="treeitem" class="select2-results__option select2-results__message">
+                {{message}}
+            </li>
+        {{/}}
+    </ul>
+
+
+<!-- attributes: data -->
+<results-option:>
+    <li id="{{@data._resultId}}" class="select2-results__option"
+            title="{{@data.title}}"
+            role="{{@data.children ? 'group' : 'treeitem'}}"
+            aria-label="{{if @data.children}}{{@data.text}}{{/}}"
+            aria-selected="{{if @data.id && !@data.children && !@data.disabled}}false{{/}}"
+            aria-disabled="{{@data.disabled}}">
+
+        {{if @data.children}}
+            <strong class="select2-results__group">
+                <view name="results-template" data="{{@data}}" />
+            </strong>
+
+            <ul class="select2-results__options select2-results__options--nested">
+                {{each @data.children as #child}}
+                    <view name="results-option" data="{{#child}}"/>
+                {{/}}
+            </ul>
+        {{else}}
+            <view name="results-template" data="{{@data}}" />
+        {{/}}
+
+    </li>
+
+
+<results-template:>
+    {{@data.text}}  <!-- TODO: if data.text is null, the option should be set to display:none... -->
