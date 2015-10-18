@@ -128,9 +128,8 @@ BaseSelection.prototype._attachCloseHandler = function(container) {
                 return;
             }
 
-            var $element = $this.data('element');
-
-            $element.select2('close');
+            var controller = $this.data('controller');
+            controller.close();
         });
     });
 };

@@ -31,16 +31,6 @@
     background-color: #fff;
     filter: alpha(opacity=0);
 }
-.select2-hidden-accessible {
-    position: absolute !important !important;
-    clip: rect(0 0 0 0) !important;
-    margin: -1px;
-    border: 0 !important;
-    overflow: hidden !important !important;
-    padding: 0;
-    width: 1px !important;
-    height: 1px !important;
-}
 
 @import 'theme/default/layout';
 @import 'theme/classic/layout';

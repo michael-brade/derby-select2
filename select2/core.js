@@ -22,22 +22,20 @@ Select2.prototype.init = function(model) {
 Select2.prototype.create = function(model, dom) {
     this.$container = $(this.container);
 
-    this.$container.data('element', this.$element);
+    // attach the select2 controller to the container to be able to identify it later and close
+    // all the other dropdowns, for instance; selection/base uses it
+    // TODO: is there a better way? Derby global events or so?
+    this.$container.data('controller', this);
 };
 
 
 // TODO: this should be the init() function - or the create() function....
-var Select2 = function($element, options) {
-    if ($element.data('select2') != null) {
-        $element.data('select2').destroy();
-    }
+// TODO: options
+// TODO: put global defaults somewhere, accessible, changable
 
-    this.$element = $element;
-
-    this.id = this._generateId($element);
-
+// TODO: click event should open; do it in the view instead of here?!
+var Select2 = function(options) {
     options = options || {};
-
     this.options = new Options(options, $element);
 
     Select2.__super__.constructor.call(this);
@@ -99,37 +97,14 @@ var Select2 = function($element, options) {
         });
     });
 
-    // Hide the original select  TODO: not needed anymore
-    $element.addClass('select2-hidden-accessible');
-    $element.attr('aria-hidden', 'true');
-
     // Synchronize any monitored attributes
     this._syncAttributes();
-
-    $element.data('select2', this);
 };
 
 module.exports = Select2;
 
 Utils.Extend(Select2, Utils.Observable);
 
-
-// TODO: use model.id()?
-Select2.prototype._generateId = function($element) {
-    var id = '';
-
-    if ($element.attr('id') != null) {
-        id = $element.attr('id');
-    } else if ($element.attr('name') != null) {
-        id = $element.attr('name') + '-' + Utils.generateChars(2);
-    } else {
-        id = Utils.generateChars(4);
-    }
-
-    id = 'select2-' + id;
-
-    return id;
-};
 
 Select2.prototype._placeContainer = function($container) {
     $container.insertAfter(this.$element);
@@ -471,11 +446,6 @@ Select2.prototype.destroy = function() {
     this._sync = null;
 
     this.$element.off('.select2');
-    this.$element.attr('tabindex', this.$element.data('old-tabindex'));
-
-    this.$element.removeClass('select2-hidden-accessible');
-    this.$element.attr('aria-hidden', 'false');
-    this.$element.removeData('select2');
 
     this.dataAdapter.destroy();
     this.selection.destroy();

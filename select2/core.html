@@ -4,9 +4,22 @@
     * drop ajax support for now
     * drop all compat stuff
 -->
+
+<!-- arguments:
+  * id: optional, id of the container element; if missing, an id is generated
+  * a model path with the possible selections is needed, i.e., data
+  * a model path with the current selection is needed
+ -->
 <index: element='select2'>
     <!-- core container -->
-    <span as="container" class="select2 select2-container select2-container--{{options.theme}}" dir="{{options.dir}}">
-        <span class="selection"></span>
-        <span class="dropdown-wrapper" aria-hidden="true"></span>
+    <span as="container" id="select2-{{@id ? @id : id}}"
+            class="select2 select2-container select2-container--{{options.theme}}" dir="{{options.dir}}">
+        <!-- what has already been selected, the current selection -->
+        <span class="selection">
+            <view name="selection" />
+        </span>
+
+        <span class="dropdown-wrapper" aria-hidden="true">
+            <view name="dropdown" />
+        </span>
     </span>
