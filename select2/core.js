@@ -7,6 +7,13 @@ var KEYS = require('./keys');
 // this is like index.js, the Select2 Derby component itself
 
 
+/*
+  Results gets the dataAdapter, it needs access to the data to display
+  results view/components is embedded or used by the dropdown view
+
+  dropdown and results could become one component?
+*/
+
 Select2.prototype.view = __dirname + '/core.html';
 
 Select2.prototype.components = [
@@ -36,36 +43,30 @@ Select2.prototype.create = function(model, dom) {
 // TODO: click event should open; do it in the view instead of here?!
 var Select2 = function(options) {
     options = options || {};
-    this.options = new Options(options, $element);
+    this.options = new Options(options);
 
     Select2.__super__.constructor.call(this);
 
-    // Set up the tabindex
-
-    var tabindex = $element.attr('tabindex') || 0;
-    $element.data('old-tabindex', tabindex);
-    $element.attr('tabindex', '-1');
 
     // Set up containers and adapters
 
     var DataAdapter = this.options.get('dataAdapter');
     this.dataAdapter = new DataAdapter($element, this.options);
 
-    var $container = this.render();
 
-    this._placeContainer($container);
+    this._placeContainer(this.$container);
 
     var SelectionAdapter = this.options.get('selectionAdapter');
     this.selection = new SelectionAdapter($element, this.options);
     this.$selection = this.selection.render();
 
-    this.selection.position(this.$selection, $container);
+    this.selection.position(this.$selection, this.$container);
 
     var DropdownAdapter = this.options.get('dropdownAdapter');
     this.dropdown = new DropdownAdapter($element, this.options);
     this.$dropdown = this.dropdown.render();
 
-    this.dropdown.position(this.$dropdown, $container);
+    this.dropdown.position(this.$dropdown, this.$container);
 
     var ResultsAdapter = this.options.get('resultsAdapter');
     this.results = new ResultsAdapter($element, this.options, this.dataAdapter);
@@ -75,13 +76,9 @@ var Select2 = function(options) {
 
     // Bind events
 
-    var self = this;
 
     // Bind the container to all of the adapters
     this._bindAdapters();
-
-    // Register any DOM event handlers
-    this._registerDomEvents();
 
     // Register any internal event handlers
     this._registerDataEvents();
@@ -90,15 +87,14 @@ var Select2 = function(options) {
     this._registerResultsEvents();
     this._registerEvents();
 
-    // Set the initial state
+
+    // Set the initial state TODO: that should be automatic now!
+    var self = this;
     this.dataAdapter.current(function(initialData) {
         self.trigger('selection:update', {
             data: initialData
         });
     });
-
-    // Synchronize any monitored attributes
-    this._syncAttributes();
 };
 
 module.exports = Select2;
@@ -172,40 +168,6 @@ Select2.prototype._bindAdapters = function() {
     this.results.bind(this, this.$container);
 };
 
-Select2.prototype._registerDomEvents = function() {
-    var self = this;
-
-    this.$element.on('change.select2', function() {
-        self.dataAdapter.current(function(data) {
-            self.trigger('selection:update', {
-                data: data
-            });
-        });
-    });
-
-    this._sync = Utils.bind(this._syncAttributes, this);
-
-    if (this.$element[0].attachEvent) {
-        this.$element[0].attachEvent('onpropertychange', this._sync);
-    }
-
-    var observer = window.MutationObserver ||
-        window.WebKitMutationObserver ||
-        window.MozMutationObserver;
-
-    if (observer != null) {
-        this._observer = new observer(function(mutations) {
-            $.each(mutations, self._sync);
-        });
-        this._observer.observe(this.$element[0], {
-            attributes: true,
-            subtree: false
-        });
-    } else if (this.$element[0].addEventListener) {
-        this.$element[0].addEventListener('DOMAttrModified', self._sync, false);
-    }
-};
-
 Select2.prototype._registerDataEvents = function() {
     var self = this;
 
@@ -243,6 +205,7 @@ Select2.prototype._registerDropdownEvents = function() {
     });
 };
 
+// forward and emit results events as if from Select2
 Select2.prototype._registerResultsEvents = function() {
     var self = this;
 
@@ -333,10 +296,8 @@ Select2.prototype._registerEvents = function() {
     });
 };
 
-// TODO: replace with Derby; need to close when prop is set to disabled
+// TODO: need to close when select2 is set to disabled, need to trigger (emit) dis/enable
 Select2.prototype._syncAttributes = function() {
-    this.options.set('disabled', this.$element.prop('disabled'));
-
     if (this.options.get('disabled')) {
         if (this.isOpen()) {
             this.close();
@@ -429,24 +390,6 @@ Select2.prototype.focus = function(data) {
 
 
 Select2.prototype.destroy = function() {
-    this.$container.remove();
-
-    if (this.$element[0].detachEvent) {
-        this.$element[0].detachEvent('onpropertychange', this._sync);
-    }
-
-    if (this._observer != null) {
-        this._observer.disconnect();
-        this._observer = null;
-    } else if (this.$element[0].removeEventListener) {
-        this.$element[0]
-            .removeEventListener('DOMAttrModified', this._sync, false);
-    }
-
-    this._sync = null;
-
-    this.$element.off('.select2');
-
     this.dataAdapter.destroy();
     this.selection.destroy();
     this.dropdown.destroy();
