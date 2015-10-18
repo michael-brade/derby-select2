@@ -37,6 +37,16 @@ Select2.prototype.create = function(model, dom) {
     // all the other dropdowns, for instance; selection/base uses it
     // TODO: is there a better way? Derby global events or so?
     this.$container.data('controller', this);
+
+
+    // Bind the container to all of the adapters
+    this._bindAdapters();
+
+    // Register any internal event handlers
+    this._registerDataEvents();
+    this._registerSelectionEvents();
+    this._registerResultsEvents();
+    this._registerEvents();
 };
 
 // TODO: remove all destroy functions!! IMPORTANT, don't overwrite derby, use on('destroy') if really needed
@@ -51,16 +61,6 @@ var Select2 = function(options) {
     this.options = new Options(options);
 
     Select2.__super__.constructor.call(this);
-
-
-    // Bind the container to all of the adapters
-    this._bindAdapters();
-
-    // Register any internal event handlers
-    this._registerDataEvents();
-    this._registerSelectionEvents();
-    this._registerResultsEvents();
-    this._registerEvents();
 
 
     // Set the initial state TODO: that should be automatic now!
@@ -78,12 +78,9 @@ Utils.Extend(Select2, Utils.Observable);
 
 
 
-// TODO: what does bind mean in terms of derby?
 Select2.prototype._bindAdapters = function() {
     this.dataAdapter.bind(this, this.$container);
     this.selection.bind(this, this.$container);
-
-    this.dropdown.bind(this, this.$container);
     this.results.bind(this, this.$container);
 };
 
