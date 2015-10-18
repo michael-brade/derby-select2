@@ -1,0 +1,22 @@
+<!-- TODO: set type in model (== selection type, can be "single" or "multiple") -->
+
+<selection:>
+    <span as="selection" class="select2-selection select2-selection--{{type}}" role="combobox"
+            aria-autocomplete="list" aria-haspopup="true" aria-expanded="false">
+        <view name="{{type}}-selection" />
+    </span>
+
+
+<single-selection:>
+    <span class="select2-selection__rendered">
+
+    </span>
+
+    <span class="select2-selection__arrow" role="presentation">
+        <b role="presentation"></b>
+    </span>
+
+<multiple-selection:>
+    <ul class="select2-selection__rendered">
+
+    </ul>

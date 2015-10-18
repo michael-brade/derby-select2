@@ -7,22 +7,10 @@ function SingleSelection() {
     SingleSelection.__super__.constructor.apply(this, arguments);
 }
 
+module.exports = SingleSelection;
+
 Utils.Extend(SingleSelection, BaseSelection);
 
-SingleSelection.prototype.render = function() {
-    var $selection = SingleSelection.__super__.render.call(this);
-
-    $selection.addClass('select2-selection--single');
-
-    $selection.html(
-        '<span class="select2-selection__rendered"></span>' +
-        '<span class="select2-selection__arrow" role="presentation">' +
-        '<b role="presentation"></b>' +
-        '</span>'
-    );
-
-    return $selection;
-};
 
 SingleSelection.prototype.bind = function(container, $container) {
     var self = this;
@@ -87,5 +75,3 @@ SingleSelection.prototype.update = function(data) {
     $rendered.empty().append(formatted);
     $rendered.prop('title', selection.title || selection.text);
 };
-
-module.exports = SingleSelection;

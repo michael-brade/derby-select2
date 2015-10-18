@@ -6,19 +6,10 @@ function MultipleSelection($element, options) {
     MultipleSelection.__super__.constructor.apply(this, arguments);
 }
 
+module.exports = MultipleSelection;
+
 Utils.Extend(MultipleSelection, BaseSelection);
 
-MultipleSelection.prototype.render = function() {
-    var $selection = MultipleSelection.__super__.render.call(this);
-
-    $selection.addClass('select2-selection--multiple');
-
-    $selection.html(
-        '<ul class="select2-selection__rendered"></ul>'
-    );
-
-    return $selection;
-};
 
 MultipleSelection.prototype.bind = function(container, $container) {
     var self = this;
@@ -103,5 +94,3 @@ MultipleSelection.prototype.update = function(data) {
 
     Utils.appendMany($rendered, $selections);
 };
-
-module.exports = MultipleSelection;

@@ -9,15 +9,15 @@ function BaseSelection($element, options) {
     BaseSelection.__super__.constructor.call(this);
 }
 
+module.exports = BaseSelection;
+
 Utils.Extend(BaseSelection, Utils.Observable);
 
-BaseSelection.prototype.render = function() {
-    var $selection = $(
-        '<span class="select2-selection" role="combobox" ' +
-        'aria-autocomplete="list" aria-haspopup="true" aria-expanded="false">' +
-        '</span>'
-    );
+BaseSelection.prototype.view = __dirname + '/selection.html';
 
+
+BaseSelection.prototype.create = function(model, dom) {
+    /* TODO
     this._tabindex = 0;
 
     if (this.$element.data('old-tabindex') != null) {
@@ -28,10 +28,9 @@ BaseSelection.prototype.render = function() {
 
     $selection.attr('title', this.$element.attr('title'));
     $selection.attr('tabindex', this._tabindex);
+    */
 
-    this.$selection = $selection;
-
-    return $selection;
+    this.$selection = $(this.selection);
 };
 
 BaseSelection.prototype.bind = function(container, $container) {
@@ -152,5 +151,3 @@ BaseSelection.prototype.destroy = function() {
 BaseSelection.prototype.update = function(data) {
     throw new Error('The `update` method must be defined in child classes.');
 };
-
-module.exports = BaseSelection;
