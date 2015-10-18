@@ -22,7 +22,7 @@ CloseOnSelect.prototype._selectTriggered = function(_, evt) {
         return;
     }
 
-    this.trigger('close', {});
+    this.emit('close', {});
 };
 
 module.exports = CloseOnSelect;

@@ -28,7 +28,7 @@ Search.prototype.bind = function(decorated, container) {
     decorated.call(this, container);
 
     this.$search.on('keydown', function(evt) {
-        self.trigger('keypress', evt);
+        self.emit('keypress', evt);
 
         self._keyUpPrevented = evt.isDefaultPrevented();
     });
@@ -78,7 +78,7 @@ Search.prototype.handleSearch = function(evt) {
     if (!this._keyUpPrevented) {
         var input = this.$search.val();
 
-        this.trigger('query', {
+        this.emit('query', {
             term: input
         });
     }

@@ -9,6 +9,7 @@ function InfiniteScroll(decorated, options, dataAdapter) {
     this.loading = false;
 }
 
+// append is the Results.append method to add data
 InfiniteScroll.prototype.append = function(decorated, data) {
     this.$loadingMore.remove();
     this.loading = false;
@@ -65,7 +66,7 @@ InfiniteScroll.prototype.loadMore = function() {
 
     params.page++;
 
-    this.trigger('query:append', params);
+    this.emit('query:append', params);
 };
 
 InfiniteScroll.prototype.showLoadingMore = function(_, data) {

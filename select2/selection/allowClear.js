@@ -51,7 +51,7 @@ AllowClear.prototype._handleClear = function(_, evt) {
 
         // Trigger the `unselect` event, so people can prevent it from being
         // cleared.
-        this.trigger('unselect', unselectData);
+        this.emit('unselect', unselectData);
 
         // If the event was prevented, don't clear it out.
         if (unselectData.prevented) {

@@ -9,7 +9,7 @@ MaximumInputLength.prototype.query = function(decorated, params, callback) {
 
     if (this.maximumInputLength > 0 &&
         params.term.length > this.maximumInputLength) {
-        this.trigger('results:message', {
+        this.emit('results:message', {
             message: 'inputTooLong',
             args: {
                 maximum: this.maximumInputLength,

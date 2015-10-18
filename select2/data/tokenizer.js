@@ -21,7 +21,7 @@ Tokenizer.prototype.query = function(decorated, params, callback) {
     var self = this;
 
     function select(data) {
-        self.trigger('select', {
+        self.emit('select', {
             data: data
         });
     }

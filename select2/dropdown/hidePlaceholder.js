@@ -4,6 +4,7 @@ function HidePlaceholder(decorated, options, dataAdapter) {
     decorated.call(this, options, dataAdapter);
 }
 
+// append is the Results.append method to add data
 HidePlaceholder.prototype.append = function(decorated, data) {
     data.results = this.removePlaceholder(data.results);
 

@@ -8,7 +8,7 @@ MinimumInputLength.prototype.query = function(decorated, params, callback) {
     params.term = params.term || '';
 
     if (params.term.length < this.minimumInputLength) {
-        this.trigger('results:message', {
+        this.emit('results:message', {
             message: 'inputTooShort',
             args: {
                 minimum: this.minimumInputLength,

@@ -17,7 +17,7 @@ SelectOnClose.prototype._handleSelectOnClose = function() {
         return;
     }
 
-    this.trigger('select', {
+    this.emit('select', {
         data: $highlightedResults.data('data')
     });
 };

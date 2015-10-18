@@ -12,7 +12,7 @@ ClickMask.prototype.bind = function(decorate, container) {
     );
 
     this.$mask.on('mousedown touchstart click', function() {
-        self.trigger('close', {});
+        self.emit('close', {});
     });
 };
 

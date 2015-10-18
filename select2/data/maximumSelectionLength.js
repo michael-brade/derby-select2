@@ -12,7 +12,7 @@ MaximumSelectionLength.prototype.query =
             var count = currentData != null ? currentData.length : 0;
             if (self.maximumSelectionLength > 0 &&
                 count >= self.maximumSelectionLength) {
-                self.trigger('results:message', {
+                self.emit('results:message', {
                     message: 'maximumSelected',
                     args: {
                         maximum: self.maximumSelectionLength

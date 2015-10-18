@@ -4,13 +4,9 @@ var Utils = require('./utils');
 function Results(options, dataAdapter) {
     this.data = dataAdapter;
     this.options = options;
-
-    Results.__super__.constructor.call(this);
 }
 
 module.exports = Results;
-
-Utils.Extend(Results, Utils.Observable);
 
 
 Results.prototype.view = __dirname + "/results.html";
@@ -64,7 +60,7 @@ Results.prototype.append = function(data) {
 
     if (data.results == null || data.results.length === 0) {
         if (this.$results.children().length === 0) {
-            this.trigger('results:message', {
+            this.emit('results:message', {
                 message: 'noResults'
             });
         }
@@ -244,9 +240,9 @@ Results.prototype.bind = function(container) {
         var data = $highlighted.data('data');
 
         if ($highlighted.attr('aria-selected') == 'true') {
-            self.trigger('close', {});
+            self.emit('close', {});
         } else {
-            self.trigger('select', {
+            self.emit('select', {
                 data: data
             });
         }
@@ -362,18 +358,18 @@ Results.prototype.bind = function(container) {
 
             if ($this.attr('aria-selected') === 'true') {
                 if (self.options.get('multiple')) {
-                    self.trigger('unselect', {
+                    self.emit('unselect', {
                         originalEvent: evt,
                         data: data
                     });
                 } else {
-                    self.trigger('close', {});
+                    self.emit('close', {});
                 }
 
                 return;
             }
 
-            self.trigger('select', {
+            self.emit('select', {
                 originalEvent: evt,
                 data: data
             });
@@ -386,7 +382,7 @@ Results.prototype.bind = function(container) {
             self.getHighlightedResults()
                 .removeClass('select2-results__option--highlighted');
 
-            self.trigger('results:focus', {
+            self.emit('results:focus', {
                 data: data,
                 element: $(this)
             });

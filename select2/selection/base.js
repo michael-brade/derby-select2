@@ -1,16 +1,11 @@
 var $ = require('jquery');
-var Utils = require('../utils');
 var KEYS = require('../keys');
 
 function BaseSelection(options) {
     this.options = options;
-
-    BaseSelection.__super__.constructor.call(this);
 }
 
 module.exports = BaseSelection;
-
-Utils.Extend(BaseSelection, Utils.Observable);
 
 BaseSelection.prototype.view = __dirname + '/selection.html';
 
@@ -36,7 +31,7 @@ BaseSelection.prototype.bind = function(container) {
     this.container = container;
 
     this.$selection.on('focus', function(evt) {
-        self.trigger('focus', evt);
+        self.emit('focus', evt);
     });
 
     this.$selection.on('blur', function(evt) {
@@ -44,7 +39,7 @@ BaseSelection.prototype.bind = function(container) {
     });
 
     this.$selection.on('keydown', function(evt) {
-        self.trigger('keypress', evt);
+        self.emit('keypress', evt);
 
         if (evt.which === KEYS.SPACE) {
             evt.preventDefault();
@@ -101,7 +96,7 @@ BaseSelection.prototype._handleBlur = function(evt) {
             return;
         }
 
-        self.trigger('blur', evt);
+        self.emit('blur', evt);
     }, 1);
 };
 

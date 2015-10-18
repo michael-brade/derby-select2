@@ -28,7 +28,7 @@ SingleSelection.prototype.bind = function(container) {
             return;
         }
 
-        self.trigger('toggle', {
+        self.emit('toggle', {
             originalEvent: evt
         });
     });

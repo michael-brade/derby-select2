@@ -107,41 +107,6 @@ Utils.Decorate = function(SuperClass, DecoratorClass) {
     return DecoratedClass;
 };
 
-var Observable = function() {
-    this.listeners = {};
-};
-
-Observable.prototype.on = function(event, callback) {
-    this.listeners = this.listeners || {};
-
-    if (event in this.listeners) {
-        this.listeners[event].push(callback);
-    } else {
-        this.listeners[event] = [callback];
-    }
-};
-
-Observable.prototype.trigger = function(event) {
-    var slice = Array.prototype.slice;
-
-    this.listeners = this.listeners || {};
-
-    if (event in this.listeners) {
-        this.invoke(this.listeners[event], slice.call(arguments, 1));
-    }
-
-    if ('*' in this.listeners) {
-        this.invoke(this.listeners['*'], arguments);
-    }
-};
-
-Observable.prototype.invoke = function(listeners, params) {
-    for (var i = 0, len = listeners.length; i < len; i++) {
-        listeners[i].apply(this, params);
-    }
-};
-
-Utils.Observable = Observable;
 
 Utils.generateChars = function(length) {
     var chars = '';

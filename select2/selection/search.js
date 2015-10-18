@@ -32,12 +32,12 @@ Search.prototype.bind = function(decorated, container) {
     decorated.call(this, container);
 
     container.on('open', function() {
-        self.$search.trigger('focus');
+        self.$search.emit('focus');
     });
 
     container.on('close', function() {
         self.$search.val('');
-        self.$search.trigger('focus');
+        self.$search.emit('focus');
     });
 
     container.on('enable', function() {
@@ -51,11 +51,11 @@ Search.prototype.bind = function(decorated, container) {
     });
 
     container.on('focus', function(evt) {
-        self.$search.trigger('focus');
+        self.$search.emit('focus');
     });
 
     this.$selection.on('focusin', '.select2-search--inline', function(evt) {
-        self.trigger('focus', evt);
+        self.emit('focus', evt);
     });
 
     this.$selection.on('focusout', '.select2-search--inline', function(evt) {
@@ -65,7 +65,7 @@ Search.prototype.bind = function(decorated, container) {
     this.$selection.on('keydown', '.select2-search--inline', function(evt) {
         evt.stopPropagation();
 
-        self.trigger('keypress', evt);
+        self.emit('keypress', evt);
 
         self._keyUpPrevented = evt.isDefaultPrevented();
 
@@ -173,7 +173,7 @@ Search.prototype.handleSearch = function() {
     if (!this._keyUpPrevented && this.container.isOpen()) {
         var input = this.$search.val();
 
-        this.trigger('query', {
+        this.emit('query', {
             term: input
         });
     }
@@ -182,11 +182,11 @@ Search.prototype.handleSearch = function() {
 };
 
 Search.prototype.searchRemoveChoice = function(decorated, item) {
-    this.trigger('unselect', {
+    this.emit('unselect', {
         data: item
     });
 
-    this.trigger('open', {});
+    this.emit('open', {});
 
     this.$search.val(item.text);
     this.handleSearch();

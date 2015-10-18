@@ -17,7 +17,7 @@ MultipleSelection.prototype.bind = function(container) {
     MultipleSelection.__super__.bind.apply(this, arguments);
 
     this.$selection.on('click', function(evt) {
-        self.trigger('toggle', {
+        self.emit('toggle', {
             originalEvent: evt
         });
     });
@@ -36,7 +36,7 @@ MultipleSelection.prototype.bind = function(container) {
 
             var data = $selection.data('data');
 
-            self.trigger('unselect', {
+            self.emit('unselect', {
                 originalEvent: evt,
                 data: data
             });

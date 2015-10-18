@@ -58,22 +58,17 @@ var Select2 = function(options) {
     options = options || {};
     this.options = new Options(options);
 
-    Select2.__super__.constructor.call(this);
-
 
     // Set the initial state TODO: that should be automatic now!
     var self = this;
     this.dataAdapter.current(function(initialData) {
-        self.trigger('selection:update', {
+        self.emit('selection:update', {
             data: initialData
         });
     });
 };
 
 module.exports = Select2;
-
-Utils.Extend(Select2, Utils.Observable);
-
 
 
 Select2.prototype._bindAdapters = function() {
@@ -85,8 +80,9 @@ Select2.prototype._bindAdapters = function() {
 Select2.prototype._registerDataEvents = function() {
     var self = this;
 
+    // TODO: no * available anymore
     this.dataAdapter.on('*', function(name, params) {
-        self.trigger(name, params);
+        self.emit(name, params);
     });
 };
 
@@ -102,12 +98,13 @@ Select2.prototype._registerSelectionEvents = function() {
         self.focus(params);
     });
 
+    // TODO: no * available anymore
     this.selection.on('*', function(name, params) {
         if ($.inArray(name, nonRelayEvents) !== -1) {
             return;
         }
 
-        self.trigger(name, params);
+        self.emit(name, params);
     });
 };
 
@@ -116,8 +113,9 @@ Select2.prototype._registerSelectionEvents = function() {
 Select2.prototype._registerResultsEvents = function() {
     var self = this;
 
+    // TODO: no * available anymore
     this.results.on('*', function(name, params) {
-        self.trigger(name, params);
+        self.emit(name, params);
     });
 };
 
@@ -146,11 +144,11 @@ Select2.prototype._registerEvents = function() {
 
     this.on('query', function(params) {
         if (!self.isOpen()) {
-            self.trigger('open', {});
+            self.emit('open', {});
         }
 
         this.dataAdapter.query(params, function(data) {
-            self.trigger('results:all', {
+            self.emit('results:all', {
                 data: data,
                 query: params
             });
@@ -159,7 +157,7 @@ Select2.prototype._registerEvents = function() {
 
     this.on('query:append', function(params) {
         this.dataAdapter.query(params, function(data) {
-            self.trigger('results:append', {
+            self.emit('results:append', {
                 data: data,
                 query: params
             });
@@ -176,19 +174,19 @@ Select2.prototype._registerEvents = function() {
 
                 evt.preventDefault();
             } else if (key === KEYS.ENTER) {
-                self.trigger('results:select', {});
+                self.emit('results:select', {});
 
                 evt.preventDefault();
             } else if ((key === KEYS.SPACE && evt.ctrlKey)) {
-                self.trigger('results:toggle', {});
+                self.emit('results:toggle', {});
 
                 evt.preventDefault();
             } else if (key === KEYS.UP) {
-                self.trigger('results:previous', {});
+                self.emit('results:previous', {});
 
                 evt.preventDefault();
             } else if (key === KEYS.DOWN) {
-                self.trigger('results:next', {});
+                self.emit('results:next', {});
 
                 evt.preventDefault();
             }
@@ -210,9 +208,9 @@ Select2.prototype._syncAttributes = function() {
             this.close();
         }
 
-        this.trigger('disable', {});
+        this.emit('disable', {});
     } else {
-        this.trigger('enable', {});
+        this.emit('enable', {});
     }
 };
 
@@ -266,7 +264,7 @@ Select2.prototype.open = function() {
         return;
     }
 
-    this.trigger('query', {});
+    this.emit('query', {});
 };
 
 Select2.prototype.close = function() {
@@ -274,7 +272,7 @@ Select2.prototype.close = function() {
         return;
     }
 
-    this.trigger('close', {});
+    this.emit('close', {});
 };
 
 Select2.prototype.isOpen = function() {
@@ -292,5 +290,5 @@ Select2.prototype.focus = function(data) {
     }
 
     this.$container.addClass('select2-container--focus');
-    this.trigger('focus', {});
+    this.emit('focus', {});
 };
