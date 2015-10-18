@@ -7,12 +7,12 @@ function AttachBody(decorated, $element, options) {
     decorated.call(this, $element, options);
 }
 
-AttachBody.prototype.bind = function(decorated, container, $container) {
+AttachBody.prototype.bind = function(decorated, container) {
     var self = this;
 
     var setupResultsEvents = false;
 
-    decorated.call(this, container, $container);
+    decorated.call(this, container);
 
     container.on('open', function() {
         self._showDropdown();

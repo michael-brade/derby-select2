@@ -12,7 +12,7 @@ module.exports = SingleSelection;
 Utils.Extend(SingleSelection, BaseSelection);
 
 
-SingleSelection.prototype.bind = function(container, $container) {
+SingleSelection.prototype.bind = function(container) {
     var self = this;
 
     SingleSelection.__super__.bind.apply(this, arguments);

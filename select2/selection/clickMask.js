@@ -2,10 +2,10 @@ var $ = require('jquery');
 
 function ClickMask() {}
 
-ClickMask.prototype.bind = function(decorate, $container, container) {
+ClickMask.prototype.bind = function(decorate, container) {
     var self = this;
 
-    decorate.call(this, $container, container);
+    decorate.call(this, container);
 
     this.$mask = $(
         '<div class="select2-close-mask"></div>'

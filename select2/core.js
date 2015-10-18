@@ -79,9 +79,9 @@ Utils.Extend(Select2, Utils.Observable);
 
 
 Select2.prototype._bindAdapters = function() {
-    this.dataAdapter.bind(this, this.$container);
-    this.selection.bind(this, this.$container);
-    this.results.bind(this, this.$container);
+    this.dataAdapter.bind(this);
+    this.selection.bind(this);
+    this.results.bind(this);
 };
 
 Select2.prototype._registerDataEvents = function() {

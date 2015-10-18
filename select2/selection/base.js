@@ -33,7 +33,7 @@ BaseSelection.prototype.create = function(model, dom) {
     this.$selection = $(this.selection);
 };
 
-BaseSelection.prototype.bind = function(container, $container) {
+BaseSelection.prototype.bind = function(container) {
     var self = this;
 
     var id = container.id + '-container';

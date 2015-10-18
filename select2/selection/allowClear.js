@@ -3,10 +3,10 @@ var KEYS = require('../keys');
 
 function AllowClear() {}
 
-AllowClear.prototype.bind = function(decorated, container, $container) {
+AllowClear.prototype.bind = function(decorated, container) {
     var self = this;
 
-    decorated.call(this, container, $container);
+    decorated.call(this, container);
 
     if (this.placeholder == null) {
         if (this.options.get('debug') && window.console && console.error) {

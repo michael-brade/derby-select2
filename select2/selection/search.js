@@ -25,11 +25,11 @@ Search.prototype.render = function(decorated) {
     return $rendered;
 };
 
-Search.prototype.bind = function(decorated, container, $container) {
+Search.prototype.bind = function(decorated, container) {
     var self = this;
     this.container = container;
 
-    decorated.call(this, container, $container);
+    decorated.call(this, container);
 
     container.on('open', function() {
         self.$search.trigger('focus');

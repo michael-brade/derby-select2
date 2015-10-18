@@ -20,10 +20,10 @@ InfiniteScroll.prototype.append = function(decorated, data) {
     }
 };
 
-InfiniteScroll.prototype.bind = function(decorated, container, $container) {
+InfiniteScroll.prototype.bind = function(decorated, container) {
     var self = this;
 
-    decorated.call(this, container, $container);
+    decorated.call(this, container);
 
     container.on('query', function(params) {
         self.lastParams = params;

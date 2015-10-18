@@ -2,18 +2,18 @@ var $ = require('jquery');
 
 function EventRelay() {}
 
-EventRelay.prototype.bind = function(decorated, container, $container) {
+EventRelay.prototype.bind = function(decorated, container) {
     var self = this;
     var relayEvents = [
-  'open', 'opening',
-  'close', 'closing',
-  'select', 'selecting',
-  'unselect', 'unselecting'
-];
+        'open', 'opening',
+        'close', 'closing',
+        'select', 'selecting',
+        'unselect', 'unselecting'
+    ];
 
     var preventableEvents = ['opening', 'closing', 'selecting', 'unselecting'];
 
-    decorated.call(this, container, $container);
+    decorated.call(this, container);
 
     container.on('*', function(name, params) {
         // Ignore events that should not be relayed

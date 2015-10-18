@@ -228,7 +228,7 @@ Results.prototype.option = function(data) {
     return option;
 };
 
-Results.prototype.bind = function(container, $container) {
+Results.prototype.bind = function(container) {
     var self = this;
 
     var id = container.id + '-results';

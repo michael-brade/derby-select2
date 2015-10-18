@@ -11,7 +11,7 @@ module.exports = MultipleSelection;
 Utils.Extend(MultipleSelection, BaseSelection);
 
 
-MultipleSelection.prototype.bind = function(container, $container) {
+MultipleSelection.prototype.bind = function(container) {
     var self = this;
 
     MultipleSelection.__super__.bind.apply(this, arguments);

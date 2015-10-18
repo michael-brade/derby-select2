@@ -1,9 +1,9 @@
 function SelectOnClose() {}
 
-SelectOnClose.prototype.bind = function(decorated, container, $container) {
+SelectOnClose.prototype.bind = function(decorated, container) {
     var self = this;
 
-    decorated.call(this, container, $container);
+    decorated.call(this, container);
 
     container.on('close', function() {
         self._handleSelectOnClose();

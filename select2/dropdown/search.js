@@ -22,10 +22,10 @@ Search.prototype.render = function(decorated) {
     return $rendered;
 };
 
-Search.prototype.bind = function(decorated, container, $container) {
+Search.prototype.bind = function(decorated, container) {
     var self = this;
 
-    decorated.call(this, container, $container);
+    decorated.call(this, container);
 
     this.$search.on('keydown', function(evt) {
         self.trigger('keypress', evt);
