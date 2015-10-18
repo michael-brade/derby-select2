@@ -1,9 +1,30 @@
 var $ = require('jquery');
+
 var Options = require('./options');
 var Utils = require('./utils');
 var KEYS = require('./keys');
 
-// TODO: this should be the index.ls code, the component itself
+// this is like index.js, the Select2 Derby component itself
+
+
+Select2.prototype.view = __dirname + '/core.html';
+
+Select2.prototype.components = [
+    require('./selection/base')
+    require('./dropdown')
+    require('./results')
+]
+
+
+Select2.prototype.init = function(model) {
+};
+
+Select2.prototype.create = function(model, dom) {
+    this.$container = $(this.container);
+
+    this.$container.data('element', this.$element);
+};
+
 
 // TODO: this should be the init() function - or the create() function....
 var Select2 = function($element, options) {
@@ -88,6 +109,8 @@ var Select2 = function($element, options) {
     $element.data('select2', this);
 };
 
+module.exports = Select2;
+
 Utils.Extend(Select2, Utils.Observable);
 
 
@@ -165,6 +188,7 @@ Select2.prototype._resolveWidth = function($element, method) {
     return method;
 };
 
+// TODO: what does bind mean in terms of derby?
 Select2.prototype._bindAdapters = function() {
     this.dataAdapter.bind(this, this.$container);
     this.selection.bind(this, this.$container);
@@ -463,24 +487,3 @@ Select2.prototype.destroy = function() {
     this.dropdown = null;
     this.results = null;
 };
-
-Select2.prototype.render = function() {
-    var $container = $(
-        '<span class="select2 select2-container">' +
-        '<span class="selection"></span>' +
-        '<span class="dropdown-wrapper" aria-hidden="true"></span>' +
-        '</span>'
-    );
-
-    $container.attr('dir', this.options.get('dir'));
-
-    this.$container = $container;
-
-    this.$container.addClass('select2-container--' + this.options.get('theme'));
-
-    $container.data('element', this.$element);
-
-    return $container;
-};
-
-module.exports = Select2;
