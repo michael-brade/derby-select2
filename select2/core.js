@@ -6,24 +6,28 @@ var KEYS = require('./keys');
 
 // this is like index.js, the Select2 Derby component itself
 
-
 /*
   Results gets the dataAdapter, it needs access to the data to display
   results view/components is embedded or used by the dropdown view
-
-  dropdown and results could become one component?
 */
 
 Select2.prototype.view = __dirname + '/core.html';
 
 Select2.prototype.components = [
     require('./selection/base')
-    require('./dropdown')
     require('./results')
 ]
 
 
 Select2.prototype.init = function(model) {
+    // TODO...
+    var DataAdapter = this.options.get('dataAdapter');
+    this.dataAdapter = new DataAdapter($element, this.options);
+
+    // Default view names (thus components)
+    model.setNull("options.selectionAdapter", "selection")
+    model.setNull("options.resultsAdapter", "results")
+
 };
 
 Select2.prototype.create = function(model, dom) {
@@ -49,32 +53,12 @@ var Select2 = function(options) {
     Select2.__super__.constructor.call(this);
 
 
-    // Set up containers and adapters
-
-    var DataAdapter = this.options.get('dataAdapter');
-    this.dataAdapter = new DataAdapter($element, this.options);
-
-
-    var SelectionAdapter = this.options.get('selectionAdapter');
-    this.selection = new SelectionAdapter($element, this.options);
-    this.$selection = this.selection.render();
-
-    var DropdownAdapter = this.options.get('dropdownAdapter');
-    this.dropdown = new DropdownAdapter($element, this.options);
-    this.$dropdown = this.dropdown.render();
-
-    var ResultsAdapter = this.options.get('resultsAdapter');
-    this.results = new ResultsAdapter($element, this.options, this.dataAdapter);
-    this.$results = this.results.render();
-
-
     // Bind the container to all of the adapters
     this._bindAdapters();
 
     // Register any internal event handlers
     this._registerDataEvents();
     this._registerSelectionEvents();
-    this._registerDropdownEvents();
     this._registerResultsEvents();
     this._registerEvents();
 
@@ -132,13 +116,6 @@ Select2.prototype._registerSelectionEvents = function() {
     });
 };
 
-Select2.prototype._registerDropdownEvents = function() {
-    var self = this;
-
-    this.dropdown.on('*', function(name, params) {
-        self.trigger(name, params);
-    });
-};
 
 // forward and emit results events as if from Select2
 Select2.prototype._registerResultsEvents = function() {
@@ -327,11 +304,9 @@ Select2.prototype.focus = function(data) {
 Select2.prototype.destroy = function() {
     this.dataAdapter.destroy();
     this.selection.destroy();
-    this.dropdown.destroy();
     this.results.destroy();
 
     this.dataAdapter = null;
     this.selection = null;
-    this.dropdown = null;
     this.results = null;
 };
