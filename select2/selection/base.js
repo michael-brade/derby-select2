@@ -138,11 +138,6 @@ BaseSelection.prototype._detachCloseHandler = function(container) {
     $(document.body).off('mousedown.select2.' + container.id);
 };
 
-BaseSelection.prototype.position = function($selection, $container) {
-    var $selectionContainer = $container.find('.selection');
-    $selectionContainer.append($selection);
-};
-
 BaseSelection.prototype.destroy = function() {
     this._detachCloseHandler(this.container);
 };

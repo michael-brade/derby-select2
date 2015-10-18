@@ -35,6 +35,7 @@ Select2.prototype.create = function(model, dom) {
     this.$container.data('controller', this);
 };
 
+// TODO: remove all destroy functions!! IMPORTANT, don't overwrite derby, use on('destroy') if really needed
 
 // TODO: this should be the init() function - or the create() function....
 // TODO: options
@@ -58,19 +59,13 @@ var Select2 = function(options) {
     this.selection = new SelectionAdapter($element, this.options);
     this.$selection = this.selection.render();
 
-    this.selection.position(this.$selection, this.$container);
-
     var DropdownAdapter = this.options.get('dropdownAdapter');
     this.dropdown = new DropdownAdapter($element, this.options);
     this.$dropdown = this.dropdown.render();
 
-    this.dropdown.position(this.$dropdown, this.$container);
-
     var ResultsAdapter = this.options.get('resultsAdapter');
     this.results = new ResultsAdapter($element, this.options, this.dataAdapter);
     this.$results = this.results.render();
-
-    this.results.position(this.$results, this.$dropdown);
 
 
     // Bind the container to all of the adapters

@@ -84,11 +84,6 @@ Results.prototype.append = function(data) {
     this.$results.append($options);
 };
 
-Results.prototype.position = function($results, $dropdown) {
-    var $resultsContainer = $dropdown.find('.select2-results');
-    $resultsContainer.append($results);
-};
-
 Results.prototype.sort = function(data) {
     var sorter = this.options.get('sorter');
 
