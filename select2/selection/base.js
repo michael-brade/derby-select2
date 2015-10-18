@@ -20,6 +20,11 @@ BaseSelection.prototype.create = function(model, dom) {
 
     this._tabindex = 0; // TODO: where to read it from now?
     this.$selection.attr('tabindex', this._tabindex);
+
+    var self = this;
+    this.on('destroy', function() {
+        self._detachCloseHandler(this.container);
+    });
 };
 
 BaseSelection.prototype.bind = function(container) {
@@ -125,10 +130,6 @@ BaseSelection.prototype._attachCloseHandler = function(container) {
 
 BaseSelection.prototype._detachCloseHandler = function(container) {
     $(document.body).off('mousedown.select2.' + container.id);
-};
-
-BaseSelection.prototype.destroy = function() {
-    this._detachCloseHandler(this.container);
 };
 
 BaseSelection.prototype.update = function(data) {

@@ -400,10 +400,6 @@ Results.prototype.getHighlightedResults = function() {
     return $highlighted;
 };
 
-Results.prototype.destroy = function() {
-    this.$results.remove();
-};
-
 Results.prototype.ensureHighlightVisible = function() {
     var $highlighted = this.getHighlightedResults();
 

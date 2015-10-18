@@ -43,6 +43,7 @@ AttachBody.prototype.bind = function(decorated, container) {
     });
 };
 
+// TODO: this would actually have to be done in on('destroy')
 AttachBody.prototype.destroy = function(decorated) {
     decorated.call(this);
 

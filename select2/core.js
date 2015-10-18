@@ -49,8 +49,6 @@ Select2.prototype.create = function(model, dom) {
     this._registerEvents();
 };
 
-// TODO: remove all destroy functions!! IMPORTANT, don't overwrite derby, use on('destroy') if really needed
-
 // TODO: this should be the init() function - or the create() function....
 // TODO: options
 // TODO: put global defaults somewhere, accessible, changable
@@ -295,15 +293,4 @@ Select2.prototype.focus = function(data) {
 
     this.$container.addClass('select2-container--focus');
     this.trigger('focus', {});
-};
-
-
-Select2.prototype.destroy = function() {
-    this.dataAdapter.destroy();
-    this.selection.destroy();
-    this.results.destroy();
-
-    this.dataAdapter = null;
-    this.selection = null;
-    this.results = null;
 };
