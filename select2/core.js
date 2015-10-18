@@ -54,8 +54,6 @@ var Select2 = function(options) {
     this.dataAdapter = new DataAdapter($element, this.options);
 
 
-    this._placeContainer(this.$container);
-
     var SelectionAdapter = this.options.get('selectionAdapter');
     this.selection = new SelectionAdapter($element, this.options);
     this.$selection = this.selection.render();
@@ -73,8 +71,6 @@ var Select2 = function(options) {
     this.$results = this.results.render();
 
     this.results.position(this.$results, this.$dropdown);
-
-    // Bind events
 
 
     // Bind the container to all of the adapters
@@ -102,62 +98,6 @@ module.exports = Select2;
 Utils.Extend(Select2, Utils.Observable);
 
 
-Select2.prototype._placeContainer = function($container) {
-    $container.insertAfter(this.$element);
-
-    var width = this._resolveWidth(this.$element, this.options.get('width'));
-
-    if (width != null) {
-        $container.css('width', width);
-    }
-};
-
-Select2.prototype._resolveWidth = function($element, method) {
-    var WIDTH = /^width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/i;
-
-    if (method == 'resolve') {
-        var styleWidth = this._resolveWidth($element, 'style');
-
-        if (styleWidth != null) {
-            return styleWidth;
-        }
-
-        return this._resolveWidth($element, 'element');
-    }
-
-    if (method == 'element') {
-        var elementWidth = $element.outerWidth(false);
-
-        if (elementWidth <= 0) {
-            return 'auto';
-        }
-
-        return elementWidth + 'px';
-    }
-
-    if (method == 'style') {
-        var style = $element.attr('style');
-
-        if (typeof(style) !== 'string') {
-            return null;
-        }
-
-        var attrs = style.split(';');
-
-        for (var i = 0, l = attrs.length; i < l; i = i + 1) {
-            var attr = attrs[i].replace(/\s/g, '');
-            var matches = attr.match(WIDTH);
-
-            if (matches !== null && matches.length >= 1) {
-                return matches[1];
-            }
-        }
-
-        return null;
-    }
-
-    return method;
-};
 
 // TODO: what does bind mean in terms of derby?
 Select2.prototype._bindAdapters = function() {
