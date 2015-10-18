@@ -21,6 +21,8 @@ Results.prototype.init = function(model) {
 }
 
 Results.prototype.create = function(model) {
+    require('jquery.mousewheel');
+
     this.$results = $(this.results);
 };
 
@@ -156,81 +158,14 @@ Results.prototype.hideLoading = function() {
 // TODO: done, delete except for $.data(option, 'data', data);
 Results.prototype.option = function(data) {
     var option = document.createElement('li');
-    option.className = 'select2-results__option';
-
-    var attrs = {
-        'role': 'treeitem',
-        'aria-selected': 'false'
-    };
-
-    if (data.disabled) {
-        delete attrs['aria-selected'];
-        attrs['aria-disabled'] = 'true';
-    }
-
-    if (data.id == null) {
-        delete attrs['aria-selected'];
-    }
-
-    if (data._resultId != null) {
-        option.id = data._resultId;
-    }
-
-    if (data.title) {
-        option.title = data.title;
-    }
-
-    if (data.children) {
-        attrs.role = 'group';
-        attrs['aria-label'] = data.text;
-        delete attrs['aria-selected'];
-    }
-
-    for (var attr in attrs) {
-        var val = attrs[attr];
-
-        option.setAttribute(attr, val);
-    }
-
-    if (data.children) {
-        var $option = $(option);
-
-        var label = document.createElement('strong');
-        label.className = 'select2-results__group';
-
-        var $label = $(label);
-        this.template(data, label);
-
-        var $children = [];
-
-        for (var c = 0; c < data.children.length; c++) {
-            var child = data.children[c];
-
-            var $child = this.option(child);
-
-            $children.push($child);
-        }
-
-        var $childrenContainer = $('<ul></ul>', {
-            'class': 'select2-results__options select2-results__options--nested'
-        });
-
-        $childrenContainer.append($children);
-
-        $option.append(label);
-        $option.append($childrenContainer);
-    } else {
-        this.template(data, option);
-    }
-
     $.data(option, 'data', data);   // TODO: do that in the view
-
     return option;
 };
 
 Results.prototype.bind = function(container) {
     var self = this;
 
+    // TODO: check all ids!
     var id = container.id + '-results';
 
     this.$results.attr('id', id);
@@ -390,6 +325,7 @@ Results.prototype.bind = function(container) {
         self.displayMessage(params);
     });
 
+    // TODO: is this code really needed???
     if ($.fn.mousewheel) {
         this.$results.on('mousewheel', function(e) {
             var top = self.$results.scrollTop();

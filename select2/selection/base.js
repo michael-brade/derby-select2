@@ -17,20 +17,10 @@ BaseSelection.prototype.view = __dirname + '/selection.html';
 
 
 BaseSelection.prototype.create = function(model, dom) {
-    /* TODO
-    this._tabindex = 0;
-
-    if (this.$element.data('old-tabindex') != null) {
-        this._tabindex = this.$element.data('old-tabindex');
-    } else if (this.$element.attr('tabindex') != null) {
-        this._tabindex = this.$element.attr('tabindex');
-    }
-
-    $selection.attr('title', this.$element.attr('title'));
-    $selection.attr('tabindex', this._tabindex);
-    */
-
     this.$selection = $(this.selection);
+
+    this._tabindex = 0; // TODO: where to read it from now?
+    this.$selection.attr('tabindex', this._tabindex);
 };
 
 BaseSelection.prototype.bind = function(container) {
