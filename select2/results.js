@@ -1,8 +1,7 @@
 var $ = require('jquery');
 var Utils = require('./utils');
 
-function Results($element, options, dataAdapter) {
-    this.$element = $element;
+function Results(options, dataAdapter) {
     this.data = dataAdapter;
     this.options = options;
 

@@ -1,10 +1,10 @@
 var $ = require('jquery');
 var Utils = require('../utils');
 
-function AttachBody(decorated, $element, options) {
+function AttachBody(decorated, options) {
     this.$dropdownParent = options.get('dropdownParent') || document.body;
 
-    decorated.call(this, $element, options);
+    decorated.call(this, options);
 }
 
 AttachBody.prototype.bind = function(decorated, container) {

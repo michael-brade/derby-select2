@@ -3,12 +3,8 @@ var Defaults = require('./defaults');
 var Utils = require('./utils');
 
 // options is the ChildModel.at "options"
-function Options(options, $element) {
+function Options(options) {
     this.options = options;
-
-    if ($element != null) {
-        this.fromElement($element); // TODO: really needed?
-    }
 
     Defaults.apply(this.options);
 }

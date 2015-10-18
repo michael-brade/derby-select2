@@ -2,7 +2,7 @@ var $ = require('jquery');
 var BaseSelection = require('./base');
 var Utils = require('../utils');
 
-function MultipleSelection($element, options) {
+function MultipleSelection() {
     MultipleSelection.__super__.constructor.apply(this, arguments);
 }
 

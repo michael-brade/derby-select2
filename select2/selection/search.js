@@ -2,8 +2,8 @@ var $ = require('jquery');
 var Utils = require('../utils');
 var KEYS = require('../keys');
 
-function Search(decorated, $element, options) {
-    decorated.call(this, $element, options);
+function Search(decorated, options) {
+    decorated.call(this, options);
 }
 
 Search.prototype.render = function(decorated) {

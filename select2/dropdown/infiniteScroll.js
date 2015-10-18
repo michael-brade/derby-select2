@@ -1,9 +1,9 @@
 var $ = require('jquery');
 
-function InfiniteScroll(decorated, $element, options, dataAdapter) {
+function InfiniteScroll(decorated, options, dataAdapter) {
     this.lastParams = {};
 
-    decorated.call(this, $element, options, dataAdapter);
+    decorated.call(this, options, dataAdapter);
 
     this.$loadingMore = this.createLoadingMore();
     this.loading = false;

@@ -2,8 +2,7 @@ var $ = require('jquery');
 var Utils = require('../utils');
 var KEYS = require('../keys');
 
-function BaseSelection($element, options) {
-    this.$element = $element;
+function BaseSelection(options) {
     this.options = options;
 
     BaseSelection.__super__.constructor.call(this);

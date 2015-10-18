@@ -22,7 +22,7 @@ Select2.prototype.components = [
 Select2.prototype.init = function(model) {
     // TODO...
     var DataAdapter = this.options.get('dataAdapter');
-    this.dataAdapter = new DataAdapter($element, this.options);
+    this.dataAdapter = new DataAdapter(this.options);
 
     // Default view names (thus components)
     model.setNull("options.selectionAdapter", "selection")

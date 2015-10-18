@@ -1,9 +1,9 @@
 var Utils = require('../utils');
 
-function Placeholder(decorated, $element, options) {
+function Placeholder(decorated, options) {
     this.placeholder = this.normalizePlaceholder(options.get('placeholder'));
 
-    decorated.call(this, $element, options);
+    decorated.call(this, options);
 }
 
 Placeholder.prototype.normalizePlaceholder = function(_, placeholder) {
