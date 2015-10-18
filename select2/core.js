@@ -215,36 +215,36 @@ Select2.prototype._syncAttributes = function() {
 };
 
 /**
- * Override the trigger method to automatically trigger pre-events when
- * there are events that can be prevented.
+ * Override the emit method to automatically emit pre-events for events that can be prevented.
+ * TODO: does this actually work?
  */
-Select2.prototype.trigger = function(name, args) {
-    var actualTrigger = Select2.__super__.trigger;
-    var preTriggerMap = {
+Select2.prototype.emit = function(name, args) {
+    var actualEmit = Select2.__super__.emit;
+    var preEmitMap = {
         'open': 'opening',
         'close': 'closing',
         'select': 'selecting',
         'unselect': 'unselecting'
     };
 
-    if (name in preTriggerMap) {
-        var preTriggerName = preTriggerMap[name];
-        var preTriggerArgs = {
+    if (name in preEmitMap) {
+        var preEmitName = preEmitMap[name];
+        var preEmitArgs = {
             prevented: false,
             name: name,
             args: args
         };
 
-        actualTrigger.call(this, preTriggerName, preTriggerArgs);
+        actualEmit.call(this, preEmitName, preEmitArgs);
 
-        if (preTriggerArgs.prevented) {
+        if (preEmitArgs.prevented) {
             args.prevented = true;
 
             return;
         }
     }
 
-    actualTrigger.call(this, name, args);
+    actualEmit.call(this, name, args);
 };
 
 Select2.prototype.toggleDropdown = function() {
