@@ -8,14 +8,20 @@
     <ul as="results" class="select2-results__options" role="tree"
         aria-multiselectable="{{if options.multiple}}true{{/if}}">
 
-        <!-- set in append() and showLoading() TODO: use results in the code, too -->
-        {{each results as #data}}
-            <view name="results-option" data="{{#data}}" />
-        {{/each}}
-
         {{if message}}
             <li role="treeitem" class="select2-results__option select2-results__message">
                 {{message}}
+            </li>
+        {{else}}
+            <!-- set in append() and showLoading() TODO: use results in the code, too -->
+            {{each results as #data}}
+                <view name="results-option" data="{{#data}}" />
+            {{/each}}
+        {{/}}
+
+        {{if loading}}
+            <li role="treeitem" class="select2-results__option" aria-disabled="true">
+                {{loading}}
             </li>
         {{/}}
     </ul>

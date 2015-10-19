@@ -9,10 +9,30 @@ function Results(options, dataAdapter) {
 module.exports = Results;
 
 
+/* Results interface:
+    append() is now model path "results"
+
+   Model paths:
+     message
+     results  (TODO)
+     loading
+
+  Needed parent model paths:
+     selections
+*/
 Results.prototype.view = __dirname + "/results.html";
 
 Results.prototype.init = function(model) {
     // TODO: set options here
+
+
+    // TODO: model.sort, model.fn("sorter")
+    Results.prototype.sort = function(data) {
+        var sorter = this.options.get('sorter');
+
+        return sorter(data);
+    };
+
 }
 
 Results.prototype.create = function(model) {
@@ -22,35 +42,16 @@ Results.prototype.create = function(model) {
 };
 
 
-Results.prototype.clear = function() {
-    this.$results.empty();
-};
-
 Results.prototype.displayMessage = function(params) {
-    var escapeMarkup = this.options.get('escapeMarkup');
-
-    this.clear();
     this.hideLoading();
-
-    var $message = $(
-        '<li role="treeitem" class="select2-results__option"></li>'
-    );
 
     var message = this.options.get('translations').get(params.message);
 
-    $message.append(
-        escapeMarkup(               // TODO: escape not needed
-            message(params.args)
-        )
-    );
-
-    $message[0].className += ' select2-results__message';
-
-    this.$results.append($message);
+    this.model.set("message", message(params.args));
 };
 
 Results.prototype.hideMessages = function() {
-    this.$results.find('.select2-results__message').remove();
+    this.model.del("message");
 };
 
 Results.prototype.append = function(data) {
@@ -81,11 +82,8 @@ Results.prototype.append = function(data) {
     this.$results.append($options);
 };
 
-Results.prototype.sort = function(data) {
-    var sorter = this.options.get('sorter');
-
-    return sorter(data);
-};
+// TODO: man, this should be done in the view, too! set aria-selected to true if
+// in selection. But only if duplicates are not allowed.
 
 Results.prototype.setClasses = function() {
     var self = this;
@@ -128,26 +126,13 @@ Results.prototype.setClasses = function() {
     });
 };
 
-// TODO
 Results.prototype.showLoading = function(params) {
-    this.hideLoading();
-
     var loadingMore = this.options.get('translations').get('searching');
-
-    var loading = {
-        disabled: true,
-        loading: true,
-        text: loadingMore(params)
-    };
-    var $loading = this.option(loading);
-    $loading.className += ' loading-results';
-
-    this.$results.prepend($loading);
+    this.model.set("loading", loadingMore(params));
 };
 
-// TODO
 Results.prototype.hideLoading = function() {
-    this.$results.find('.loading-results').remove();
+    this.model.del("loading");
 };
 
 // TODO: done, delete except for $.data(option, 'data', data);
