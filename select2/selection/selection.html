@@ -1,5 +1,3 @@
-<!-- TODO: set type in model (== selection type, can be "single" or "multiple") -->
-
 <selection:>
     <span as="selection" class="select2-selection select2-selection--{{type}}" role="combobox"
             aria-autocomplete="list" aria-haspopup="true" aria-expanded="false"
@@ -9,8 +7,11 @@
 
 
 <single-selection:>
-    <span class="select2-selection__rendered">
-
+    <span class="select2-selection__rendered"
+        title="{{selections.length ? (selections[0].title || selections[0].text) : ''}}">
+        {{if selections.length}}
+            <view name="selection-template" selection="{{selections[0]}}" />
+        {{/}}
     </span>
 
     <span class="select2-selection__arrow" role="presentation">
@@ -19,5 +20,24 @@
 
 <multiple-selection:>
     <ul class="select2-selection__rendered">
+        {{each selections as #selection}}   <!-- TODO: selections in the model! -->
+            <li class="select2-selection__choice" title="{{#selection.title || #selection.text}}">
+                <span class="select2-selection__choice__remove" role="presentation"
+                    on-click="unselect($event, #selection)">&times;</span>
 
+                <view name="selection-template" selection="{{#selection}}" />
+            </li>
+        {{/}}
+
+        <view name="selection-search" />
     </ul>
+
+<selection-template:>
+    {{@selection.text}}
+
+<selection-search:>
+    <li as="searchContainer" class="select2-search select2-search--inline">
+        <input as="search" class="select2-search__field" type="search" tabindex="-1"
+             autocomplete="off" autocorrect="off" autocapitalize="off"
+             spellcheck="false" role="textbox" />
+    </li>

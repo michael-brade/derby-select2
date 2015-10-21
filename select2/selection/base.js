@@ -1,13 +1,17 @@
 var $ = require('jquery');
 var KEYS = require('../keys');
 
-function BaseSelection(options) {
-    this.options = options;
-}
+
+function BaseSelection() {};
 
 module.exports = BaseSelection;
 
-BaseSelection.prototype.view = __dirname + '/selection.html';
+
+// TODO: init is a good place to apply decorations
+BaseSelection.prototype.init = function(model) {
+    this.select2 = this.parent; // alias to make it more obvious
+    model.ref("selections", this.select2.model.at("selections"))
+};
 
 
 BaseSelection.prototype.create = function(model, dom) {
@@ -30,15 +34,15 @@ BaseSelection.prototype.bind = function(container) {
 
     this.container = container;
 
-    this.$selection.on('focus', function(evt) {
+    this.selection.on('focus', function(evt) {
         self.emit('focus', evt);
     });
 
-    this.$selection.on('blur', function(evt) {
+    this.selection.on('blur', function(evt) {
         self._handleBlur(evt);
     });
 
-    this.$selection.on('keydown', function(evt) {
+    this.selection.on('keydown', function(evt) {
         self.emit('keypress', evt);
 
         if (evt.which === KEYS.SPACE) {
@@ -48,10 +52,6 @@ BaseSelection.prototype.bind = function(container) {
 
     container.on('results:focus', function(params) {
         self.$selection.attr('aria-activedescendant', params.data._resultId);
-    });
-
-    container.on('selection:update', function(params) {
-        self.update(params.data);
     });
 
     container.on('open', function() {
@@ -89,6 +89,7 @@ BaseSelection.prototype._handleBlur = function(evt) {
     // key is pressed, possibly along with others.
     window.setTimeout(function() {
         // Don't trigger `blur` if the focus is still in the selection
+        // TODO: debug this
         if (
             (document.activeElement == self.selection) ||
             ($.contains(self.selection, document.activeElement))
@@ -100,6 +101,8 @@ BaseSelection.prototype._handleBlur = function(evt) {
     }, 1);
 };
 
+
+// TODO: this should go to core
 BaseSelection.prototype._attachCloseHandler = function(container) {
     var self = this;
 
@@ -125,8 +128,4 @@ BaseSelection.prototype._attachCloseHandler = function(container) {
 
 BaseSelection.prototype._detachCloseHandler = function(container) {
     $(document.body).off('mousedown.select2.' + container.id);
-};
-
-BaseSelection.prototype.update = function(data) {
-    throw new Error('The `update` method must be defined in child classes.');
 };

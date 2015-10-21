@@ -6,26 +6,10 @@ function Search(decorated, options) {
     decorated.call(this, options);
 }
 
-Search.prototype.render = function(decorated) {
-    var $search = $(
-        '<li class="select2-search select2-search--inline">' +
-        '<input class="select2-search__field" type="search" tabindex="-1"' +
-        ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
-        ' spellcheck="false" role="textbox" />' +
-        '</li>'
-    );
-
-    this.$searchContainer = $search;
-    this.$search = $search.find('input');
-
-    var $rendered = decorated.call(this);
-
-    this._transferTabIndex();
-
-    return $rendered;
-};
 
 Search.prototype.bind = function(decorated, container) {
+    this._transferTabIndex();
+
     var self = this;
     this.container = container;
 
@@ -167,6 +151,7 @@ Search.prototype.update = function(decorated, data) {
     }
 };
 
+// TODO: this needs to become a .filter() on the model path "selections"
 Search.prototype.handleSearch = function() {
     this.resizeSearch();
 
