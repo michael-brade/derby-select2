@@ -2,9 +2,10 @@
 
 <index:>
     <span as="selection" class="select2-selection select2-selection--single" role="combobox"
-            aria-autocomplete="list" aria-haspopup="true" aria-expanded="false"
+            aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-labelledby="{{@id}}"
             title="">  <!-- TODO: which title to set? -->
-        <span class="select2-selection__rendered"
+
+        <span id="{{@id}}" class="select2-selection__rendered"
             title="{{selections.length ? (selections[0].title || selections[0].text) : ''}}">
             {{if selections.length}}
                 <view name="selection-template" selection="{{selections[0]}}" />

@@ -33,7 +33,6 @@ Results.prototype.init = function(model) {
 
         return sorter(data);
     };
-
 }
 
 Results.prototype.create = function(model) {
@@ -122,18 +121,10 @@ Results.prototype.hideLoading = function() {
     this.model.del("loading");
 };
 
-Results.prototype.focus = function(data) {
-    this.model.set("highlighted", data);
-};
-
 Results.prototype.bind = function(container) {
     var self = this;
 
-    // TODO: check all ids!
-    var id = container.id + '-results';
-
-    this.$results.attr('id', id);
-
+    // TODO: this can only come from ajax now - move to ajax adapter and set the model there
     container.on('results:all', function(params) {
         self.clear();
         self.append(params.data);
@@ -144,6 +135,7 @@ Results.prototype.bind = function(container) {
         }
     });
 
+    // TODO: this can only come from ajax now - move to ajax adapter and set the model there
     container.on('results:append', function(params) {
         self.append(params.data);
 
@@ -157,18 +149,15 @@ Results.prototype.bind = function(container) {
         self.showLoading(params);
     });
 
+    // no real need for the following two--except to trigger mouseenter...
     container.on('select', function() {
-        if (!container.isOpen()) {
-            return;
-        }
+        if (!container.isOpen()) return;
 
         self.setClasses();
     });
 
     container.on('unselect', function() {
-        if (!container.isOpen()) {
-            return;
-        }
+        if (!container.isOpen()) return;
 
         self.setClasses();
     });
@@ -187,34 +176,6 @@ Results.prototype.bind = function(container) {
         self.$results.attr('aria-expanded', 'false');
         self.$results.attr('aria-hidden', 'true');
         self.$results.removeAttr('aria-activedescendant');
-    });
-
-    container.on('results:toggle', function() {
-        var $highlighted = self.getHighlightedResults();
-
-        if ($highlighted.length === 0) {
-            return;
-        }
-
-        $highlighted.trigger('mouseup');
-    });
-
-    container.on('results:select', function() {
-        var $highlighted = self.getHighlightedResults();
-
-        if ($highlighted.length === 0) {
-            return;
-        }
-
-        var data = $highlighted.data('data');
-
-        if ($highlighted.attr('aria-selected') == 'true') {
-            self.emit('close', {});
-        } else {
-            self.emit('select', {
-                data: data
-            });
-        }
     });
 
     container.on('results:previous', function() {
@@ -315,37 +276,57 @@ Results.prototype.bind = function(container) {
         });
     }
 
-    this.$results.on('mouseup', '.select2-results__option[aria-selected]',
-        function(evt) {
-            var $this = $(this);
+    container.on('results:toggle', function() {
+        var $highlighted = self.getHighlightedResults();
 
-            var data = $this.data('data');
+        if ($highlighted.length === 0) {
+            return;
+        }
 
-            if ($this.attr('aria-selected') === 'true') {
-                if (self.options.get('multiple')) {
-                    self.emit('unselect', {
-                        originalEvent: evt,
-                        data: data
-                    });
-                } else {
-                    self.emit('close', {}); // do nothing in single selection if already selected
-                }
+        $highlighted.trigger('mouseup');
+    });
 
-                return;
-            }
+    container.on('results:select', function() {
+        var $highlighted = self.getHighlightedResults();
 
-            self.emit('select', {
+        if ($highlighted.length === 0) {
+            return;
+        }
+
+        $highlighted.trigger('mouseup');
+    });
+};
+
+Results.prototype.select = function(data, evt) {
+    if (data.children) return;
+
+    // TODO use another way to determine selection status! use model,
+    // then reuse this function for "results:select/toggle" above
+    if ($(evt.target).attr('aria-selected') === 'true') {
+        if (this.options.get('multiple')) {
+            this.emit('unselect', {
                 originalEvent: evt,
                 data: data
             });
+        } else {
+            this.emit('close', {}); // do nothing in single selection if already selected
+        }
+    } else if ($(evt.target).attr('aria-selected') === 'false') {
+        this.emit('select', {
+            originalEvent: evt, // TODO: check if originalEvent can actually be used (see CloseOnSelect)
+            data: data
         });
+    }
+};
+
+Results.prototype.focus = function(data, evt) {
+    if (data.children) return;
+
+    this.model.set("highlighted", data);
 };
 
 Results.prototype.getHighlightedResults = function() {
-    var $highlighted = this.$results
-        .find('.select2-results__option--highlighted');
-
-    return $highlighted;
+    return this.$results.find('.select2-results__option--highlighted');
 };
 
 Results.prototype.ensureHighlightVisible = function() {

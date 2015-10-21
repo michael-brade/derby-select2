@@ -5,8 +5,8 @@
 -->
 
 <index:>
-    <ul as="results" class="select2-results__options" role="tree"
-        aria-multiselectable="{{if options.multiple}}true{{/if}}">
+    <ul as="results" id="{{@id}}" class="select2-results__options"
+        role="tree" aria-multiselectable="{{if options.multiple}}true{{/if}}">
 
         {{if message}}
             <view name="results-message" message="{{message}}" />
@@ -36,7 +36,9 @@
     <li id="{{@data._resultId}}" class="select2-results__option {{if highlighted === @data}}select2-results__option--highlighted{{/}}"
             title="{{@data.title}}"
             role="{{@data.children ? 'group' : 'treeitem'}}"
-            on-mouseenter="focus(@data)"
+
+            on-mouseenter="focus(@data, $event)"
+            on-mouseup="select(@data, $event)"
 
             aria-label="{{if @data.children}}{{@data.text}}{{/}}"
             aria-selected="{{if @data.id && !@data.children && !@data.disabled}}false{{/}}"

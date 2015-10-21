@@ -5,7 +5,7 @@
     <span as="selection" class="select2-selection select2-selection--multiple" role="combobox"
             aria-autocomplete="list" aria-haspopup="true" aria-expanded="false"
             title="">  <!-- TODO: which title to set? -->
-        <ul class="select2-selection__rendered">
+        <ul id="{{@id}}" class="select2-selection__rendered">
             {{each selections as #selection}}   <!-- TODO: selections in the model! -->
                 <li class="select2-selection__choice" title="{{#selection.title || #selection.text}}">
                     <span class="select2-selection__choice__remove" role="presentation"
