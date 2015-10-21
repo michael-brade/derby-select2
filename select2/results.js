@@ -16,6 +16,7 @@ module.exports = Results;
      message
      results  (TODO)
      loading
+     highlighted
 
   Needed parent model paths:
      selections
@@ -23,7 +24,7 @@ module.exports = Results;
 Results.prototype.view = __dirname + "/results.html";
 
 Results.prototype.init = function(model) {
-    // TODO: set options here
+    this.select2 = this.parent; // alias to make it more obvious
 
 
     // TODO: model.sort, model.fn("sorter")
@@ -41,7 +42,8 @@ Results.prototype.create = function(model) {
     this.$results = $(this.results);
 };
 
-
+/* A message can be a function and have arguments, so params is an object with attributes
+message and args. */
 Results.prototype.displayMessage = function(params) {
     this.hideLoading();
 
@@ -54,33 +56,18 @@ Results.prototype.hideMessages = function() {
     this.model.del("message");
 };
 
-Results.prototype.append = function(data) {
-    this.hideLoading();
 
-    var $options = [];
-
-    if (data.results == null || data.results.length === 0) {
-        if (this.$results.children().length === 0) {
-            this.emit('results:message', {
-                message: 'noResults'
-            });
+// hmm... maybe do it in selection base.js?
+Results.prototype.selected = function(data, selections) {
+    if (data.id && !data.children && !data.disabled) {
+        if (data in selections) { // TODO
+            return 'true';
+        } else {
+            return 'false';
         }
-
-        return;
     }
-
-    data.results = this.sort(data.results);
-
-    for (var d = 0; d < data.results.length; d++) {
-        var item = data.results[d];
-
-        var $option = this.option(item);
-
-        $options.push($option);
-    }
-
-    this.$results.append($options);
 };
+
 
 // TODO: man, this should be done in the view, too! set aria-selected to true if
 // in selection. But only if duplicates are not allowed.
@@ -135,11 +122,8 @@ Results.prototype.hideLoading = function() {
     this.model.del("loading");
 };
 
-// TODO: done, delete except for $.data(option, 'data', data);
-Results.prototype.option = function(data) {
-    var option = document.createElement('li');
-    $.data(option, 'data', data);   // TODO: do that in the view
-    return option;
+Results.prototype.focus = function(data) {
+    this.model.set("highlighted", data);
 };
 
 Results.prototype.bind = function(container) {
@@ -297,10 +281,6 @@ Results.prototype.bind = function(container) {
         }
     });
 
-    container.on('results:focus', function(params) {
-        params.element.addClass('select2-results__option--highlighted');
-    });
-
     container.on('results:message', function(params) {
         self.displayMessage(params);
     });
@@ -348,7 +328,7 @@ Results.prototype.bind = function(container) {
                         data: data
                     });
                 } else {
-                    self.emit('close', {});
+                    self.emit('close', {}); // do nothing in single selection if already selected
                 }
 
                 return;
@@ -357,19 +337,6 @@ Results.prototype.bind = function(container) {
             self.emit('select', {
                 originalEvent: evt,
                 data: data
-            });
-        });
-
-    this.$results.on('mouseenter', '.select2-results__option[aria-selected]',
-        function(evt) {
-            var data = $(this).data('data');
-
-            self.getHighlightedResults()
-                .removeClass('select2-results__option--highlighted');
-
-            self.emit('results:focus', {
-                data: data,
-                element: $(this)
             });
         });
 };

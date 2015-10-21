@@ -5,8 +5,15 @@
 
 <!-- arguments:
   * id: optional, id of the container element; if missing, an id is generated
-  * a model path with the possible selections is needed, i.e., data
-  * a model path with the current selection is needed
+  * disabled
+  * multiple: allow multiple selections
+  * uniq: if false, one option can be selected several times
+  * lang: language
+
+  * data: a model path with the possible selections
+  * value: a model path with the current selection
+
+  * selections: possilby an internal model path that is copied to value... don't know yet
  -->
 <index: element='select2'>
     <!-- core container -->
@@ -21,6 +28,7 @@
             <span as="dropdown" class="select2-dropdown select2-dropdown--below" dir="{{options.dir}}">
                 <span class="select2-results">
                     <view as="results" name="{{options.resultsAdapter}}" />
+                    <!-- parent="{{$controller}}" could be used, but it's already there! -->
                 </span>
             </span>'
         </span>

@@ -11,30 +11,57 @@ var KEYS = require('./keys');
   results view/components is embedded or used by the dropdown view
 */
 
+function Select2() {};
+
+module.exports = Select2;
+
 Select2.prototype.view = __dirname + '/core.html';
 
 Select2.prototype.components = [
-    require('./selection/base')
+    require('./selection/single'),
+    require('./selection/multiple'),
+
     require('./results')
 ]
 
+// TODO: put global defaults somewhere, accessible, changable
+// TODO: click event should open; do it in the view instead of here?!
+
 
 Select2.prototype.init = function(model) {
-    // TODO...
-    var DataAdapter = this.options.get('dataAdapter');
-    this.dataAdapter = new DataAdapter(this.options);
+    this.options = model.at("options");
 
-    // Default view names (thus components)
-    model.setNull("options.selectionAdapter", "selection")
-    model.setNull("options.resultsAdapter", "results")
+    // TODO: set options here
+    //this.options = new Options(options);
 
+    // Default view names (and thus default components)
+    this.options.setNull("selectionAdapter", "single");  // or "multiple"
+    this.options.setNull("resultsAdapter", "results");
+
+    model.fn("normalizeItem", this.options.get("normalizer"));
+    model.fn("sort", this.options.get("sorter"));
+
+
+    // TODO: data attribute and DataAdapter together determine the possible selections
+    //var DataAdapter = this.options.get('dataAdapter');
+    //this.dataAdapter = new DataAdapter(this.options);
+
+    // default dataAdapter just refs
+    var filter = model.at(this.getAttribute("data")).sort("sort");
+    model.ref("results", filter);
+
+    // copy selection references to output path "@value"
+    // read @value as initial selections and whenever it changes TODO: how?
+    model.start(this.getAttribute("value"), "selections", function() {
+
+    });
 };
 
 Select2.prototype.create = function(model, dom) {
     this.$container = $(this.container);
 
     // attach the select2 controller to the container to be able to identify it later and close
-    // all the other dropdowns, for instance; selection/base uses it
+    // all the other dropdowns; selection/base uses it
     // TODO: is there a better way? Derby global events or so?
     this.$container.data('controller', this);
 
@@ -48,27 +75,6 @@ Select2.prototype.create = function(model, dom) {
     this._registerResultsEvents();
     this._registerEvents();
 };
-
-// TODO: this should be the init() function - or the create() function....
-// TODO: options
-// TODO: put global defaults somewhere, accessible, changable
-
-// TODO: click event should open; do it in the view instead of here?!
-var Select2 = function(options) {
-    options = options || {};
-    this.options = new Options(options);
-
-
-    // Set the initial state TODO: that should be automatic now!
-    var self = this;
-    this.dataAdapter.current(function(initialData) {
-        self.emit('selection:update', {
-            data: initialData
-        });
-    });
-};
-
-module.exports = Select2;
 
 
 Select2.prototype._bindAdapters = function() {
@@ -219,7 +225,7 @@ Select2.prototype._syncAttributes = function() {
  * TODO: does this actually work?
  */
 Select2.prototype.emit = function(name, args) {
-    var actualEmit = Select2.__super__.emit;
+    var actualEmit = this.__proto__.__proto__.emit;
     var preEmitMap = {
         'open': 'opening',
         'close': 'closing',

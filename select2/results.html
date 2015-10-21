@@ -4,18 +4,17 @@
     * message
 -->
 
-<results:>
+<index:>
     <ul as="results" class="select2-results__options" role="tree"
         aria-multiselectable="{{if options.multiple}}true{{/if}}">
 
         {{if message}}
-            <li role="treeitem" class="select2-results__option select2-results__message">
-                {{message}}
-            </li>
+            <view name="results-message" message="{{message}}" />
         {{else}}
-            <!-- set in append() and showLoading() TODO: use results in the code, too -->
             {{each results as #data}}
                 <view name="results-option" data="{{#data}}" />
+            {{else}}
+                {{ displayMessage({ message: 'noResults' }) }}
             {{/each}}
         {{/}}
 
@@ -26,12 +25,19 @@
         {{/}}
     </ul>
 
+<results-message:>
+    <li role="treeitem" class="select2-results__option select2-results__message">
+        {{@message}}
+    </li>
+
 
 <!-- attributes: data -->
 <results-option:>
-    <li id="{{@data._resultId}}" class="select2-results__option"
+    <li id="{{@data._resultId}}" class="select2-results__option {{if highlighted === @data}}select2-results__option--highlighted{{/}}"
             title="{{@data.title}}"
             role="{{@data.children ? 'group' : 'treeitem'}}"
+            on-mouseenter="focus(@data)"
+
             aria-label="{{if @data.children}}{{@data.text}}{{/}}"
             aria-selected="{{if @data.id && !@data.children && !@data.disabled}}false{{/}}"
             aria-disabled="{{@data.disabled}}">
