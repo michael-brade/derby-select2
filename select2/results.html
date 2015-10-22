@@ -6,7 +6,7 @@
 
 <index:>
     <ul as="results" id="{{@id}}" class="select2-results__options"
-        role="tree" aria-multiselectable="{{if options.multiple}}true{{/if}}">
+        role="tree" aria-multiselectable="{{options.multiple ? 'true' : 'false'}}">
 
         {{if message}}
             <view name="results-message" message="{{message}}" />
@@ -33,7 +33,7 @@
 
 <!-- attributes: data -->
 <results-option:>
-    <li id="{{@data._resultId}}" class="select2-results__option {{if highlighted === @data}}select2-results__option--highlighted{{/}}"
+    <li id="{{@data.id}}" class="select2-results__option{{if highlighted === @data}} select2-results__option--highlighted{{/}}"
             title="{{@data.title}}"
             role="{{@data.children ? 'group' : 'treeitem'}}"
 
@@ -41,7 +41,7 @@
             on-mouseup="select(@data, $event)"
 
             aria-label="{{if @data.children}}{{@data.text}}{{/}}"
-            aria-selected="{{if @data.id && !@data.children && !@data.disabled}}false{{/}}"
+            aria-selected="{{if !@data.children && !@data.disabled}}false{{/}}"
             aria-disabled="{{@data.disabled}}">
 
         {{if @data.children}}
@@ -51,15 +51,17 @@
 
             <ul class="select2-results__options select2-results__options--nested">
                 {{each @data.children as #child}}
-                    <view name="results-option" data="{{#child}}"/>
+                    <view name="results-option" data="{{#child}}" />
                 {{/}}
             </ul>
         {{else}}
-            <view name="results-template" data="{{@data}}" />
+            <view name="{{options.resultsTemplate}}" item="{{@data}}" />
         {{/}}
 
     </li>
 
 
 <results-template:>
-    {{@data.text}}  <!-- TODO: if data.text is null, the option should be set to display:none... -->
+    {{@item}}
+    <!-- {{@item.text}}   -->
+    <!-- TODO: if data.text is null, the option should be set to display:none... -->

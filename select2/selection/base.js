@@ -10,6 +10,8 @@ module.exports = BaseSelection;
 // TODO: init is a good place to apply decorations
 BaseSelection.prototype.init = function(model) {
     this.select2 = this.parent; // alias to make it more obvious
+
+    model.ref("options", this.select2.model.at("options"))
     model.ref("selections", this.select2.model.at("selections"))
 };
 
@@ -28,21 +30,21 @@ BaseSelection.prototype.create = function(model, dom) {
 
 BaseSelection.prototype.bind = function(container) {
     var self = this;
-
-    var id = container.id + '-container';
-    var resultsId = container.id + '-results';
-
     this.container = container;
 
-    this.selection.on('focus', function(evt) {
+    var resultsId = container.results.results.id;
+
+
+    // or: this.selection.addEventListener
+    this.$selection.on('focus', function(evt) {
         self.emit('focus', evt);
     });
 
-    this.selection.on('blur', function(evt) {
+    this.$selection.on('blur', function(evt) {
         self._handleBlur(evt);
     });
 
-    this.selection.on('keydown', function(evt) {
+    this.$selection.on('keydown', function(evt) {
         self.emit('keypress', evt);
 
         if (evt.which === KEYS.SPACE) {

@@ -1,10 +1,8 @@
 var $ = require('jquery');
 var Utils = require('./utils');
 
-function Results(options, dataAdapter) {
-    this.data = dataAdapter;
-    this.options = options;
-}
+
+function Results() {}
 
 module.exports = Results;
 
@@ -26,6 +24,8 @@ Results.prototype.view = __dirname + "/results.html";
 Results.prototype.init = function(model) {
     this.select2 = this.parent; // alias to make it more obvious
 
+    model.ref("options", this.select2.model.at("options"));
+    model.ref("results", this.select2.model.at("data"));
 
     // TODO: model.sort, model.fn("sorter")
     Results.prototype.sort = function(data) {
