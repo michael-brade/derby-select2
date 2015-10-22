@@ -1,6 +1,6 @@
 var $ = require('jquery');
 
-var Options = require('./options');
+var Defaults = require('./defaults');
 var Utils = require('./utils');
 var KEYS = require('./keys');
 
@@ -16,6 +16,7 @@ function Select2() {};
 module.exports = Select2;
 
 Select2.prototype.view = __dirname + '/core.html';
+Select2.prototype.style = __dirname + '/../index.css';
 
 Select2.prototype.components = [
     require('./selection/single'),
@@ -25,8 +26,8 @@ Select2.prototype.components = [
 ]
 
 // TODO: put global defaults somewhere, accessible, changable
-// TODO: click event should open; do it in the view instead of here?!
-
+// TODO: click event should open; do it in the view instead of here?
+// TODO: tab out of select2 doesn't work, i.e., focus is not lost anymore
 
 Select2.prototype.init = function(model) {
     this.options = model.at("options");
@@ -36,7 +37,12 @@ Select2.prototype.init = function(model) {
 
     // Default view names (and thus default components)
     this.options.setNull("selectionAdapter", "single");  // or "multiple"
+    this.options.setNull("selectionTemplate", "selection-template");
+
     this.options.setNull("resultsAdapter", "results");
+    this.options.setNull("resultsTemplate", "results-template");
+
+    this.options.setNull("theme", "default");
 
     model.fn("normalizeItem", this.options.get("normalizer"));
     model.fn("sort", this.options.get("sorter"));
@@ -47,14 +53,24 @@ Select2.prototype.init = function(model) {
     //this.dataAdapter = new DataAdapter(this.options);
 
     // default dataAdapter just refs
-    var filter = model.at(this.getAttribute("data")).sort("sort");
-    model.ref("results", filter);
+    /*var filter = model.at(this.getAttribute("data")).sort("sort");*/
+//    var filter = this.getAttribute("data").sort("sort");
+//    model.ref("results", filter);
+
+    console.log(this.getAttribute("data"))
+    console.log(model.get("data"))
+
+    model.start("results", model.at("data"), function(value) {
+        console.log(arguments);
+        return value;
+    });
+
 
     // copy selection references to output path "@value"
     // read @value as initial selections and whenever it changes TODO: how?
-    model.start(this.getAttribute("value"), "selections", function() {
-
-    });
+    /*model.start(this.getAttribute("value"), "selections", function(selections) {
+        return selections
+    });*/
 };
 
 Select2.prototype.create = function(model, dom) {
@@ -78,7 +94,7 @@ Select2.prototype.create = function(model, dom) {
 
 
 Select2.prototype._bindAdapters = function() {
-    this.dataAdapter.bind(this);
+    /*this.dataAdapter.bind(this);*/
     this.selection.bind(this);
     this.results.bind(this);
 };
@@ -87,9 +103,9 @@ Select2.prototype._registerDataEvents = function() {
     var self = this;
 
     // TODO: no * available anymore
-    this.dataAdapter.on('*', function(name, params) {
+    /*this.dataAdapter.on('*', function(name, params) {
         self.emit(name, params);
-    });
+    });*/
 };
 
 Select2.prototype._registerSelectionEvents = function() {
@@ -153,12 +169,12 @@ Select2.prototype._registerEvents = function() {
             self.emit('open', {});
         }
 
-        this.dataAdapter.query(params, function(data) {
+        /*this.dataAdapter.query(params, function(data) {
             self.emit('results:all', {
                 data: data,
                 query: params
             });
-        });
+        });*/
     });
 
     this.on('query:append', function(params) {

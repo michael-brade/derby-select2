@@ -19,7 +19,7 @@
     <!-- core container -->
     {{with @id ? @id : id as #id}}
         <span as="container" id="select2-{{#id}}"
-                class="select2 select2-container select2-container--{{options.theme}} select2-container--below"
+                class="{{@class }}select2 select2-container select2-container--{{options.theme}} select2-container--below"
                 dir="{{options.dir}}">
 
             <!-- what has already been selected, the current selection -->
@@ -33,7 +33,7 @@
                     <span class="select2-results">
                         <view as="results" id="select2-{{#id}}-results" name="{{options.resultsAdapter}}" />
                     </span>
-                </span>'
+                </span>
             </span>
 
         </span>
