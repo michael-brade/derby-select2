@@ -14,7 +14,7 @@ SingleSelection.prototype.create = function(model, dom) {
     SingleSelection.__super__.create.apply(this, arguments);
 
     var self = this;
-    this.selection.on('mousedown', function(evt) {
+    this.$selection.on('mousedown', function(evt) {
         // Only respond to left clicks
         if (evt.which !== 1) {
             return;

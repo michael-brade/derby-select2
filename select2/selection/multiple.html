@@ -6,12 +6,12 @@
             aria-autocomplete="list" aria-haspopup="true" aria-expanded="false"
             title="">  <!-- TODO: which title to set? -->
         <ul id="{{@id}}" class="select2-selection__rendered">
-            {{each selections as #selection}}   <!-- TODO: selections in the model! -->
-                <li class="select2-selection__choice" title="{{#selection.title || #selection.text}}">
+            {{each selections as #selection, #pos}}
+                <li id="{{#selection.id}}" class="select2-selection__choice" title="{{#selection.title || #selection.text}}">
                     <span class="select2-selection__choice__remove" role="presentation"
-                        on-click="unselect($event, #selection)">&times;</span>
+                        on-click="unselect($event, #selection, #pos)">&times;</span>
 
-                    <view name="selection-template" selection="{{#selection}}" />
+                    <view name="{{options.selectionTemplate}}" item="{{#selection}}" />
                 </li>
             {{/}}
 
