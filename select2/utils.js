@@ -2,26 +2,6 @@ var $ = require('jquery');
 
 var Utils = {};
 
-Utils.Extend = function(ChildClass, SuperClass) {
-    var __hasProp = {}.hasOwnProperty;
-
-    function BaseConstructor() {
-        this.constructor = ChildClass;
-    }
-
-    for (var key in SuperClass) {
-        if (__hasProp.call(SuperClass, key)) {
-            ChildClass[key] = SuperClass[key];
-        }
-    }
-
-    BaseConstructor.prototype = SuperClass.prototype;
-    ChildClass.prototype = new BaseConstructor();
-    ChildClass.__super__ = SuperClass.prototype;
-
-    return ChildClass;
-};
-
 function getMethods(theClass) {
     var proto = theClass.prototype;
 

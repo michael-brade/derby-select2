@@ -1,17 +1,21 @@
+'use strict';
+var util = require('util');
 var BaseSelection = require('./base');
-var Utils = require('../utils');
+
 
 function SingleSelection() {
+    SingleSelection.super_.apply(this, arguments);
 }
 
 module.exports = SingleSelection;
 
-Utils.Extend(SingleSelection, BaseSelection);
+util.inherits(SingleSelection, BaseSelection);
+
 
 SingleSelection.prototype.view = __dirname + '/single.html';
 
 SingleSelection.prototype.create = function(model, dom) {
-    SingleSelection.__super__.create.apply(this, arguments);
+    SingleSelection.super_.prototype.create.apply(this, arguments);
 
     var self = this;
     this.$selection.on('mousedown', function(evt) {
@@ -25,14 +29,3 @@ SingleSelection.prototype.create = function(model, dom) {
         });
     });
 }
-
-// TODO: this should be done in create!
-SingleSelection.prototype.bind = function(container) {
-    SingleSelection.__super__.bind.apply(this, arguments);
-
-    // TODO check ids
-    var id = container.id + '-container';
-
-    this.$selection.find('.select2-selection__rendered').attr('id', id);
-    this.$selection.attr('aria-labelledby', id);
-};

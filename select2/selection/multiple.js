@@ -1,17 +1,21 @@
+'use strict';
+var util = require('util');
 var BaseSelection = require('./base');
-var Utils = require('../utils');
+
 
 function MultipleSelection() {
+    MultipleSelection.super_.apply(this, arguments);
 }
 
 module.exports = MultipleSelection;
 
-Utils.Extend(MultipleSelection, BaseSelection);
+util.inherits(MultipleSelection, BaseSelection);
+
 
 MultipleSelection.prototype.view = __dirname + '/multiple.html';
 
 MultipleSelection.prototype.create = function(model, dom) {
-    MultipleSelection.__super__.create.apply(this, arguments);
+    MultipleSelection.super_.prototype.create.apply(this, arguments);
 
     var self = this;
     this.selection.on('click', function(evt) {
