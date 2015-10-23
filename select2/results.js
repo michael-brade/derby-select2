@@ -7,17 +7,11 @@ function Results() {}
 module.exports = Results;
 
 
-/* Results interface:
-    append() is now model path "results"
-
-   Model paths:
+/* Results Model paths:
      message
-     results  (TODO)
      loading
+     results
      highlighted
-
-  Needed parent model paths:
-     selections
 */
 Results.prototype.view = __dirname + "/results.html";
 
@@ -25,15 +19,11 @@ Results.prototype.init = function(model) {
     this.select2 = this.parent; // alias to make it more obvious
 
     model.ref("options", this.select2.model.at("options"));
-    model.ref("results", this.select2.model.at("data"));
 
-    // TODO: model.sort, model.fn("sorter")
-    Results.prototype.sort = function(data) {
-        var sorter = this.options.get('sorter');
-
-        return sorter(data);
-    };
-}
+    var results = this.select2.model.at("results");
+    model.fn('sort', model.get("options.sorter"));
+    model.ref("results", results.sort('sort'));
+};
 
 Results.prototype.create = function(model) {
     require('jquery.mousewheel');

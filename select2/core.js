@@ -4,6 +4,8 @@ var $ = require('jquery');
 var Defaults = require('./defaults');
 var KEYS = require('./keys');
 
+var ModelAdapter = require('./data/model');
+
 // this is like index.js, the Select2 Derby component itself
 
 /*
@@ -36,6 +38,11 @@ Select2.prototype.init = function(model) {
     // TODO: set options here
     //this.options = new Options(options);
 
+    // default dataAdapter is ModelAdapter
+
+    // default dataAdapter just refs, sort and filter happen in results
+    this.options.setNull("dataAdapter", ModelAdapter);
+
     // Default view names (and thus default components)
     this.options.setNull("selectionAdapter", "single");  // or "multiple"
     this.options.setNull("selectionTemplate", "selection-template");
@@ -45,33 +52,23 @@ Select2.prototype.init = function(model) {
 
     this.options.setNull("theme", "default");
 
-    model.fn("normalizeItem", this.options.get("normalizer"));
-    model.fn("sort", this.options.get("sorter"));
+    this.options.setNull("sorter", function(a, b) {
+        return a - b;
+    });
 
-
-    // TODO: data attribute and DataAdapter together determine the possible selections
-    //var DataAdapter = this.options.get('dataAdapter');
-    //this.dataAdapter = new DataAdapter(this.options);
-
-    // default dataAdapter just refs
-    /*var filter = model.at(this.getAttribute("data")).sort("sort");*/
-//    var filter = this.getAttribute("data").sort("sort");
-//    model.ref("results", filter);
-
-    console.log(this.getAttribute("data"))
-    console.log(model.get("data"))
-
-    model.start("results", model.at("data"), function(value) {
-        console.log(arguments);
-        return value;
+    this.options.setNull("normalizer", function(item) {
+        return {
+            "id": item.toString(),
+            "text": item.toString()
+            //title
+            //children
+            //disabled
+        };
     });
 
 
-    // copy selection references to output path "@value"
-    // read @value as initial selections and whenever it changes TODO: how?
-    /*model.start(this.getAttribute("value"), "selections", function(selections) {
-        return selections
-    });*/
+    var DataAdapter = this.options.get('dataAdapter');
+    this.dataAdapter = new DataAdapter(this, this.options);
 };
 
 Select2.prototype.create = function(model, dom) {
@@ -95,7 +92,7 @@ Select2.prototype.create = function(model, dom) {
 
 
 Select2.prototype._bindAdapters = function() {
-    /*this.dataAdapter.bind(this);*/
+    this.dataAdapter.bind(this);
     this.selection.bind(this);
     this.results.bind(this);
 };
