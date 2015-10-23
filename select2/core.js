@@ -1,3 +1,4 @@
+'use strict';
 var $ = require('jquery');
 
 var Defaults = require('./defaults');
@@ -11,7 +12,7 @@ var KEYS = require('./keys');
   results view/components is embedded or used by the dropdown view
 */
 
-function Select2() {};
+function Select2() {}
 
 module.exports = Select2;
 
@@ -23,11 +24,12 @@ Select2.prototype.components = [
     require('./selection/multiple'),
 
     require('./results')
-]
+];
 
 // TODO: put global defaults somewhere, accessible, changable
 // TODO: click event should open; do it in the view instead of here?
 // TODO: tab out of select2 doesn't work, i.e., focus is not lost anymore
+// TODO: rename options to config
 
 Select2.prototype.init = function(model) {
     this.options = model.at("options");
@@ -101,16 +103,18 @@ Select2.prototype._bindAdapters = function() {
 
 Select2.prototype._registerDataEvents = function() {
     var self = this;
+    var relayEvents = ['query', 'queryEnd'];
 
-    // TODO: no * available anymore
-    /*this.dataAdapter.on('*', function(name, params) {
-        self.emit(name, params);
-    });*/
+    relayEvents.forEach(function(evt) {
+        self.dataAdapter.on(evt, function(params) {
+            self.emit(evt, params);
+        });
+    });
 };
 
 Select2.prototype._registerSelectionEvents = function() {
     var self = this;
-    var nonRelayEvents = ['toggle', 'focus'];
+    var relayEvents = ['unselect', 'keypress', 'blur'];
 
     this.selection.on('toggle', function() {
         self.toggleDropdown();
@@ -120,13 +124,10 @@ Select2.prototype._registerSelectionEvents = function() {
         self.focus(params);
     });
 
-    // TODO: no * available anymore
-    this.selection.on('*', function(name, params) {
-        if ($.inArray(name, nonRelayEvents) !== -1) {
-            return;
-        }
-
-        self.emit(name, params);
+    relayEvents.forEach(function(evt) {
+        self.selection.on(evt, function(params) {
+            self.emit(evt, params);
+        });
     });
 };
 
@@ -134,10 +135,13 @@ Select2.prototype._registerSelectionEvents = function() {
 // forward and emit results events as if from Select2
 Select2.prototype._registerResultsEvents = function() {
     var self = this;
+    // TOOD: can also emit query/queryEnd with infiniteScroll - not implementd yet
+    var relayEvents = ['select', 'unselect', 'close'];
 
-    // TODO: no * available anymore
-    this.results.on('*', function(name, params) {
-        self.emit(name, params);
+    relayEvents.forEach(function(evt) {
+        self.results.on(evt, function(params) {
+            self.emit(evt, params);
+        });
     });
 };
 
@@ -162,28 +166,6 @@ Select2.prototype._registerEvents = function() {
 
     this.on('blur', function() {
         self.$container.removeClass('select2-container--focus');
-    });
-
-    this.on('query', function(params) {
-        if (!self.isOpen()) {
-            self.emit('open', {});
-        }
-
-        /*this.dataAdapter.query(params, function(data) {
-            self.emit('results:all', {
-                data: data,
-                query: params
-            });
-        });*/
-    });
-
-    this.on('query:append', function(params) {
-        this.dataAdapter.query(params, function(data) {
-            self.emit('results:append', {
-                data: data,
-                query: params
-            });
-        });
     });
 
     this.on('keypress', function(evt) {
@@ -286,6 +268,7 @@ Select2.prototype.open = function() {
         return;
     }
 
+    this.emit('open', {});
     this.emit('query', {});
 };
 

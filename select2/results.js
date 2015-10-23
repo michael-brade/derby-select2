@@ -1,3 +1,4 @@
+'use strict';
 var $ = require('jquery');
 var Utils = require('./utils');
 
@@ -124,29 +125,22 @@ Results.prototype.hideLoading = function() {
 Results.prototype.bind = function(container) {
     var self = this;
 
-    // TODO: this can only come from ajax now - move to ajax adapter and set the model there
-    container.on('results:all', function(params) {
-        self.clear();
-        self.append(params.data);
+    container.on('query', function(params) {
+        self.hideMessages();
+        self.showLoading(params);
+
+        if (container.isOpen()) {
+            self.setClasses();
+        }
+    });
+
+    container.on('queryEnd', function(params) {
+        self.hideLoading();
 
         if (container.isOpen()) {
             self.setClasses();
             self.ensureHighlightVisible();
         }
-    });
-
-    // TODO: this can only come from ajax now - move to ajax adapter and set the model there
-    container.on('results:append', function(params) {
-        self.append(params.data);
-
-        if (container.isOpen()) {
-            self.setClasses();
-        }
-    });
-
-    container.on('query', function(params) {
-        self.hideMessages();
-        self.showLoading(params);
     });
 
     // no real need for the following two--except to trigger mouseenter...
@@ -306,14 +300,14 @@ Results.prototype.select = function(data, evt) {
         if (this.options.get('multiple')) {
             this.emit('unselect', {
                 originalEvent: evt,
-                data: data
+                data: data          // TODO: with duplicates we don't know pos, so choose the last
             });
         } else {
             this.emit('close', {}); // do nothing in single selection if already selected
         }
     } else if ($(evt.target).attr('aria-selected') === 'false') {
         this.emit('select', {
-            originalEvent: evt, // TODO: check if originalEvent can actually be used (see CloseOnSelect)
+            originalEvent: evt,     // TODO: check if originalEvent can actually be used (see CloseOnSelect)
             data: data
         });
     }
