@@ -1,6 +1,5 @@
 'use strict';
 var $ = require('jquery');
-var Utils = require('./utils');
 
 
 function Results() {}

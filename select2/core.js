@@ -2,7 +2,6 @@
 var $ = require('jquery');
 
 var Defaults = require('./defaults');
-var Utils = require('./utils');
 var KEYS = require('./keys');
 
 // this is like index.js, the Select2 Derby component itself

@@ -87,58 +87,6 @@ Utils.Decorate = function(SuperClass, DecoratorClass) {
     return DecoratedClass;
 };
 
-
-Utils.generateChars = function(length) {
-    var chars = '';
-
-    for (var i = 0; i < length; i++) {
-        var randomChar = Math.floor(Math.random() * 36);
-        chars += randomChar.toString(36);
-    }
-
-    return chars;
-};
-
-Utils.bind = function(func, context) {
-    return function() {
-        func.apply(context, arguments);
-    };
-};
-
-Utils._convertData = function(data) {
-    for (var originalKey in data) {
-        var keys = originalKey.split('-');
-
-        var dataLevel = data;
-
-        if (keys.length === 1) {
-            continue;
-        }
-
-        for (var k = 0; k < keys.length; k++) {
-            var key = keys[k];
-
-            // Lowercase the first letter
-            // By default, dash-separated becomes camelCase
-            key = key.substring(0, 1).toLowerCase() + key.substring(1);
-
-            if (!(key in dataLevel)) {
-                dataLevel[key] = {};
-            }
-
-            if (k == keys.length - 1) {
-                dataLevel[key] = data[originalKey];
-            }
-
-            dataLevel = dataLevel[key];
-        }
-
-        delete data[originalKey];
-    }
-
-    return data;
-};
-
 Utils.hasScroll = function(index, el) {
     // Adapted from the function created by @ShadowScripter
     // and adapted by @BillBarry on the Stack Exchange Code Review website.
@@ -162,27 +110,6 @@ Utils.hasScroll = function(index, el) {
 
     return ($el.innerHeight() < el.scrollHeight ||
         $el.innerWidth() < el.scrollWidth);
-};
-
-Utils.escapeMarkup = function(markup) {
-    var replaceMap = {
-        '\\': '&#92;',
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        '\'': '&#39;',
-        '/': '&#47;'
-    };
-
-    // Do not try to escape the markup if it's not a string
-    if (typeof markup !== 'string') {
-        return markup;
-    }
-
-    return String(markup).replace(/[&<>"'\/\\]/g, function(match) {
-        return replaceMap[match];
-    });
 };
 
 // Append an array of jQuery nodes to a given element.

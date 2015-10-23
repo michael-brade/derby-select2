@@ -5,19 +5,15 @@ var MultipleSelection = require('./selection/multiple');
 var Placeholder = require('./selection/placeholder');
 var AllowClear = require('./selection/allowClear');
 var SelectionSearch = require('./selection/search');
-var EventRelay = require('./selection/eventRelay');
 var Utils = require('./utils');
 var Translation = require('./translation');
 var DIACRITICS = require('./diacritics');
-var SelectData = require('./data/select');
-var ArrayData = require('./data/array');
-var AjaxData = require('./data/ajax');
+// var AjaxData = require('./data/ajax');
 var Tags = require('./data/tags');
 var Tokenizer = require('./data/tokenizer');
 var MinimumInputLength = require('./data/minimumInputLength');
 var MaximumInputLength = require('./data/maximumInputLength');
 var MaximumSelectionLength = require('./data/maximumSelectionLength');
-var Dropdown = require('./dropdown');
 var DropdownSearch = require('./dropdown/search');
 var HidePlaceholder = require('./dropdown/hidePlaceholder');
 var InfiniteScroll = require('./dropdown/infiniteScroll');
@@ -102,6 +98,7 @@ Defaults.prototype.apply = function(options) {
         }
     }
 
+    // TODO: there is no dropdownAdapter anymore
     if (options.dropdownAdapter == null) {
         if (options.multiple) {
             options.dropdownAdapter = Dropdown;
@@ -159,11 +156,6 @@ Defaults.prototype.apply = function(options) {
                 SelectionSearch
             );
         }
-
-        options.selectionAdapter = Utils.Decorate(
-            options.selectionAdapter,
-            EventRelay
-        );
     }
 
     if (typeof options.language === 'string') {
@@ -290,7 +282,6 @@ Defaults.prototype.reset = function() {
         closeOnSelect: true,
         debug: false,
         dropdownAutoWidth: false,
-        escapeMarkup: Utils.escapeMarkup,
         language: EnglishTranslation,
         matcher: matcher,
         minimumInputLength: 0,

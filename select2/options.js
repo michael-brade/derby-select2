@@ -41,35 +41,6 @@ Options.prototype.fromElement = function($e) {
     $e.prop('disabled', this.get('disabled'));
     $e.prop('multiple', this.get('multiple'));
 
-
-    var dataset = {};
-
-    // TODO: what about this code?
-
-    // Prefer the element's `dataset` attribute if it exists
-    // jQuery 1.x does not correctly handle data attributes with multiple dashes
-    if ($.fn.jquery && $.fn.jquery.substr(0, 2) == '1.' && $e[0].dataset) {
-        dataset = $.extend(true, {}, $e[0].dataset, $e.data());
-    } else {
-        dataset = $e.data();
-    }
-
-    var data = $.extend(true, {}, dataset);
-
-    data = Utils._convertData(data);
-
-    for (var key in data) {
-        if ($.inArray(key, excludedData) > -1) {
-            continue;
-        }
-
-        if ($.isPlainObject(this.get(key))) {
-            $.extend(this.get(key), data[key]);  //TODO where does extend write to??
-        } else {
-            this.set(key, data[key]);
-        }
-    }
-
     return this;
 };
 
