@@ -1,8 +1,9 @@
+'use strict';
 var $ = require('jquery');
 var KEYS = require('../keys');
 
 
-function BaseSelection() {};
+function BaseSelection() {}
 
 module.exports = BaseSelection;
 
@@ -10,9 +11,10 @@ module.exports = BaseSelection;
 // TODO: init is a good place to apply decorations
 BaseSelection.prototype.init = function(model) {
     this.select2 = this.parent; // alias to make it more obvious
+    this.options = this.select2.model.at("options")
 
-    model.ref("options", this.select2.model.at("options"))
-    model.ref("selections", this.select2.model.at("selections"))
+    model.ref("options", this.options);
+    model.ref("selections", this.select2.model.at("selections"));
 };
 
 

@@ -19,10 +19,7 @@ Results.prototype.init = function(model) {
     this.select2 = this.parent; // alias to make it more obvious
 
     model.ref("options", this.select2.model.at("options"));
-
-    var results = this.select2.model.at("results");
-    model.fn('sort', model.get("options.sorter"));
-    model.ref("results", results.sort('sort'));
+    model.ref("results", this.select2.model.at("results"));
 };
 
 Results.prototype.create = function(model) {

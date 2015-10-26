@@ -12,6 +12,7 @@ function ModelAdapter(select2, options) {
 
     var model = select2.model;
 
+/*
     // normalize
     var normalizeFn = this.options.get("normalizer");
 
@@ -30,10 +31,19 @@ function ModelAdapter(select2, options) {
     // watch data (input) as well as value (output) and map to results and selections, respectively
     model.start("results", "data", normalizeAllFn);
     model.start("selections", "value", normalizeAllFn);
+*/
 
-    // TODO: implement filtering!
-    // var filter = model.at("results").filter();
-    //    model.ref("results", filter);
+    model.fn('sort', this.options.get("sorter"));
+
+    // results
+    var results = model.at("data").sort('sort');//.filter();
+    model.ref("results", results);
+
+    // in case of array input - still needs sorting and filtering
+    // model.ref("results", model.at("data"));
+
+    // selections
+    model.ref("selections", model.at("value"));
 }
 
 module.exports = ModelAdapter;
@@ -43,9 +53,25 @@ util.inherits(ModelAdapter, BaseAdapter);
 
 
 ModelAdapter.prototype.select = function(params) {
-    console.error("select not yet implemented");
+    if (this.options.get("multiple"))
+        this.select2.model.push("value", params.data.item);
+    else
+        this.select2.model.set("value", params.data.item);
 };
 
-ModelAdapter.prototype.unselect = function(params, callback) {
-    console.error("unselect not yet implemented");
+ModelAdapter.prototype.unselect = function(params) {
+
+    // value (output path) is always an array
+    // remove from array at pos, or the last pos that item === pos
+    var pos = params.pos;
+
+    if (pos == undefined)
+        pos =  this.select2.model.get("value").lastIndexOf(params.data);
+
+    if (pos === -1) {
+        console.error("cannot unselect ", params.data);
+        return;
+    }
+
+    this.select2.model.remove("value", pos);
 };
