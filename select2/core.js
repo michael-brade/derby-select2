@@ -92,14 +92,14 @@ Select2.prototype.create = function(model, dom) {
 
 
 Select2.prototype._bindAdapters = function() {
-    this.dataAdapter.bind(this);
     this.selection.bind(this);
     this.results.bind(this);
+    this.dataAdapter.bind(this);    // bind last because it can emit queryEnd immediately
 };
 
 Select2.prototype._registerDataEvents = function() {
     var self = this;
-    var relayEvents = ['query', 'queryEnd'];
+    var relayEvents = ['queryEnd'];
 
     relayEvents.forEach(function(evt) {
         self.dataAdapter.on(evt, function(params) {
