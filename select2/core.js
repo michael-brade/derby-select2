@@ -44,7 +44,7 @@ Select2.prototype.init = function(model) {
     this.options.setNull("dataAdapter", ModelAdapter);
 
     // Default view names (and thus default components)
-    this.options.setNull("selectionAdapter", "single");  // or "multiple"
+    this.options.setNull("selectionAdapter", this.options.get("multiple") ? "multiple" : "single");
     this.options.setNull("selectionTemplate", "selection-template");
 
     this.options.setNull("resultsAdapter", "results");
@@ -226,6 +226,10 @@ Select2.prototype.emit = function(name, args) {
         'select': 'selecting',
         'unselect': 'unselecting'
     };
+
+    if (args === undefined) {
+      args = {};
+    }
 
     if (name in preEmitMap) {
         var preEmitName = preEmitMap[name];
