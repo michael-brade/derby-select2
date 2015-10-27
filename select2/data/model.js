@@ -54,9 +54,9 @@ util.inherits(ModelAdapter, BaseAdapter);
 
 ModelAdapter.prototype.select = function(params) {
     if (this.options.get("multiple"))
-        this.select2.model.push("value", params.data.item);
+        this.select2.model.push("value", params.data);
     else
-        this.select2.model.set("value", params.data.item);
+        this.select2.model.set("value", params.data);
 };
 
 ModelAdapter.prototype.unselect = function(params) {
