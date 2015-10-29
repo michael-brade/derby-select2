@@ -24,6 +24,7 @@ function getMethods(theClass) {
     return methods;
 }
 
+
 Utils.Decorate = function(SuperClass, DecoratorClass) {
     var decoratedMethods = getMethods(DecoratorClass);
     var superMethods = getMethods(SuperClass);
@@ -85,6 +86,35 @@ Utils.Decorate = function(SuperClass, DecoratorClass) {
     }
 
     return DecoratedClass;
+};
+
+Utils.decorateObject = function(theObject, DecoratorClass) {
+    var decoratedMethods = getMethods(DecoratorClass);
+
+    var calledMethod = function(methodName) {
+        // Stub out the original method if it's not decorating an actual method
+        var originalMethod = function() {};
+
+        if (methodName in theObject) {
+            originalMethod = theObject[methodName];
+        }
+
+        var decoratedMethod = DecoratorClass.prototype[methodName];
+
+        // return new function with the original method as first argument
+        return function() {
+            var unshift = Array.prototype.unshift;
+            unshift.call(arguments, originalMethod);
+
+            return decoratedMethod.apply(this, arguments);
+        };
+    };
+
+    for (var d = 0; d < decoratedMethods.length; d++) {
+        var decoratedMethod = decoratedMethods[d];
+
+        theObject[decoratedMethod] = calledMethod(decoratedMethod);
+    }
 };
 
 Utils.hasScroll = function(index, el) {
