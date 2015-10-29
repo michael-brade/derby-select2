@@ -110,7 +110,7 @@ Select2.prototype._registerDataEvents = function() {
 
 Select2.prototype._registerSelectionEvents = function() {
     var self = this;
-    var relayEvents = ['unselect', 'keypress', 'blur'];
+    var relayEvents = ['move', 'unselect', 'keypress', 'blur'];
 
     this.selection.on('toggle', function() {
         self.toggleDropdown();

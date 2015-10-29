@@ -59,6 +59,10 @@ ModelAdapter.prototype.select = function(params) {
         this.select2.model.set("value", params.data);
 };
 
+ModelAdapter.prototype.move = function(params) {
+    this.select2.model.move('value', params.oldIndex, params.newIndex);
+};
+
 ModelAdapter.prototype.unselect = function(params) {
 
     // value (output path) is always an array

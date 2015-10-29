@@ -3,7 +3,7 @@ var util = require('util');
 var EventEmitter = require('events');
 
 // A data adapter takes the available options and selections and turns them into a normalized list.
-// It also handles selecting and deselecting items on the data level.
+// It also handles selecting, moving, and deselecting items on the data level.
 //
 // A data adapter can emit "query" and "queryEnd". Needed in case of AJAX or racer model queries.
 
@@ -27,6 +27,10 @@ BaseAdapter.prototype.select = function(params) {
     throw new Error('The `select` method must be defined in child classes.');
 };
 
+BaseAdapter.prototype.move = function(params) {
+    throw new Error('The `move` method must be defined in child classes.');
+};
+
 BaseAdapter.prototype.unselect = function(params) {
     throw new Error('The `unselect` method must be defined in child classes.');
 };
@@ -45,6 +49,10 @@ BaseAdapter.prototype.bind = function(container) {
 
     container.on('select', function(params) {
         self.select(params);
+    });
+
+    container.on('move', function(params) {
+        self.move(params);
     });
 
     container.on('unselect', function(params) {
