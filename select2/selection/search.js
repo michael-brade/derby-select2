@@ -2,10 +2,16 @@ var $ = require('jquery');
 var Utils = require('../utils');
 var KEYS = require('../keys');
 
-function Search(decorated, options) {
-    decorated.call(this, options);
-}
+/* Decoration for multi-selection: search field in the selection display */
+function Search() {}
 
+module.exports = Search;
+
+Search.prototype.create = function(decorated, model, dom) {
+    decorated.call(this, model, dom);
+
+    this.$search = $(this.search);
+};
 
 Search.prototype.bind = function(decorated, container) {
     this._transferTabIndex();
@@ -16,12 +22,12 @@ Search.prototype.bind = function(decorated, container) {
     decorated.call(this, container);
 
     container.on('open', function() {
-        self.$search.emit('focus');
+        self.$search.trigger('focus');
     });
 
     container.on('close', function() {
         self.$search.val('');
-        self.$search.emit('focus');
+        self.$search.trigger('focus');
     });
 
     container.on('enable', function() {
@@ -35,7 +41,7 @@ Search.prototype.bind = function(decorated, container) {
     });
 
     container.on('focus', function(evt) {
-        self.$search.emit('focus');
+        self.$search.trigger('focus');
     });
 
     this.$selection.on('focusin', '.select2-search--inline', function(evt) {
@@ -56,16 +62,8 @@ Search.prototype.bind = function(decorated, container) {
         var key = evt.which;
 
         if (key === KEYS.BACKSPACE && self.$search.val() === '') {
-            var $previousChoice = self.$searchContainer
-                .prev('.select2-selection__choice');
-
-            if ($previousChoice.length > 0) {
-                var item = $previousChoice.data('data');
-
-                self.searchRemoveChoice(item);
-
-                evt.preventDefault();
-            }
+            self.searchRemoveChoice();
+            evt.preventDefault();
         }
     });
 
@@ -130,28 +128,11 @@ Search.prototype._transferTabIndex = function(decorated) {
     this.$selection.attr('tabindex', '-1');
 };
 
+// this method will only be called by the placeholder decoration (if it is used)
 Search.prototype.createPlaceholder = function(decorated, placeholder) {
     this.$search.attr('placeholder', placeholder.text);
 };
 
-Search.prototype.update = function(decorated, data) {
-    var searchHadFocus = this.$search[0] == document.activeElement;
-
-    this.$search.attr('placeholder', '');
-    this.$search.val('');
-
-    decorated.call(this, data);
-
-    this.$selection.find('.select2-selection__rendered')
-        .append(this.$searchContainer);
-
-    this.handleSearch();
-    if (searchHadFocus) {
-        this.$search.focus();
-    }
-};
-
-// TODO: this needs to become a .filter() on the model path "selections"
 Search.prototype.handleSearch = function() {
     this.resizeSearch();
 
@@ -166,15 +147,15 @@ Search.prototype.handleSearch = function() {
     this._keyUpPrevented = false;
 };
 
-Search.prototype.searchRemoveChoice = function(decorated, item) {
-    this.emit('unselect', {
-        data: item
-    });
-
+Search.prototype.searchRemoveChoice = function() {
+    this.emit('unselect', {});  // not passing any data removes the last choice and emits unselected
     this.emit('open', {});
 
-    this.$search.val(item.text);
     this.handleSearch();
+};
+
+Search.prototype.unselected = function(decorated, item) {
+    this.$search.val(item.text); // TODO  grmbl - normalize in general?
 };
 
 Search.prototype.resizeSearch = function() {
@@ -192,5 +173,3 @@ Search.prototype.resizeSearch = function() {
 
     this.$search.css('width', width);
 };
-
-module.exports = Search;
