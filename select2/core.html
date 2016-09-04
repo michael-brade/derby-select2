@@ -19,12 +19,12 @@
     <!-- core container -->
     {{with @id ? @id : id as #id}}
         <span as="container" id="select2-{{#id}}"
-                class="{{@class }}select2 select2-container select2-container--{{options.theme}} select2-container--below"
+                class="select2 select2-container select2-container--{{options.theme}} select2-container--below{{if focus}} select2-container--focus{{/}}"
                 dir="{{options.dir}}">
 
             <!-- what has already been selected, the current selection -->
             <span class="selection">
-                <view as="selection" id="select2-{{#id}}-selection" name="{{options.selectionAdapter}}" />
+                <view as="selection" id="select2-{{#id}}-selection" name="{{options.selectionAdapter}}" class="{{@class ? @class : ''}}" />
             </span>
 
             <!-- what is possible to be selected -->
