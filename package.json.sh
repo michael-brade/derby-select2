@@ -21,9 +21,19 @@ repository:
 dependencies:
     # utils
     'lodash': '4.x'
+    'jquery': '3.x'
 
 devDependencies:
-    'node-sass': '3.3.x'
+    'node-sass': '3.8.x'
+
+
+eslintConfig:
+     env:
+         browser: true
+         node: true
+         commonjs: true
+         jquery: true
+
 
 engines:
     node: '4.x'
