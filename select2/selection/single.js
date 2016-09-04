@@ -28,4 +28,10 @@ SingleSelection.prototype.create = function(model, dom) {
             originalEvent: evt
         });
     });
+
+    container.on('focus', function (evt) {
+        if (!container.isOpen()) {
+            self.$selection.focus();
+        }
+    });
 }

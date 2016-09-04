@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = require('jquery');
 var Utils = require('../utils');
 var KEYS = require('../keys');
@@ -17,7 +19,6 @@ Search.prototype.bind = function(decorated, container) {
     this._transferTabIndex();
 
     var self = this;
-    this.container = container;
 
     decorated.call(this, container);
 
@@ -27,6 +28,7 @@ Search.prototype.bind = function(decorated, container) {
 
     container.on('close', function() {
         self.$search.val('');
+        self.$search.removeAttr('aria-activedescendant');
         self.$search.trigger('focus');
     });
 
@@ -42,6 +44,10 @@ Search.prototype.bind = function(decorated, container) {
 
     container.on('focus', function(evt) {
         self.$search.trigger('focus');
+    });
+
+    container.on('results:focus', function (params) {
+        self.$search.attr('aria-activedescendant', params.id);
     });
 
     this.$selection.on('focusin', '.select2-search--inline', function(evt) {
@@ -67,24 +73,25 @@ Search.prototype.bind = function(decorated, container) {
         }
     });
 
+    // Try to detect the IE version should the `documentMode` property that
+    // is stored on the document. This is only implemented in IE and is
+    // slightly cleaner than doing a user agent check.
+    // This property is not available in Edge, but Edge also doesn't have
+    // this bug.
+    var msie = document.documentMode;
+    var disableInputEvents = msie && msie <= 11;
+
     // Workaround for browsers which do not support the `input` event
     // This will prevent double-triggering of events for browsers which support
     // both the `keyup` and `input` events.
     this.$selection.on(
         'input.searchcheck',
         '.select2-search--inline',
-        function(evt) {
-            // Try to detect the IE version should the `documentMode` property that
-            // is stored on the document. This is only implemented in IE and is
-            // slightly cleaner than doing a user agent check.
-            // This property is not available in Edge, but Edge also doesn't have
-            // this bug.
-            var msie = document.documentMode;
-
+        function (evt) {
             // IE will trigger the `input` event when a placeholder is used on a
             // search box. To get around this issue, we are forced to ignore all
             // `input` events in IE and keep using `keyup`.
-            if (msie && msie <= 11) {
+            if (disableInputEvents) {
                 self.$selection.off('input.search input.searchcheck');
                 return;
             }
@@ -98,6 +105,13 @@ Search.prototype.bind = function(decorated, container) {
         'keyup.search input.search',
         '.select2-search--inline',
         function(evt) {
+            // IE will trigger the `input` event when a placeholder is used on a
+            // search box. To get around this issue, we are forced to ignore all
+            // `input` events in IE and keep using `keyup`.
+            if (disableInputEvents && evt.type === 'input') {
+                self.$selection.off('input.search input.searchcheck');
+                return;
+            }
             var key = evt.which;
 
             // We can freely ignore events from modifier keys
@@ -110,7 +124,6 @@ Search.prototype.bind = function(decorated, container) {
                 return;
             }
 
-            self.container.open();
             self.handleSearch(evt);
         }
     );
@@ -136,7 +149,7 @@ Search.prototype.createPlaceholder = function(decorated, placeholder) {
 Search.prototype.handleSearch = function() {
     this.resizeSearch();
 
-    if (!this._keyUpPrevented && this.container.isOpen()) {
+    if (!this._keyUpPrevented) {
         var input = this.$search.val();
 
         this.emit('query', {
@@ -147,9 +160,10 @@ Search.prototype.handleSearch = function() {
     this._keyUpPrevented = false;
 };
 
-Search.prototype.searchRemoveChoice = function() {
-    this.emit('unselect', {});  // not passing any data removes the last choice and emits unselected
-    this.emit('open', {});
+Search.prototype.searchRemoveChoice = function(decorated, item) {
+    this.emit('unselect', {
+        //data: item    // not passing any data removes the last choice and emits unselected
+    });
 
     this.handleSearch();
 };

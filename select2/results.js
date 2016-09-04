@@ -55,6 +55,26 @@ Results.prototype.selected = function(data, selections) {
 };
 
 
+Results.prototype.highlightFirstItem = function () {
+    var $options = this.$results
+        .find('.select2-results__option[aria-selected]');
+
+    // TODO: do this on model change: data.on("all", ....) and selections.on...
+    var $selected = $options.filter('[aria-selected=true]');
+
+    // Check if there are any selected options
+    if ($selected.length > 0) {
+        // If there are selected options, highlight the first
+        $selected.first().trigger('mouseenter');
+    } else {
+        // If there are no selected options, highlight the first option
+        // in the dropdown
+        $options.first().trigger('mouseenter');
+    }
+
+    this.ensureHighlightVisible();
+};
+
 // TODO: man, this should be done in the view, too! set aria-selected to true if
 // in selection. But only if duplicates are not allowed.
 
@@ -85,17 +105,6 @@ Results.prototype.setClasses = function() {
             }
         });
 
-        var $selected = $options.filter('[aria-selected=true]');
-
-        // Check if there are any selected options
-        if ($selected.length > 0) {
-            // If there are selected options, highlight the first
-            $selected.first().trigger('mouseenter');
-        } else {
-            // If there are no selected options, highlight the first option
-            // in the dropdown
-            $options.first().trigger('mouseenter');
-        }
     });
 };
 
@@ -125,7 +134,7 @@ Results.prototype.bind = function(container) {
 
         if (container.isOpen()) {
             self.setClasses();
-            self.ensureHighlightVisible();
+            self.highlightFirstItem();
         }
     });
 
@@ -134,12 +143,14 @@ Results.prototype.bind = function(container) {
         if (!container.isOpen()) return;
 
         self.setClasses();
+        self.highlightFirstItem();
     });
 
     container.on('unselect', function() {
         if (!container.isOpen()) return;
 
         self.setClasses();
+        self.highlightFirstItem();
     });
 
     container.on('open', function() {
@@ -231,11 +242,7 @@ Results.prototype.bind = function(container) {
         this.$results.on('mousewheel', function(e) {
             var top = self.$results.scrollTop();
 
-            var bottom = (
-                self.$results.get(0).scrollHeight -
-                self.$results.scrollTop() +
-                e.deltaY
-            );
+            var bottom = self.$results.get(0).scrollHeight - top + e.deltaY;
 
             var isAtTop = e.deltaY > 0 && top - e.deltaY <= 0;
             var isAtBottom = e.deltaY < 0 && bottom <= self.$results.height();

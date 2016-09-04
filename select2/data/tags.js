@@ -9,6 +9,12 @@ function Tags(decorated, $element, options) {
         this.createTag = createTag;
     }
 
+    var insertTag = options.get('insertTag');
+
+    if (insertTag !== undefined) {
+        this.insertTag = insertTag;
+    }
+
     decorated.call(this, $element, options);
 
     if ($.isArray(tags)) {

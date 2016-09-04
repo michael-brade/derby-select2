@@ -3,7 +3,7 @@
 
 <index:>
     <span as="selection" class="select2-selection select2-selection--multiple {{@class}}" role="combobox"
-            aria-autocomplete="list" aria-haspopup="true" aria-expanded="false"
+            aria-haspopup="true" aria-expanded="false"
             title="">  <!-- TODO: which title to set? -->
         <ul id="{{@id}}" class="select2-selection__rendered">
             {{each selections as #selection, #pos}}
@@ -24,5 +24,5 @@
     <li as="searchContainer" class="select2-search select2-search--inline">
         <input as="search" class="select2-search__field" type="search" tabindex="-1"
              autocomplete="off" autocorrect="off" autocapitalize="off"
-             spellcheck="false" role="textbox" value="{{filter}}" />
+             spellcheck="false" role="textbox" aria-autocomplete="list" value="{{filter}}" />
     </li>

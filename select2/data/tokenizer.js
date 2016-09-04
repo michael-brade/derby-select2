@@ -20,6 +20,29 @@ Tokenizer.prototype.bind = function(decorated, container, $container) {
 Tokenizer.prototype.query = function(decorated, params, callback) {
     var self = this;
 
+    function createAndSelect (data) {
+        // Normalize the data object so we can use it for checks
+        var item = self._normalizeItem(data);
+
+        // Check if the data object already exists as a tag
+        // Select it if it doesn't
+        var $existingOptions = self.$element.find('option').filter(function () {
+            return $(this).val() === item.id;
+        });
+
+        // If an existing option wasn't found for it, create the option
+        if (!$existingOptions.length) {
+            var $option = self.option(item);
+            $option.attr('data-select2-tag', true);
+
+            self._removeOldTags();
+            self.addOptions([$option]);
+        }
+
+        // Select the item, now that we know there is an option for it
+        select(item);
+    }
+
     function select(data) {
         self.emit('select', {
             data: data
@@ -28,7 +51,7 @@ Tokenizer.prototype.query = function(decorated, params, callback) {
 
     params.term = params.term || '';
 
-    var tokenData = this.tokenizer(params, this.options, select);
+    var tokenData = this.tokenizer(params, this.options, createAndSelect);
 
     if (tokenData.term !== params.term) {
         // Replace the search term if we have the search box

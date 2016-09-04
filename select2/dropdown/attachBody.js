@@ -2,7 +2,7 @@ var $ = require('jquery');
 var Utils = require('../utils');
 
 function AttachBody(decorated, options) {
-    this.$dropdownParent = options.get('dropdownParent') || document.body;
+    this.$dropdownParent = options.get('dropdownParent') || $(document.body);
 
     decorated.call(this, options);
 }
@@ -80,27 +80,12 @@ AttachBody.prototype._hideDropdown = function(decorated) {
     this.$dropdownContainer.detach();
 };
 
-AttachBody.prototype._attachPositioningHandler = function(container) {
+AttachBody.prototype._attachPositioningHandler = function(decorated, container) {
     var self = this;
 
     var scrollEvent = 'scroll.select2.' + container.id;
     var resizeEvent = 'resize.select2.' + container.id;
     var orientationEvent = 'orientationchange.select2.' + container.id;
-
-    this.observer = new MutationObserver(function(mutationRecord, mutationObserver) {
-        requestAnimationFrame(function() {
-            self._positionDropdown();
-            self._resizeDropdown();
-        });
-    });
-
-    // hook up the watchers
-    this.observer.observe(document, {
-        attributes: true,
-        subtree: true,
-        childList: true,
-        characterData: true
-    });
 
     var $watchers = this.$container.parents().filter(Utils.hasScroll);
     $watchers.each(function() {
@@ -122,7 +107,7 @@ AttachBody.prototype._attachPositioningHandler = function(container) {
         });
 };
 
-AttachBody.prototype._detachPositioningHandler = function(container) {
+AttachBody.prototype._detachPositioningHandler = function(decorated, container) {
     var scrollEvent = 'scroll.select2.' + container.id;
     var resizeEvent = 'resize.select2.' + container.id;
     var orientationEvent = 'orientationchange.select2.' + container.id;
@@ -131,7 +116,6 @@ AttachBody.prototype._detachPositioningHandler = function(container) {
     $watchers.off(scrollEvent);
 
     $(window).off(scrollEvent + ' ' + resizeEvent + ' ' + orientationEvent);
-    this.observer.disconnect();
 };
 
 AttachBody.prototype._positionDropdown = function() {
@@ -142,7 +126,6 @@ AttachBody.prototype._positionDropdown = function() {
 
     var newDirection = null;
 
-    var position = this.$container.position();
     var offset = this.$container.offset();
 
     offset.bottom = offset.top + this.$container.outerHeight(false);
@@ -171,6 +154,20 @@ AttachBody.prototype._positionDropdown = function() {
         top: container.bottom
     };
 
+    // Determine what the parent element is to use for calciulating the offset
+    var $offsetParent = this.$dropdownParent;
+
+    // For statically positoned elements, we need to get the element
+    // that is determining the offset
+    if ($offsetParent.css('position') === 'static') {
+        $offsetParent = $offsetParent.offsetParent();
+    }
+
+    var parentOffset = $offsetParent.offset();
+
+    css.top -= parentOffset.top;
+    css.left -= parentOffset.left;
+
     if (!isCurrentlyAbove && !isCurrentlyBelow) {
         newDirection = 'below';
     }
@@ -183,7 +180,7 @@ AttachBody.prototype._positionDropdown = function() {
 
     if (newDirection == 'above' ||
         (isCurrentlyAbove && newDirection !== 'below')) {
-        css.top = container.top - dropdown.height;
+        css.top = container.top - parentOffset.top - dropdown.height;
     }
 
     if (newDirection != null) {
@@ -205,6 +202,7 @@ AttachBody.prototype._resizeDropdown = function() {
 
     if (this.options.get('dropdownAutoWidth')) {
         css.minWidth = css.width;
+        css.position = 'relative';
         css.width = 'auto';
     }
 

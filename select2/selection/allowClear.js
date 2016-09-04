@@ -61,6 +61,8 @@ AllowClear.prototype._handleClear = function(_, evt) {
 
     // TODO!
     this.$element.val(this.placeholder.id).trigger('change');
+
+    this.emit('toggle', {});
 };
 
 AllowClear.prototype._handleKeyboardClear = function(_, evt, container) {
