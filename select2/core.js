@@ -35,11 +35,13 @@ Select2.prototype.components = [
 Select2.prototype.init = function(model) {
     this.options = model.at("options");
 
-    // TODO: set options here
-    //this.options = new Options(options);
+    // model should hold state! not CSS classes. So: added open, enabled, focus to model
+    model.setNull("focus", false);
+    model.setNull("open", false);
+
+    this.options.setNull("disabled", false);
 
     // default dataAdapter is ModelAdapter
-
     // default dataAdapter just refs, sort and filter happen in results
     this.options.setNull("dataAdapter", ModelAdapter);
 
@@ -79,7 +81,6 @@ Select2.prototype.create = function(model, dom) {
     // TODO: is there a better way? Derby global events or so?
     this.$container.data('controller', this);
 
-
     // Bind the container to all of the adapters
     this._bindAdapters();
 
@@ -110,8 +111,9 @@ Select2.prototype._registerDataEvents = function() {
 
 Select2.prototype._registerSelectionEvents = function() {
     var self = this;
-    var relayEvents = ['move', 'unselect', 'keypress', 'blur'];
+    var relayEvents = ['open', 'query', 'move', 'unselect', 'keypress', 'blur'];
 
+    // register toggle and focus
     this.selection.on('toggle', function() {
         self.toggleDropdown();
     });
@@ -120,6 +122,7 @@ Select2.prototype._registerSelectionEvents = function() {
         self.focus(params);
     });
 
+    // relay the rest
     relayEvents.forEach(function(evt) {
         self.selection.on(evt, function(params) {
             self.emit(evt, params);
@@ -145,23 +148,27 @@ Select2.prototype._registerEvents = function() {
     var self = this;
 
     this.on('open', function() {
-        self.$container.addClass('select2-container--open');
+        self.model.set('open', true);
     });
 
     this.on('close', function() {
-        self.$container.removeClass('select2-container--open');
+        self.model.set('open', false);
     });
 
     this.on('enable', function() {
-        self.$container.removeClass('select2-container--disabled');
+        self.options.set('disabled', false);
     });
 
     this.on('disable', function() {
-        self.$container.addClass('select2-container--disabled');
+        self.options.set('disabled', true);
+    });
+
+    this.on('focus', function() {
+        self.model.set("focus", true);
     });
 
     this.on('blur', function() {
-        self.$container.removeClass('select2-container--focus');
+        self.model.set("focus", false);
     });
 
     this.on('keypress', function(evt) {
@@ -281,19 +288,18 @@ Select2.prototype.close = function() {
 };
 
 Select2.prototype.isOpen = function() {
-    return this.$container.hasClass('select2-container--open');
+    return this.model.get('open');
 };
 
 Select2.prototype.hasFocus = function() {
-    return this.$container.hasClass('select2-container--focus');
+    return this.model.get('focus');
 };
 
-Select2.prototype.focus = function(data) {
+Select2.prototype.focus = function(evt) {
     // No need to re-trigger focus events if we are already focused
     if (this.hasFocus()) {
         return;
     }
 
-    this.$container.addClass('select2-container--focus');
     this.emit('focus', {});
 };
