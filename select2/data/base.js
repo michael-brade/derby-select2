@@ -31,6 +31,12 @@ BaseAdapter.prototype.move = function(params) {
     throw new Error('The `move` method must be defined in child classes.');
 };
 
+/*
+    Unselect the item params.data at params.pos. If pos is not given, the last
+    selected item equal to params.data is unselected. If neither is given, the
+    last selected item is unselected; in that case, an event "unselected" with
+    the unselected item as parameter should be fired.
+*/
 BaseAdapter.prototype.unselect = function(params) {
     throw new Error('The `unselect` method must be defined in child classes.');
 };

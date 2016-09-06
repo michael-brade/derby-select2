@@ -31,7 +31,13 @@
     </li>
 
 
-<!-- attributes: data -->
+<!-- attributes: data
+data can be anything, but if it is an object, those attributes are used:
+  * id
+  * title
+  * children
+  * disabled
+ -->
 <results-option:>
     <li id="{{@data.id}}" class="select2-results__option{{if highlighted === @data}} select2-results__option--highlighted{{/}}"
             title="{{@data.title}}"

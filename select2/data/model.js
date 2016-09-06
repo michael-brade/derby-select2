@@ -4,6 +4,14 @@ var util = require('util');
 var BaseAdapter = require('./base');
 
 
+/*
+The simple model adapter takes input from modele path "data" and filters and sorts it to
+"results".
+
+On selection events it copies the item to value, moves it, or deletes the item from value.
+
+Last, it refs selections to value.
+*/
 function ModelAdapter(select2, options) {
     ModelAdapter.super_.apply(this, arguments);
 
