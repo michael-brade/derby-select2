@@ -10,11 +10,11 @@ module.exports = BaseSelection;
 
 // TODO: init is a good place to apply decorations
 BaseSelection.prototype.init = function(model) {
-    this.select2 = this.parent; // alias to make it more obvious
-    this.options = this.select2.model.at("options")
+    this.core = this.parent; // alias to make it more obvious
+    this.options = this.core.model.at("options")
 
     model.ref("options", this.options);
-    model.ref("selections", this.select2.model.at("selections"));
+    model.ref("selections", this.core.model.at("selections"));
 };
 
 
@@ -26,18 +26,16 @@ BaseSelection.prototype.create = function(model, dom) {
 
     var self = this;
     this.on('destroy', function() {
-        self._detachCloseHandler(this.container);
+        self._detachCloseHandler(this.core);
     });
 };
 
-BaseSelection.prototype.bind = function(container) {
+BaseSelection.prototype.bind = function() {
     var self = this;
-    this.container = container;
+    var core = this.core;
+    var resultsId = core.results.results.id;
 
-    var resultsId = container.results.results.id;
 
-
-    // or: this.selection.addEventListener
     this.$selection.on('focus', function(evt) {
         self.emit('focus', evt);
     });
@@ -54,19 +52,19 @@ BaseSelection.prototype.bind = function(container) {
         }
     });
 
-    container.on('results:focus', function(params) {
+    core.on('results:focus', function(params) {
         self.$selection.attr('aria-activedescendant', params.data._resultId);
     });
 
-    container.on('open', function() {
+    core.on('open', function() {
         // When the dropdown is open, aria-expanded="true"
         self.$selection.attr('aria-expanded', 'true');
         self.$selection.attr('aria-owns', resultsId);
 
-        self._attachCloseHandler(container);
+        self._attachCloseHandler(core);
     });
 
-    container.on('close', function() {
+    core.on('close', function() {
         // When the dropdown is closed, aria-expanded="false"
         self.$selection.attr('aria-expanded', 'false');
         self.$selection.removeAttr('aria-activedescendant');
@@ -74,14 +72,14 @@ BaseSelection.prototype.bind = function(container) {
 
         self.$selection.focus();
 
-        self._detachCloseHandler(container);
+        self._detachCloseHandler(core);
     });
 
-    container.on('enable', function() {
+    core.on('enable', function() {
         self.$selection.attr('tabindex', self._tabindex);
     });
 
-    container.on('disable', function() {
+    core.on('disable', function() {
         self.$selection.attr('tabindex', '-1');
     });
 };
@@ -107,10 +105,10 @@ BaseSelection.prototype._handleBlur = function(evt) {
 
 
 // TODO: this should go to core
-BaseSelection.prototype._attachCloseHandler = function(container) {
+BaseSelection.prototype._attachCloseHandler = function(core) {
     var self = this;
 
-    $(document.body).on('mousedown.select2.' + container.id, function(e) {
+    $(document.body).on('mousedown.select2.' + core.id, function(e) {
         var $target = $(e.target);
 
         var $select = $target.closest('.select2');
@@ -130,6 +128,6 @@ BaseSelection.prototype._attachCloseHandler = function(container) {
     });
 };
 
-BaseSelection.prototype._detachCloseHandler = function(container) {
-    $(document.body).off('mousedown.select2.' + container.id);
+BaseSelection.prototype._detachCloseHandler = function(core) {
+    $(document.body).off('mousedown.select2.' + core.id);
 };

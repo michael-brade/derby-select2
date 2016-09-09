@@ -29,8 +29,8 @@ SingleSelection.prototype.create = function(model, dom) {
         });
     });
 
-    container.on('focus', function (evt) {
-        if (!container.isOpen()) {
+    this.core.on('focus', function (evt) {
+        if (!this.core.isOpen()) {
             self.$selection.focus();
         }
     });

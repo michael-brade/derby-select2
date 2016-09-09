@@ -15,38 +15,38 @@ Search.prototype.create = function(decorated, model, dom) {
     this.$search = $(this.search);
 };
 
-Search.prototype.bind = function(decorated, container) {
+Search.prototype.bind = function(decorated, core) {
     this._transferTabIndex();
 
     var self = this;
 
-    decorated.call(this, container);
+    decorated.call(this, core);
 
-    container.on('open', function() {
+    core.on('open', function() {
         self.$search.trigger('focus');
     });
 
-    container.on('close', function() {
+    core.on('close', function() {
         self.$search.val('');
         self.$search.removeAttr('aria-activedescendant');
         self.$search.trigger('focus');
     });
 
-    container.on('enable', function() {
+    core.on('enable', function() {
         self.$search.prop('disabled', false);
 
         self._transferTabIndex();
     });
 
-    container.on('disable', function() {
+    core.on('disable', function() {
         self.$search.prop('disabled', true);
     });
 
-    container.on('focus', function(evt) {
+    core.on('focus', function() {
         self.$search.trigger('focus');
     });
 
-    container.on('results:focus', function (params) {
+    core.on('results:focus', function (params) {
         self.$search.attr('aria-activedescendant', params.id);
     });
 

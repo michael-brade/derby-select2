@@ -117,43 +117,43 @@ Results.prototype.hideLoading = function() {
     this.model.del("loading");
 };
 
-Results.prototype.bind = function(container) {
+Results.prototype.bind = function(core) {
     var self = this;
 
-    container.on('query', function(params) {
+    core.on('query', function(params) {
         self.hideMessages();
         self.showLoading(params);
 
-        if (container.isOpen()) {
+        if (core.isOpen()) {
             self.setClasses();
         }
     });
 
-    container.on('queryEnd', function(params) {
+    core.on('queryEnd', function(params) {
         self.hideLoading();
 
-        if (container.isOpen()) {
+        if (core.isOpen()) {
             self.setClasses();
             self.highlightFirstItem();
         }
     });
 
     // no real need for the following two--except to trigger mouseenter...
-    container.on('select', function() {
-        if (!container.isOpen()) return;
+    core.on('select', function() {
+        if (!core.isOpen()) return;
 
         self.setClasses();
         self.highlightFirstItem();
     });
 
-    container.on('unselect', function() {
-        if (!container.isOpen()) return;
+    core.on('unselect', function() {
+        if (!core.isOpen()) return;
 
         self.setClasses();
         self.highlightFirstItem();
     });
 
-    container.on('open', function() {
+    core.on('open', function() {
         // When the dropdown is open, aria-expended="true"
         self.$results.attr('aria-expanded', 'true');
         self.$results.attr('aria-hidden', 'false');
@@ -162,14 +162,14 @@ Results.prototype.bind = function(container) {
         self.ensureHighlightVisible();
     });
 
-    container.on('close', function() {
+    core.on('close', function() {
         // When the dropdown is closed, aria-expended="false"
         self.$results.attr('aria-expanded', 'false');
         self.$results.attr('aria-hidden', 'true');
         self.$results.removeAttr('aria-activedescendant');
     });
 
-    container.on('results:previous', function() {
+    core.on('results:previous', function() {
         var $highlighted = self.getHighlightedResults();
 
         var $options = self.$results.find('[aria-selected]');
@@ -203,7 +203,7 @@ Results.prototype.bind = function(container) {
         }
     });
 
-    container.on('results:next', function() {
+    core.on('results:next', function() {
         var $highlighted = self.getHighlightedResults();
 
         var $options = self.$results.find('[aria-selected]');
@@ -233,7 +233,7 @@ Results.prototype.bind = function(container) {
         }
     });
 
-    container.on('results:message', function(params) {
+    core.on('results:message', function(params) {
         self.displayMessage(params);
     });
 
@@ -263,7 +263,7 @@ Results.prototype.bind = function(container) {
         });
     }
 
-    container.on('results:toggle', function() {
+    core.on('results:toggle', function() {
         var $highlighted = self.getHighlightedResults();
 
         if ($highlighted.length === 0) {
@@ -273,7 +273,7 @@ Results.prototype.bind = function(container) {
         $highlighted.trigger('mouseup');
     });
 
-    container.on('results:select', function() {
+    core.on('results:select', function() {
         var $highlighted = self.getHighlightedResults();
 
         if ($highlighted.length === 0) {
