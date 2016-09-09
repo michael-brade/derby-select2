@@ -2,7 +2,6 @@
 var util = require('util');
 var BaseSelection = require('./base');
 var MultipleReorderSelection = require('./multiplereorder');
-var Search = require('./search');
 var Utils = require('../utils');
 
 
@@ -20,8 +19,9 @@ MultipleSelection.prototype.view = __dirname + '/multiple.html';
 MultipleSelection.prototype.init = function(model) {
     MultipleSelection.super_.prototype.init.apply(this, arguments);
 
+    model.ref("focus", this.core.model.at("focus"));
+
     Utils.decorateObject(this, MultipleReorderSelection);
-    Utils.decorateObject(this, Search);
 }
 
 MultipleSelection.prototype.create = function(model, dom) {

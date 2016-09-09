@@ -23,7 +23,7 @@ Select2.prototype.style = __dirname + '/../index.css';
 Select2.prototype.components = [
     require('./selection/single'),
     require('./selection/multiple'),
-
+    require('./selection/search'),
     require('./results')
 ];
 
@@ -164,7 +164,10 @@ Select2.prototype._registerEvents = function() {
     });
 
     this.on('focus', function() {
-        self.model.set("focus", true);
+        // this needs a delay, otherwise the changes in the view will prevent the click event from firing
+        setTimeout(function() {
+            self.model.set("focus", true);
+        }, 100);
     });
 
     this.on('blur', function() {

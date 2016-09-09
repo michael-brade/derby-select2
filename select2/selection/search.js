@@ -1,26 +1,32 @@
 'use strict';
 
 var $ = require('jquery');
-var Utils = require('../utils');
 var KEYS = require('../keys');
 
-/* Decoration for multi-selection: search field in the selection display */
+/**
+ * Component to input search queries.
+ *
+ * emitted events: keypress, query, unselect
+ */
 function Search() {}
 
 module.exports = Search;
 
-Search.prototype.create = function(decorated, model, dom) {
-    decorated.call(this, model, dom);
+Search.prototype.view = __dirname + '/search.html';
 
-    this.$search = $(this.search);
+Search.prototype.init = function(model) {
 };
 
-Search.prototype.bind = function(decorated, core) {
-    this._transferTabIndex();
+Search.prototype.create = function(model, dom) {
+    this.$search = $(this.search);
+    this.bind(this.parent.core);
 
+    this.$search.trigger('focus');
+};
+
+Search.prototype.bind = function(core) {
+    // this._transferTabIndex();
     var self = this;
-
-    decorated.call(this, core);
 
     core.on('open', function() {
         self.$search.trigger('focus');
@@ -35,7 +41,7 @@ Search.prototype.bind = function(decorated, core) {
     core.on('enable', function() {
         self.$search.prop('disabled', false);
 
-        self._transferTabIndex();
+        // self._transferTabIndex();
     });
 
     core.on('disable', function() {
@@ -50,15 +56,7 @@ Search.prototype.bind = function(decorated, core) {
         self.$search.attr('aria-activedescendant', params.id);
     });
 
-    this.$selection.on('focusin', '.select2-search--inline', function(evt) {
-        self.emit('focus', evt);
-    });
-
-    this.$selection.on('focusout', '.select2-search--inline', function(evt) {
-        self._handleBlur(evt);
-    });
-
-    this.$selection.on('keydown', '.select2-search--inline', function(evt) {
+    this.search.addEventListener('keypress', function(evt) {
         evt.stopPropagation();
 
         self.emit('keypress', evt);
@@ -73,60 +71,21 @@ Search.prototype.bind = function(decorated, core) {
         }
     });
 
-    // Try to detect the IE version should the `documentMode` property that
-    // is stored on the document. This is only implemented in IE and is
-    // slightly cleaner than doing a user agent check.
-    // This property is not available in Edge, but Edge also doesn't have
-    // this bug.
-    var msie = document.documentMode;
-    var disableInputEvents = msie && msie <= 11;
+    this.search.addEventListener('input', function(evt) {
+        var key = evt.which;
 
-    // Workaround for browsers which do not support the `input` event
-    // This will prevent double-triggering of events for browsers which support
-    // both the `keyup` and `input` events.
-    this.$selection.on(
-        'input.searchcheck',
-        '.select2-search--inline',
-        function (evt) {
-            // IE will trigger the `input` event when a placeholder is used on a
-            // search box. To get around this issue, we are forced to ignore all
-            // `input` events in IE and keep using `keyup`.
-            if (disableInputEvents) {
-                self.$selection.off('input.search input.searchcheck');
-                return;
-            }
-
-            // Unbind the duplicated `keyup` event
-            self.$selection.off('keyup.search');
+        // We can freely ignore events from modifier keys
+        if (key == KEYS.SHIFT || key == KEYS.CTRL || key == KEYS.ALT) {
+            return;
         }
-    );
 
-    this.$selection.on(
-        'keyup.search input.search',
-        '.select2-search--inline',
-        function(evt) {
-            // IE will trigger the `input` event when a placeholder is used on a
-            // search box. To get around this issue, we are forced to ignore all
-            // `input` events in IE and keep using `keyup`.
-            if (disableInputEvents && evt.type === 'input') {
-                self.$selection.off('input.search input.searchcheck');
-                return;
-            }
-            var key = evt.which;
-
-            // We can freely ignore events from modifier keys
-            if (key == KEYS.SHIFT || key == KEYS.CTRL || key == KEYS.ALT) {
-                return;
-            }
-
-            // Tabbing will be handled during the `keydown` phase
-            if (key == KEYS.TAB) {
-                return;
-            }
-
-            self.handleSearch(evt);
+        // Tabbing will be handled during the `keydown` phase
+        if (key == KEYS.TAB) {
+            return;
         }
-    );
+
+        self.handleSearch();
+    });
 };
 
 /**
@@ -136,10 +95,15 @@ Search.prototype.bind = function(decorated, core) {
  *
  * @private
  */
-Search.prototype._transferTabIndex = function(decorated) {
-    this.$search.attr('tabindex', this.$selection.attr('tabindex'));
-    this.$selection.attr('tabindex', '-1');
-};
+// Search.prototype._transferTabIndex = function() {
+//     this.$search.attr('tabindex', this.$selection.attr('tabindex'));
+//     this.$selection.attr('tabindex', '-1');
+// };
+//
+// Search.prototype._transferTabIndexBack = function() {
+//     this.$selection.attr('tabindex', this.$search.attr('tabindex'));
+//     this.$search.attr('tabindex', '-1');
+// };
 
 // this method will only be called by the placeholder decoration (if it is used)
 Search.prototype.createPlaceholder = function(decorated, placeholder) {
@@ -152,6 +116,7 @@ Search.prototype.handleSearch = function() {
     if (!this._keyUpPrevented) {
         var input = this.$search.val();
 
+        console.log("search: emit query")
         this.emit('query', {
             term: input
         });
@@ -160,30 +125,34 @@ Search.prototype.handleSearch = function() {
     this._keyUpPrevented = false;
 };
 
-Search.prototype.searchRemoveChoice = function(decorated, item) {
+Search.prototype.searchRemoveChoice = function() {
     this.emit('unselect', {
-        //data: item    // not passing any data removes the last choice and emits unselected
+        // not passing any data removes the last choice and emits unselected
     });
 
     this.handleSearch();
 };
 
+// TODO: not called by anyone! should only be called by Backspace unselection!
+//
+// put the text representation of the last unselected item into the search
 Search.prototype.unselected = function(decorated, item) {
     this.$search.val(item.text); // TODO  grmbl - normalize in general?
 };
 
 Search.prototype.resizeSearch = function() {
-    this.$search.css('width', '25px');
-
     var width = '';
 
-    if (this.$search.attr('placeholder') !== '') {
-        width = this.$selection.find('.select2-selection__rendered').innerWidth();
-    } else {
+    // if (this.$search.attr('placeholder') !== '') {
+    //     width = this.$selection.find('.select2-selection__rendered').innerWidth();
+    // } else {
         var minimumWidth = this.$search.val().length + 1;
 
         width = (minimumWidth * 0.75) + 'em';
-    }
+    // }
 
     this.$search.css('width', width);
+
+    // TODO: try this too:
+    //this.$search.prop('size', this.$search.val().length);
 };
