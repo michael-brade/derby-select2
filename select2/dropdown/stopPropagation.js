@@ -26,7 +26,6 @@ StopPropagation.prototype.bind = function(decorated, container) {
         'touchstart'
     ];
 
-    // TODO: no $dropdown...
     this.$dropdown.on(stoppedEvents.join(' '), function(evt) {
         evt.stopPropagation();
     });

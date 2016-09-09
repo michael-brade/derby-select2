@@ -74,12 +74,12 @@ Select2.prototype.init = function(model) {
 };
 
 Select2.prototype.create = function(model, dom) {
-    this.$container = $(this.container);
+    this.$dropdown = $(this.dropdown);
 
     // attach the select2 controller to the container to be able to identify it later and close
     // all the other dropdowns; selection/base uses it
     // TODO: is there a better way? Derby global events or so?
-    this.$container.data('controller', this);
+    $(this.container).data('controller', this);
 
     // Bind the container to all of the adapters
     this._bindAdapters();
