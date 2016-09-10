@@ -4,9 +4,10 @@ var $ = require('jquery');
 var KEYS = require('../keys');
 
 /**
- * Component to input search queries.
+ * Component to input search queries. Simply not shown when core is disabled, and will delegate focus, so no tabindex
+ * neccessary.
  *
- * emitted events: keypress, query, unselect
+ * Emitted events: keypress, query, unselect
  */
 function Search() {}
 
@@ -15,39 +16,31 @@ module.exports = Search;
 Search.prototype.view = __dirname + '/search.html';
 
 Search.prototype.init = function(model) {
-    model.ref('disabled', this.parent.core.options.at('disabled'));
 };
 
 Search.prototype.create = function(model, dom) {
     this.$search = $(this.search);
     this.bind(this.parent.core);
 
-    this.$search.trigger('focus');
+    this.search.focus();
 };
 
 Search.prototype.bind = function(core) {
-    // this._transferTabIndex();
     var self = this;
 
     core.on('open', function() {
-        self.$search.trigger('focus');
+        self.search.focus();
+    });
+
+    core.on('focus', function() {
+        self.search.focus();
     });
 
     core.on('close', function() {
         self.$search.val('');
         self.$search.removeAttr('aria-activedescendant');
-        self.$search.trigger('focus');
-    });
-
-    core.on('enable', function() {
-        // self._transferTabIndex();
-    });
-
-    core.on('disable', function() {
-    });
-
-    core.on('focus', function() {
-        self.$search.trigger('focus');
+        if (core.hasFocus())
+            self.search.focus();
     });
 
     core.on('results:focus', function (params) {
@@ -86,22 +79,6 @@ Search.prototype.bind = function(core) {
     });
 };
 
-/**
- * This method will transfer the tabindex attribute from the rendered
- * selection to the search box. This allows for the search box to be used as
- * the primary focus instead of the selection container.
- *
- * @private
- */
-// Search.prototype._transferTabIndex = function() {
-//     this.$search.attr('tabindex', this.$selection.attr('tabindex'));
-//     this.$selection.attr('tabindex', '-1');
-// };
-//
-// Search.prototype._transferTabIndexBack = function() {
-//     this.$selection.attr('tabindex', this.$search.attr('tabindex'));
-//     this.$search.attr('tabindex', '-1');
-// };
 
 // this method will only be called by the placeholder decoration (if it is used)
 Search.prototype.createPlaceholder = function(decorated, placeholder) {

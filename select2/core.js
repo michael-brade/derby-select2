@@ -29,7 +29,6 @@ Select2.prototype.components = [
 
 // TODO: put global defaults somewhere, accessible, changable
 // TODO: click event should open; do it in the view instead of here?
-// TODO: tab out of select2 doesn't work, i.e., focus is not lost anymore
 // TODO: rename options to config
 
 Select2.prototype.init = function(model) {
@@ -147,13 +146,28 @@ Select2.prototype._registerResultsEvents = function() {
 Select2.prototype._registerEvents = function() {
     var self = this;
 
-    this.on('open', function() {
-        self.model.set('open', true);
+
+    this.model.on('change', 'open', function(value, prev) {
+        if (value === prev) return;
+
+        if (value) {
+            self.emit('open', {});
+            self.emit('query', {});
+        } else {
+            self.emit('close', {});
+        }
     });
 
-    this.on('close', function() {
-        self.model.set('open', false);
+    this.model.on('change', 'focus', function(value, prev) {
+        if (value === prev) return;
+
+        if (value) {
+            self.emit('focus', {});
+        } else {
+            self.emit('blur', {});
+        }
     });
+
 
     this.options.on('change', 'disabled', function(value, prev) {
         if (value === prev) return;
@@ -162,24 +176,48 @@ Select2.prototype._registerEvents = function() {
             if (self.isOpen()) {
                 self.close();
             }
+            self.model.set("focus", false);
             self.emit('disable', {});
         } else {
             self.emit('enable', {});
+            // if we have focus already, notify everything
+            if (self.container == document.activeElement || $.contains(self.container, document.activeElement))
+                self.focus();
         }
     });
 
-    this.on('focus', function() {
-        // this needs a delay, otherwise the changes in the view will prevent the click event from firing
+
+    /* focus/blur events */
+
+    this.container.addEventListener('blur', function(evt) {
+
+        // This needs to be delayed as the active element is the body when the tab
+        // key is pressed, possibly along with others.
         setTimeout(function() {
-            self.model.set("focus", true);
-        }, 100);
-    });
+            // Don't trigger `blur` if the focus is still in the selection
+            if (self.container == document.activeElement || $.contains(self.container, document.activeElement))
+            {
+                return;
+            }
 
-    this.on('blur', function() {
-        self.model.set("focus", false);
-    });
+            self.model.set("focus", false);
+        }, 1);
 
-    this.on('keypress', function(evt) {
+    }, true);   // capturing phase, blur doesn't bubble
+
+    this.container.addEventListener('focus', function(evt) {
+        self.focus();
+    }, true);   // capturing phase, focus doesn't bubble
+
+
+    /* keyboard events */
+
+    // handle keydown events that bubbled up because no one stopped and used them
+    this.container.addEventListener('keydown', function(evt) {
+        if (self.options.get('disabled')) {
+            return;
+        }
+
         var key = evt.which;
 
         if (self.isOpen()) {
@@ -256,10 +294,6 @@ Select2.prototype.emit = function(name, args) {
 };
 
 Select2.prototype.toggleDropdown = function() {
-    if (this.options.get('disabled')) {
-        return;
-    }
-
     if (this.isOpen()) {
         this.close();
     } else {
@@ -268,20 +302,15 @@ Select2.prototype.toggleDropdown = function() {
 };
 
 Select2.prototype.open = function() {
-    if (this.isOpen()) {
+    if (this.options.get('disabled')) {
         return;
     }
 
-    this.emit('open', {});
-    this.emit('query', {});
+    this.model.set('open', true);
 };
 
 Select2.prototype.close = function() {
-    if (!this.isOpen()) {
-        return;
-    }
-
-    this.emit('close', {});
+    this.model.set('open', false);
 };
 
 Select2.prototype.isOpen = function() {
@@ -293,10 +322,13 @@ Select2.prototype.hasFocus = function() {
 };
 
 Select2.prototype.focus = function(evt) {
-    // No need to re-trigger focus events if we are already focused
-    if (this.hasFocus()) {
+    if (this.options.get('disabled')) {
         return;
     }
 
-    this.emit('focus', {});
+    // this needs a delay, otherwise the changes in the view will prevent the click event from firing
+    var self = this;
+    setTimeout(function() {
+        self.model.set("focus", true);
+    }, 200);
 };

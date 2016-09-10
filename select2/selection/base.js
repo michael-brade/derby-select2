@@ -37,22 +37,7 @@ BaseSelection.prototype.bind = function() {
     var resultsId = core.results.results.id;
 
 
-    this.$selection.on('focus', function(evt) {
-        self.emit('focus', evt);
-    });
-
-    this.$selection.on('blur', function(evt) {
-        self._handleBlur(evt);
-    });
-
-    this.$selection.on('keydown', function(evt) {
-        self.emit('keypress', evt);
-
-        if (evt.which === KEYS.SPACE) {
-            evt.preventDefault();
-        }
-    });
-
+    // TODO: not implemented yet
     core.on('results:focus', function(params) {
         self.$selection.attr('aria-activedescendant', params.data._resultId);
     });
@@ -71,8 +56,6 @@ BaseSelection.prototype.bind = function() {
         self.$selection.removeAttr('aria-activedescendant');
         self.$selection.removeAttr('aria-owns');
 
-        self.$selection.focus();
-
         self._detachCloseHandler(core);
     });
 
@@ -85,24 +68,6 @@ BaseSelection.prototype.bind = function() {
     });
 };
 
-BaseSelection.prototype._handleBlur = function(evt) {
-    var self = this;
-
-    // This needs to be delayed as the active element is the body when the tab
-    // key is pressed, possibly along with others.
-    window.setTimeout(function() {
-        // Don't trigger `blur` if the focus is still in the selection
-        // TODO: debug this
-        if (
-            (document.activeElement == self.selection) ||
-            ($.contains(self.selection, document.activeElement))
-        ) {
-            return;
-        }
-
-        self.emit('blur', evt);
-    }, 1);
-};
 
 
 // TODO: this should go to core
