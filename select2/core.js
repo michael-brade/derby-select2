@@ -155,12 +155,17 @@ Select2.prototype._registerEvents = function() {
         self.model.set('open', false);
     });
 
-    this.on('enable', function() {
-        self.options.set('disabled', false);
-    });
+    this.options.on('change', 'disabled', function(value, prev) {
+        if (value === prev) return;
 
-    this.on('disable', function() {
-        self.options.set('disabled', true);
+        if (value) {
+            if (self.isOpen()) {
+                self.close();
+            }
+            self.emit('disable', {});
+        } else {
+            self.emit('enable', {});
+        }
     });
 
     this.on('focus', function() {
@@ -211,22 +216,11 @@ Select2.prototype._registerEvents = function() {
     });
 };
 
-// TODO: need to close when select2 is set to disabled, need to trigger (emit) dis/enable
-Select2.prototype._syncAttributes = function() {
-    if (this.options.get('disabled')) {
-        if (this.isOpen()) {
-            this.close();
-        }
-
-        this.emit('disable', {});
-    } else {
-        this.emit('enable', {});
-    }
-};
-
 /**
- * Override the emit method to automatically emit pre-events for events that can be prevented.
- * TODO: does this actually work?
+ * Override the emit method to automatically emit pre-events for events that can be prevented, e.g.:
+ *   this.on('opening', function(evt) {
+ *     evt.prevented = true;
+ *   });
  */
 Select2.prototype.emit = function(name, args) {
     var actualEmit = this.__proto__.__proto__.emit;

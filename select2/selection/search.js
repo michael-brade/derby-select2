@@ -15,6 +15,7 @@ module.exports = Search;
 Search.prototype.view = __dirname + '/search.html';
 
 Search.prototype.init = function(model) {
+    model.ref('disabled', this.parent.core.options.at('disabled'));
 };
 
 Search.prototype.create = function(model, dom) {
@@ -39,13 +40,10 @@ Search.prototype.bind = function(core) {
     });
 
     core.on('enable', function() {
-        self.$search.prop('disabled', false);
-
         // self._transferTabIndex();
     });
 
     core.on('disable', function() {
-        self.$search.prop('disabled', true);
     });
 
     core.on('focus', function() {
@@ -61,7 +59,7 @@ Search.prototype.bind = function(core) {
 
         self.emit('keypress', evt);
 
-        self._keyUpPrevented = evt.isDefaultPrevented();
+        self._keyUpPrevented = evt.defaultPrevented;
 
         var key = evt.which;
 
