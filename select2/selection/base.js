@@ -14,6 +14,7 @@ BaseSelection.prototype.init = function(model) {
     this.options = this.core.model.at("options")
 
     model.ref("options", this.options);
+    model.ref("focus", this.core.model.at("focus"));
     model.ref("selections", this.core.model.at("selections"));
 };
 

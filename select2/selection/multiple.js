@@ -19,8 +19,6 @@ MultipleSelection.prototype.view = __dirname + '/multiple.html';
 MultipleSelection.prototype.init = function(model) {
     MultipleSelection.super_.prototype.init.apply(this, arguments);
 
-    model.ref("focus", this.core.model.at("focus"));
-
     Utils.decorateObject(this, MultipleReorderSelection);
 }
 
