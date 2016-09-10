@@ -221,11 +221,12 @@ Select2.prototype._registerEvents = function() {
         var key = evt.which;
 
         if (self.isOpen()) {
-            if (key === KEYS.ESC || key === KEYS.TAB ||
-                (key === KEYS.UP && evt.altKey)) {
+            if (key === KEYS.ESC || (key === KEYS.UP && evt.altKey)) {
                 self.close();
 
                 evt.preventDefault();
+            } else if (key === KEYS.TAB) {
+                self.close();
             } else if (key === KEYS.ENTER) {
                 self.emit('results:select', {});
 
