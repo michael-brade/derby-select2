@@ -96,7 +96,7 @@ Results.prototype.bind = function(core) {
 
     var queryEndFn = function(params) {
         self.hideLoading();
-            self.highlightFirstItem();
+        self.highlightFirstItem();
     };
 
     // no real need for the following two--except to trigger mouseenter...
@@ -109,13 +109,12 @@ Results.prototype.bind = function(core) {
     };
 
     var results_previousFn = function() {
-        var $highlighted = self.getHighlightedResults();
+        var highlighted = self.model.get('highlighted');
+        var options = self.model.get('results');
 
-        var $options = self.$results.find('[aria-selected]');
+        var currentIndex = options.indexOf(highlighted);
 
-        var currentIndex = $options.index($highlighted);
-
-        // If we are already at te top, don't move further
+        // If we are already at the top, don't move further
         if (currentIndex === 0) {
             return;
         }
@@ -123,53 +122,29 @@ Results.prototype.bind = function(core) {
         var nextIndex = currentIndex - 1;
 
         // If none are highlighted, highlight the first
-        if ($highlighted.length === 0) {
+        if (highlighted === null) {
             nextIndex = 0;
         }
 
-        var $next = $options.eq(nextIndex);
-
-        $next.trigger('mouseenter');
-
-        var currentOffset = self.$results.offset().top;
-        var nextTop = $next.offset().top;
-        var nextOffset = self.$results.scrollTop() + (nextTop - currentOffset);
-
-        if (nextIndex === 0) {
-            self.$results.scrollTop(0);
-        } else if (nextTop - currentOffset < 0) {
-            self.$results.scrollTop(nextOffset);
-        }
+        self.model.set('highlighted', options[nextIndex]);
+        self.ensureHighlightVisible();
     };
 
     var results_nextFn = function() {
-        var $highlighted = self.getHighlightedResults();
+        var highlighted = self.model.get('highlighted');
+        var options = self.model.get('results');
 
-        var $options = self.$results.find('[aria-selected]');
-
-        var currentIndex = $options.index($highlighted);
+        var currentIndex = options.indexOf(highlighted);
 
         var nextIndex = currentIndex + 1;
 
         // If we are at the last option, stay there
-        if (nextIndex >= $options.length) {
+        if (nextIndex >= options.length) {
             return;
         }
 
-        var $next = $options.eq(nextIndex);
-
-        $next.trigger('mouseenter');
-
-        var currentOffset = self.$results.offset().top +
-            self.$results.outerHeight(false);
-        var nextBottom = $next.offset().top + $next.outerHeight(false);
-        var nextOffset = self.$results.scrollTop() + nextBottom - currentOffset;
-
-        if (nextIndex === 0) {
-            self.$results.scrollTop(0);
-        } else if (nextBottom > currentOffset) {
-            self.$results.scrollTop(nextOffset);
-        }
+        self.model.set('highlighted', options[nextIndex]);
+        self.ensureHighlightVisible();
     };
 
     var results_messageFn = function(params) {
