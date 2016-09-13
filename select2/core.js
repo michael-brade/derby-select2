@@ -7,6 +7,7 @@ var KEYS = require('./keys');
 var ModelAdapter = require('./data/model');
 
 // this is like index.js, the Select2 Derby component itself
+// TODO: rename to index.js/index.html?
 
 /*
   Results gets the dataAdapter, it needs access to the data to display
@@ -80,20 +81,19 @@ Select2.prototype.create = function(model, dom) {
     // TODO: is there a better way? Derby global events or so?
     $(this.container).data('controller', this);
 
-    // Bind the container to all of the adapters
-    this._bindAdapters();
-
-    // Register any internal event handlers
+    // Register any internal event handlers first (because e.g. on open we need to create the results view before
+    // being able to register results event handlers)
+    this._registerEvents();
     this._registerDataEvents();
     this._registerSelectionEvents();
-    this._registerResultsEvents();
-    this._registerEvents();
+
+    // Bind the container to all of the adapters
+    this._bindAdapters();
 };
 
 
 Select2.prototype._bindAdapters = function() {
     this.selection.bind(this);
-    this.results.bind(this);
     this.dataAdapter.bind(this);    // bind last because it can emit queryEnd immediately
 };
 
@@ -146,16 +146,14 @@ Select2.prototype._registerResultsEvents = function() {
 Select2.prototype._registerEvents = function() {
     var self = this;
 
+    // open the dropdown
+    this.on('open', function() {
+        self.model.set('open', true);
+        self._registerResultsEvents();
+    });
 
-    this.model.on('change', 'open', function(value, prev) {
-        if (value === prev) return;
-
-        if (value) {
-            self.emit('open', {});
-            self.emit('query', {});
-        } else {
-            self.emit('close', {});
-        }
+    this.on('close', function() {
+        self.model.set('open', false);
     });
 
     this.model.on('change', 'focus', function(value, prev) {
@@ -303,15 +301,20 @@ Select2.prototype.toggleDropdown = function() {
 };
 
 Select2.prototype.open = function() {
-    if (this.options.get('disabled')) {
+    if (this.options.get('disabled') || this.isOpen())
         return;
-    }
 
-    this.model.set('open', true);
+    this.emit('open', {});
+
+    if (this.isOpen())
+        this.emit('query', {});
 };
 
 Select2.prototype.close = function() {
-    this.model.set('open', false);
+    if (!this.isOpen())
+        return;
+
+    this.emit('close', {});
 };
 
 Select2.prototype.isOpen = function() {

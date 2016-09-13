@@ -35,13 +35,16 @@ model paths:
             </span>
 
             <!-- what is possible to be selected -->
-            <span class="dropdown-wrapper" aria-hidden="true">
-                <span as="dropdown" class="select2-dropdown select2-dropdown--below" dir="{{options.dir}}">
-                    <span class="select2-results">
-                        <view as="results" id="select2-{{#id}}-results" name="{{options.resultsAdapter}}" />
+            <!-- TODO: make sure the listeners are removed on resuts destroy! -->
+            {{if open}}
+                <span class="dropdown-wrapper" aria-hidden="true">
+                    <span as="dropdown" class="select2-dropdown select2-dropdown--below" dir="{{options.dir}}">
+                        <span class="select2-results">
+                            <view as="results" id="select2-{{#id}}-results" name="{{options.resultsAdapter}}" />
+                        </span>
                     </span>
                 </span>
-            </span>
+            {{/}}
 
         </span>
     {{/}}

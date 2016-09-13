@@ -22,10 +22,12 @@ Results.prototype.init = function(model) {
     model.ref("results", this.core.model.at("results"));
 };
 
-Results.prototype.create = function(model) {
-    require('jquery.mousewheel');
-
+// called on open
+Results.prototype.create = function(model, dom) {
     this.$results = $(this.results);
+    this.bind(this.core);
+
+    this.ensureHighlightVisible();
 };
 
 /* A message can be a function and have arguments, so params is an object with attributes
@@ -75,39 +77,6 @@ Results.prototype.highlightFirstItem = function () {
     this.ensureHighlightVisible();
 };
 
-// TODO: man, this should be done in the view, too! set aria-selected to true if
-// in selection. But only if duplicates are not allowed.
-
-Results.prototype.setClasses = function() {
-    var self = this;
-
-    this.data.current(function(selected) {
-        var selectedIds = $.map(selected, function(s) {
-            return s.id.toString();
-        });
-
-        var $options = self.$results
-            .find('.select2-results__option[aria-selected]');
-
-        $options.each(function() {
-            var $option = $(this);
-
-            var item = $.data(this, 'data');
-
-            // id needs to be converted to a string when comparing
-            var id = '' + item.id;
-
-            if ((item.element != null && item.element.selected) ||
-                (item.element == null && $.inArray(id, selectedIds) > -1)) {
-                $option.attr('aria-selected', 'true');
-            } else {
-                $option.attr('aria-selected', 'false');
-            }
-        });
-
-    });
-};
-
 Results.prototype.showLoading = function(params) {
     var loadingMore = this.options.get('translations').get('searching');
     this.model.set("loading", loadingMore(params));
@@ -120,56 +89,26 @@ Results.prototype.hideLoading = function() {
 Results.prototype.bind = function(core) {
     var self = this;
 
-    core.on('query', function(params) {
+    var queryFn = function(params) {
         self.hideMessages();
         self.showLoading(params);
+    };
 
-        if (core.isOpen()) {
-            self.setClasses();
-        }
-    });
-
-    core.on('queryEnd', function(params) {
+    var queryEndFn = function(params) {
         self.hideLoading();
-
-        if (core.isOpen()) {
-            self.setClasses();
             self.highlightFirstItem();
-        }
-    });
+    };
 
     // no real need for the following two--except to trigger mouseenter...
-    core.on('select', function() {
-        if (!core.isOpen()) return;
-
-        self.setClasses();
+    var selectFn = function() {
         self.highlightFirstItem();
-    });
+    };
 
-    core.on('unselect', function() {
-        if (!core.isOpen()) return;
-
-        self.setClasses();
+    var unselectFn = function() {
         self.highlightFirstItem();
-    });
+    };
 
-    core.on('open', function() {
-        // When the dropdown is open, aria-expended="true"
-        self.$results.attr('aria-expanded', 'true');
-        self.$results.attr('aria-hidden', 'false');
-
-        self.setClasses();
-        self.ensureHighlightVisible();
-    });
-
-    core.on('close', function() {
-        // When the dropdown is closed, aria-expended="false"
-        self.$results.attr('aria-expanded', 'false');
-        self.$results.attr('aria-hidden', 'true');
-        self.$results.removeAttr('aria-activedescendant');
-    });
-
-    core.on('results:previous', function() {
+    var results_previousFn = function() {
         var $highlighted = self.getHighlightedResults();
 
         var $options = self.$results.find('[aria-selected]');
@@ -201,9 +140,9 @@ Results.prototype.bind = function(core) {
         } else if (nextTop - currentOffset < 0) {
             self.$results.scrollTop(nextOffset);
         }
-    });
+    };
 
-    core.on('results:next', function() {
+    var results_nextFn = function() {
         var $highlighted = self.getHighlightedResults();
 
         var $options = self.$results.find('[aria-selected]');
@@ -231,39 +170,13 @@ Results.prototype.bind = function(core) {
         } else if (nextBottom > currentOffset) {
             self.$results.scrollTop(nextOffset);
         }
-    });
+    };
 
-    core.on('results:message', function(params) {
+    var results_messageFn = function(params) {
         self.displayMessage(params);
-    });
+    };
 
-    // TODO: is this code really needed???
-    if ($.fn.mousewheel) {
-        this.$results.on('mousewheel', function(e) {
-            var top = self.$results.scrollTop();
-
-            var bottom = self.$results.get(0).scrollHeight - top + e.deltaY;
-
-            var isAtTop = e.deltaY > 0 && top - e.deltaY <= 0;
-            var isAtBottom = e.deltaY < 0 && bottom <= self.$results.height();
-
-            if (isAtTop) {
-                self.$results.scrollTop(0);
-
-                e.preventDefault();
-                e.stopPropagation();
-            } else if (isAtBottom) {
-                self.$results.scrollTop(
-                    self.$results.get(0).scrollHeight - self.$results.height()
-                );
-
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        });
-    }
-
-    core.on('results:toggle', function() {
+    var results_toggleFn = function() {
         var $highlighted = self.getHighlightedResults();
 
         if ($highlighted.length === 0) {
@@ -271,9 +184,9 @@ Results.prototype.bind = function(core) {
         }
 
         $highlighted.trigger('mouseup');
-    });
+    };
 
-    core.on('results:select', function() {
+    var results_selectFn = function() {
         var $highlighted = self.getHighlightedResults();
 
         if ($highlighted.length === 0) {
@@ -281,11 +194,38 @@ Results.prototype.bind = function(core) {
         }
 
         $highlighted.trigger('mouseup');
+    };
+
+
+    core.on('query', queryFn);
+    core.on('queryEnd', queryEndFn);
+    core.on('select', selectFn);
+    core.on('unselect', unselectFn);
+    core.on('results:previous', results_previousFn);
+    core.on('results:next', results_nextFn);
+
+    core.on('results:message', results_messageFn);
+    core.on('results:toggle', results_toggleFn);
+
+    core.on('results:select', results_selectFn);
+
+    this.on('destroy', function () {
+        core.removeListener('query', queryFn);
+        core.removeListener('queryEnd', queryEndFn);
+        core.removeListener('select', selectFn);
+        core.removeListener('unselect', unselectFn);
+        core.removeListener('results:previous', results_previousFn);
+        core.removeListener('results:next', results_nextFn);
+
+        core.removeListener('results:message', results_messageFn);
+        core.removeListener('results:toggle', results_toggleFn);
+
+        core.removeListener('results:select', results_selectFn);
     });
 };
 
 Results.prototype.select = function(data, evt) {
-    if (data.children) return;
+    if (data.children || data.disabled) return;
 
     // TODO use another way to determine selection status! use model,
     // then reuse this function for "results:select/toggle" above
@@ -307,7 +247,7 @@ Results.prototype.select = function(data, evt) {
 };
 
 Results.prototype.focus = function(data, evt) {
-    if (data.children) return;
+    if (data.children || data.disabled) return;
 
     this.model.set("highlighted", data);
 };

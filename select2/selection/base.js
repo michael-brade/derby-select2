@@ -34,8 +34,6 @@ BaseSelection.prototype.create = function(model, dom) {
 BaseSelection.prototype.bind = function() {
     var self = this;
     var core = this.core;
-    var resultsId = core.results.results.id;
-
 
     // TODO: not implemented yet
     core.on('results:focus', function(params) {
@@ -43,6 +41,7 @@ BaseSelection.prototype.bind = function() {
     });
 
     core.on('open', function() {
+        var resultsId = core.results.results.id;
         // When the dropdown is open, aria-expanded="true"
         self.$selection.attr('aria-expanded', 'true');
         self.$selection.attr('aria-owns', resultsId);
