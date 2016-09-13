@@ -28,23 +28,32 @@ Search.prototype.create = function(model, dom) {
 Search.prototype.bind = function(core) {
     var self = this;
 
-    core.on('open', function() {
+    var focus = function() {
         self.search.focus();
-    });
+    }
 
-    core.on('focus', function() {
-        self.search.focus();
-    });
-
-    core.on('close', function() {
+    var close = function() {
         self.$search.val('');
         self.$search.removeAttr('aria-activedescendant');
         if (core.hasFocus())
             self.search.focus();
-    });
+    }
 
-    core.on('results:focus', function (params) {
+    var results_focus = function (params) {
         self.$search.attr('aria-activedescendant', params.id);
+    }
+
+    core.on('open', focus);
+    core.on('focus', focus);
+    core.on('close', close);
+    core.on('results:focus', results_focus);
+
+
+    this.on('destroy', function () {
+        core.removeListener('open', focus);
+        core.removeListener('focus', focus);
+        core.removeListener('close', close);
+        core.removeListener('results:focus', results_focus);
     });
 
     this.search.addEventListener('keypress', function(evt) {
