@@ -46,22 +46,22 @@ BaseAdapter.prototype.unselect = function(params) {
 /**
  * All adapters react to select and unselect events, some to query.
  */
-BaseAdapter.prototype.bind = function(container) {
+BaseAdapter.prototype.bind = function(core) {
     var self = this;
 
-    container.on('query', function(params) {
+    core.on('query', function(params) {
         self.query(params);
     });
 
-    container.on('select', function(params) {
+    core.on('select', function(params) {
         self.select(params);
     });
 
-    container.on('move', function(params) {
+    core.on('move', function(params) {
         self.move(params);
     });
 
-    container.on('unselect', function(params) {
+    core.on('unselect', function(params) {
         self.unselect(params);
     });
 };

@@ -16,10 +16,10 @@ module.exports = Results;
 Results.prototype.view = __dirname + "/results.html";
 
 Results.prototype.init = function(model) {
-    this.select2 = this.parent; // alias to make it more obvious
+    this.core = this.parent; // alias to make it more obvious
 
-    model.ref("options", this.select2.model.at("options"));
-    model.ref("results", this.select2.model.at("results"));
+    model.ref("options", this.core.model.at("options"));
+    model.ref("results", this.core.model.at("results"));
 };
 
 Results.prototype.create = function(model) {

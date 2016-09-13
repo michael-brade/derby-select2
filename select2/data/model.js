@@ -1,24 +1,24 @@
 'use strict';
-var $ = require('jquery');
+
 var util = require('util');
 var BaseAdapter = require('./base');
 
 
 /*
-The simple model adapter takes input from modele path "data" and filters and sorts it to
+The simple model adapter takes input from model path "data" and filters and sorts it to
 "results".
 
 On selection events it copies the item to value, moves it, or deletes the item from value.
 
 Last, it refs selections to value.
 */
-function ModelAdapter(select2, options) {
+function ModelAdapter(core, options) {
     ModelAdapter.super_.apply(this, arguments);
 
-    this.select2 = select2;
+    this.core = core;
     this.options = options;
 
-    var model = select2.model;
+    var model = core.model;
 
 /*
     // normalize
@@ -59,16 +59,15 @@ module.exports = ModelAdapter;
 util.inherits(ModelAdapter, BaseAdapter);
 
 
-
 ModelAdapter.prototype.select = function(params) {
     if (this.options.get("multiple"))
-        this.select2.model.push("value", params.data);
+        this.core.model.push("value", params.data);
     else
-        this.select2.model.set("value", params.data);
+        this.core.model.set("value", params.data);
 };
 
 ModelAdapter.prototype.move = function(params) {
-    this.select2.model.move('value', params.oldIndex, params.newIndex);
+    this.core.model.move('value', params.oldIndex, params.newIndex);
 };
 
 ModelAdapter.prototype.unselect = function(params) {
@@ -78,12 +77,12 @@ ModelAdapter.prototype.unselect = function(params) {
     var pos = params.pos;
 
     if (pos == undefined)
-        pos =  this.select2.model.get("value").lastIndexOf(params.data);
+        pos = this.core.model.get("value").lastIndexOf(params.data);
 
     if (pos === -1) {
         console.error("cannot unselect ", params.data);
         return;
     }
 
-    this.select2.model.remove("value", pos);
+    this.core.model.remove("value", pos);
 };
