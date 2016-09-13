@@ -27,7 +27,7 @@ BaseSelection.prototype.create = function(model, dom) {
 
     var self = this;
     this.on('destroy', function() {
-        self._detachCloseHandler(this.core);
+        self._detachCloseHandler(self.core);
     });
 };
 
