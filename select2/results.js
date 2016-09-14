@@ -110,9 +110,9 @@ Results.prototype.bind = function(core) {
 
     var results_previousFn = function() {
         var highlighted = self.model.get('highlighted');
-        var options = self.model.get('results');
+        var results = self.model.get('results');
 
-        var currentIndex = options.indexOf(highlighted);
+        var currentIndex = results.indexOf(highlighted);
 
         // If we are already at the top, don't move further
         if (currentIndex === 0) {
@@ -126,24 +126,24 @@ Results.prototype.bind = function(core) {
             nextIndex = 0;
         }
 
-        self.model.set('highlighted', options[nextIndex]);
+        self.model.set('highlighted', results[nextIndex]);
         self.ensureHighlightVisible();
     };
 
     var results_nextFn = function() {
         var highlighted = self.model.get('highlighted');
-        var options = self.model.get('results');
+        var results = self.model.get('results');
 
-        var currentIndex = options.indexOf(highlighted);
+        var currentIndex = results.indexOf(highlighted);
 
         var nextIndex = currentIndex + 1;
 
         // If we are at the last option, stay there
-        if (nextIndex >= options.length) {
+        if (nextIndex >= results.length) {
             return;
         }
 
-        self.model.set('highlighted', options[nextIndex]);
+        self.model.set('highlighted', results[nextIndex]);
         self.ensureHighlightVisible();
     };
 
