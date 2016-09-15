@@ -9,9 +9,32 @@ var ModelAdapter = require('./data/model');
 // this is like index.js, the Select2 Derby component itself
 // TODO: rename to index.js/index.html?
 
-/*
-  Results gets the dataAdapter, it needs access to the data to display
-  results view/components is embedded or used by the dropdown view
+/* Derby Select2 Component.
+
+  Views:
+    "core" is the main view, parent of all others.
+    "multiple"/"single" is the selection view: it shows what has already been selected.
+    "results" is the contents of the dropdown and shows the selectable options.
+    "search" is used to filter the results (by dropdown and multiple)
+
+  Model:
+
+  input paths:
+    - data
+
+  for Select2 use:
+    - focus (bool)
+    - open (bool)
+    - results (array)
+    - selections (array)
+
+  output paths:
+    - value
+
+  Events:
+    - open, close, query, queryEnd, select, move, unselect, focus, blur, disable, enable
+    - opening, closing, selecting, unselecting
+    - results:select, results:toggle, results:previous, results:next
 */
 
 function Select2() {}
@@ -35,14 +58,14 @@ Select2.prototype.components = [
 Select2.prototype.init = function(model) {
     this.options = model.at("options");
 
-    // model should hold state! not CSS classes. So: added open, enabled, focus to model
+    // state is kept in the model: focus, open
     model.setNull("focus", false);
     model.setNull("open", false);
 
+    // enabled/disabled is kept in the options
     this.options.setNull("disabled", false);
 
     // default dataAdapter is ModelAdapter
-    // default dataAdapter just refs, sort and filter happen in results
     this.options.setNull("dataAdapter", ModelAdapter);
 
     // Default view names (and thus default components)
