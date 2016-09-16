@@ -71,19 +71,8 @@ Search.prototype.bind = function(core) {
         }
     });
 
+    // input event: emitted only when query string has changed
     this.search.addEventListener('input', function(evt) {
-        var key = evt.which;
-
-        // We can freely ignore events from modifier keys
-        if (key == KEYS.SHIFT || key == KEYS.CTRL || key == KEYS.ALT) {
-            return;
-        }
-
-        // Tabbing will be handled during the `keydown` phase
-        if (key == KEYS.TAB) {
-            return;
-        }
-
         self.handleSearch();
     });
 };
