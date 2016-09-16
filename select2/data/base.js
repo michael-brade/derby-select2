@@ -18,9 +18,20 @@ module.exports = BaseAdapter;
 util.inherits(BaseAdapter, EventEmitter);
 
 
+BaseAdapter.prototype.start = function(params) {
+    throw new Error('The `start` method must be defined in child classes.');
+};
+
+BaseAdapter.prototype.stop = function(params) {
+    throw new Error('The `stop` method must be defined in child classes.');
+};
+
 BaseAdapter.prototype.query = function(params) {
     // may be overridden in subclasses
-    this.emit("queryEnd", {});
+    var self = this;
+    setTimeout(function() {
+        self.emit("queryEnd", {});
+    }, 1);
 };
 
 BaseAdapter.prototype.select = function(params) {
@@ -35,7 +46,8 @@ BaseAdapter.prototype.move = function(params) {
     Unselect the item params.data at params.pos. If pos is not given, the last
     selected item equal to params.data is unselected. If neither is given, the
     last selected item is unselected; in that case, an event "unselected" with
-    the unselected item as parameter should be fired.
+    the unselected item as parameter should be fired with a normalized string
+    parameter.
 */
 BaseAdapter.prototype.unselect = function(params) {
     throw new Error('The `unselect` method must be defined in child classes.');
@@ -48,6 +60,14 @@ BaseAdapter.prototype.unselect = function(params) {
  */
 BaseAdapter.prototype.bind = function(core) {
     var self = this;
+
+    core.on('open', function(params) {
+        self.start(params);
+    });
+
+    core.on('close', function(params) {
+        self.stop(params);
+    });
 
     core.on('query', function(params) {
         self.query(params);
