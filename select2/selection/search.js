@@ -7,7 +7,7 @@ var KEYS = require('../keys');
  * Component to input search queries. Simply not shown when core is disabled, and will delegate focus, so no tabindex
  * neccessary.
  *
- * Emitted events: keypress, query, unselect
+ * Emitted events: query, unselect
  */
 function Search() {}
 
@@ -56,18 +56,14 @@ Search.prototype.bind = function(core) {
         core.removeListener('results:focus', results_focus);
     });
 
-    this.search.addEventListener('keypress', function(evt) {
-        evt.stopPropagation();
 
-        self.emit('keypress', evt);
-
-        self._keyUpPrevented = evt.defaultPrevented;
-
+    this.search.addEventListener('keydown', function(evt) {
         var key = evt.which;
 
         if (key === KEYS.BACKSPACE && self.$search.val() === '') {
-            self.searchRemoveChoice();
+            evt.stopPropagation();
             evt.preventDefault();
+            self.searchRemoveChoice();
         }
     });
 
@@ -86,15 +82,9 @@ Search.prototype.createPlaceholder = function(decorated, placeholder) {
 Search.prototype.handleSearch = function() {
     this.resizeSearch();
 
-    if (!this._keyUpPrevented) {
-        var input = this.$search.val();
-
-        this.parent.emit('query', {
-            term: input
-        });
-    }
-
-    this._keyUpPrevented = false;
+    this.parent.emit('query', {
+        term: this.$search.val()
+    });
 };
 
 Search.prototype.searchRemoveChoice = function() {

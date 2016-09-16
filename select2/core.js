@@ -119,7 +119,7 @@ Select2.prototype._registerDataEvents = function() {
 
 Select2.prototype._registerSelectionEvents = function() {
     var self = this;
-    var relayEvents = ['open', 'query', 'move', 'unselect', 'keypress', 'blur'];
+    var relayEvents = ['query', 'move', 'unselect'];
 
     // register toggle and focus
     this.selection.on('toggle', function() {
