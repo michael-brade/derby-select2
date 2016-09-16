@@ -92,7 +92,7 @@ function ModelAdapter(core) {
 
     // results: first normalize, then filter & sort (TODO: performance?! always normalize all items???)
     model.fn("normalizeResultsFn", function(items, filter) {
-        // results needs to be an array, items is a CollectionData
+        // results needs to be an array, items may be any collection
         var results = [];
 
         // normalize
@@ -117,8 +117,6 @@ util.inherits(ModelAdapter, BaseAdapter);
 
 // only start "results" after opening the dropdown
 ModelAdapter.prototype.start = function() {
-    // TODO: input "data" should be an array!? maybe even in correct order already!
-
     this.model.start("results", "data", "filter", "normalizeResultsFn");
 };
 
