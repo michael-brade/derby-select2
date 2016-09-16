@@ -3,6 +3,9 @@ var $ = require('jquery');
 var KEYS = require('../keys');
 
 
+// Base class for single and multiple selection components.
+//
+//
 function BaseSelection() {}
 
 module.exports = BaseSelection;
@@ -73,7 +76,7 @@ BaseSelection.prototype.bind = function() {
 BaseSelection.prototype._attachCloseHandler = function(core) {
     var self = this;
 
-    $(document.body).on('mousedown.select2.' + core.id, function(e) {
+    $(document).on('mousedown.select2.' + core.id, function(e) {
         var $target = $(e.target);
 
         var $select = $target.closest('.select2');
@@ -94,5 +97,5 @@ BaseSelection.prototype._attachCloseHandler = function(core) {
 };
 
 BaseSelection.prototype._detachCloseHandler = function(core) {
-    $(document.body).off('mousedown.select2.' + core.id);
+    $(document).off('mousedown.select2.' + core.id);
 };
