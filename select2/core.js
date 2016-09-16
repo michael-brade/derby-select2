@@ -52,8 +52,6 @@ Select2.prototype.components = [
 ];
 
 // TODO: put global defaults somewhere, accessible, changable
-// TODO: click event should open; do it in the view instead of here?
-// TODO: rename options to config
 
 Select2.prototype.init = function(model) {
     this.options = model.at("options");
@@ -64,6 +62,8 @@ Select2.prototype.init = function(model) {
 
     // enabled/disabled is kept in the options
     this.options.setNull("disabled", false);
+
+    this.options.setNull("tabindex", 0);
 
     // theme
     this.options.setNull("theme", "default");

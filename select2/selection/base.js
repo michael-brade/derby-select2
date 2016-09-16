@@ -25,8 +25,7 @@ BaseSelection.prototype.init = function(model) {
 BaseSelection.prototype.create = function(model, dom) {
     this.$selection = $(this.selection);
 
-    this._tabindex = 0; // TODO: where to read it from now?
-    this.$selection.attr('tabindex', this._tabindex);
+    this.$selection.attr('tabindex', this.options.get('tabindex'));
 
     var self = this;
     this.on('destroy', function() {
@@ -62,7 +61,7 @@ BaseSelection.prototype.bind = function() {
     });
 
     core.on('enable', function() {
-        self.$selection.attr('tabindex', self._tabindex);
+        self.$selection.attr('tabindex', self.options.get('tabindex'));
     });
 
     core.on('disable', function() {
