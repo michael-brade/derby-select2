@@ -100,8 +100,7 @@ Search.prototype.handleSearch = function() {
     if (!this._keyUpPrevented) {
         var input = this.$search.val();
 
-        console.log("search: emit query")
-        this.emit('query', {
+        this.parent.emit('query', {
             term: input
         });
     }

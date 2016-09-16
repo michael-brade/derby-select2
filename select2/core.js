@@ -165,6 +165,13 @@ Select2.prototype._registerEvents = function() {
         self.model.set('open', false);
     });
 
+    this.on('query', function() {
+        if (!self.isOpen()) {
+            self.emit('open', {});
+        }
+    });
+
+
     this.model.on('change', 'focus', function(value, prev) {
         if (value === prev) return;
 
