@@ -49,19 +49,7 @@ Results.prototype.hideMessages = function() {
 
 
 Results.prototype.highlightFirstItem = function () {
-    var highlight;
-    var selections = this.model.get('selections');
-
-    // Check if there are any selected results
-    if (selections.length > 0) {
-        // If there are selected results, highlight the first
-        highlight = selections[0];
-    } else {
-        // If there are no selected results, highlight the first option in the dropdown
-        highlight = this.model.get('results')[0];
-    }
-
-    this.model.set('highlighted', highlight);
+    this.model.set('highlighted', this.model.get('results')[0]);
     this.ensureHighlightVisible();
 };
 
@@ -136,6 +124,14 @@ Results.prototype.bind = function(core) {
         self.ensureHighlightVisible();
     };
 
+    var results_firstFn = this.highlightFirstItem.bind(this);
+
+    var results_lastFn = function () {
+        var results = self.model.get('results');
+        self.model.set('highlighted', results[results.length-1]);
+        self.ensureHighlightVisible();
+    };
+
     var results_messageFn = function(params) {
         self.displayMessage(params);
     };
@@ -157,6 +153,8 @@ Results.prototype.bind = function(core) {
     core.on('unselect', unselectFn);
     core.on('results:previous', results_previousFn);
     core.on('results:next', results_nextFn);
+    core.on('results:first', results_firstFn);
+    core.on('results:last', results_lastFn);
 
     core.on('results:message', results_messageFn);
 
@@ -170,6 +168,8 @@ Results.prototype.bind = function(core) {
         core.removeListener('unselect', unselectFn);
         core.removeListener('results:previous', results_previousFn);
         core.removeListener('results:next', results_nextFn);
+        core.removeListener('results:first', results_firstFn);
+        core.removeListener('results:last', results_lastFn);
 
         core.removeListener('results:message', results_messageFn);
 

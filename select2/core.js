@@ -254,6 +254,11 @@ Select2.prototype._registerEvents = function() {
                 self.emit('results:toggle', {});
                 evt.preventDefault();
             }
+            else if (key === KEYS.HOME)
+            {
+                self.emit('results:first', {});
+                evt.preventDefault();
+            }
             else if (key === KEYS.UP)
             {
                 self.emit('results:previous', {});
@@ -262,6 +267,11 @@ Select2.prototype._registerEvents = function() {
             else if (key === KEYS.DOWN)
             {
                 self.emit('results:next', {});
+                evt.preventDefault();
+            }
+            else if (key === KEYS.END)
+            {
+                self.emit('results:last', {});
                 evt.preventDefault();
             }
         } else {
