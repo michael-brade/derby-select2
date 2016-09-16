@@ -76,8 +76,8 @@ function ModelAdapter(core) {
     // TODO: derby: shouldn't it be possible to ref and map the single array elements?
     model.start("selections", "value", function(selected_items) {
         var results = [];
-        for (var item of selected_items) {
-            results.push(options.get("normalizer")(item));
+        for (var id in selected_items) {
+            results.push(options.get("normalizer")(selected_items[id]));
         }
         return results;
     });
