@@ -235,34 +235,39 @@ Select2.prototype._registerEvents = function() {
         var key = evt.which;
 
         if (self.isOpen()) {
-            if (key === KEYS.ESC || (key === KEYS.UP && evt.altKey)) {
+            if (key === KEYS.ESC || (key === KEYS.UP && evt.altKey))
+            {
                 self.close();
-
                 evt.preventDefault();
-            } else if (key === KEYS.TAB) {
+            }
+            else if (key === KEYS.TAB)
+            {
                 self.close();
-            } else if (key === KEYS.ENTER) {
+            }
+            else if (key === KEYS.ENTER)
+            {
                 self.emit('results:select', {});
-
                 evt.preventDefault();
-            } else if ((key === KEYS.SPACE && evt.ctrlKey)) {
+            }
+            else if ((key === KEYS.SPACE && evt.ctrlKey))
+            {
                 self.emit('results:toggle', {});
-
                 evt.preventDefault();
-            } else if (key === KEYS.UP) {
+            }
+            else if (key === KEYS.UP)
+            {
                 self.emit('results:previous', {});
-
                 evt.preventDefault();
-            } else if (key === KEYS.DOWN) {
+            }
+            else if (key === KEYS.DOWN)
+            {
                 self.emit('results:next', {});
-
                 evt.preventDefault();
             }
         } else {
-            if (key === KEYS.ENTER || key === KEYS.SPACE ||
-                (key === KEYS.DOWN && evt.altKey)) {
+            if (key === KEYS.ENTER || key === KEYS.SPACE || (key === KEYS.DOWN && evt.altKey))
+            {
                 self.open();
-
                 evt.preventDefault();
             }
         }
