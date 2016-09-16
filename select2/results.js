@@ -37,9 +37,10 @@ message and args. */
 Results.prototype.displayMessage = function(params) {
     this.hideLoading();
 
-    var message = this.options.get('translations').get(params.message);
+//    var message = this.options.get('translations').get(params.message);
 
-    this.model.set("message", message(params.args));
+    /*this.model.set("message", message(params.args));*/
+    this.model.set("message", "nothing here");
 };
 
 Results.prototype.hideMessages = function() {
@@ -65,8 +66,9 @@ Results.prototype.highlightFirstItem = function () {
 };
 
 Results.prototype.showLoading = function(params) {
-    var loadingMore = this.options.get('translations').get('searching');
-    this.model.set("loading", loadingMore(params));
+    /*var loadingMore = this.options.get('translations').get('searching');
+    this.model.set("loading", loadingMore(params));*/
+    this.model.set("loading", "loading...");
 };
 
 Results.prototype.hideLoading = function() {
