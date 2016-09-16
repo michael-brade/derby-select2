@@ -206,31 +206,40 @@ Results.prototype.highlight = function(data, evt) {
 };
 
 
-Results.prototype.getHighlightedResults = function() {
-    return this.$results.find('.select2-results__option--highlighted');
-};
+Results.prototype.ensureHighlightVisible = function(currentIndex) {
+    var highlighted = this.model.get('highlighted');
 
-Results.prototype.ensureHighlightVisible = function() {
-    var $highlighted = this.getHighlightedResults();
-
-    if ($highlighted.length === 0) {
+    if (highlighted === undefined) {
         return;
     }
 
-    var $options = this.$results.find('[aria-selected]');
-
-    var currentIndex = $options.index($highlighted);
-
-    var currentOffset = this.$results.offset().top;
-    var nextTop = $highlighted.offset().top;
-    var nextOffset = this.$results.scrollTop() + (nextTop - currentOffset);
-
-    var offsetDelta = nextTop - currentOffset;
-    nextOffset -= $highlighted.outerHeight(false) * 2;
+    if (currentIndex === undefined) {
+        var results = this.model.get('results');
+        var currentIndex = _findIndex(results, ['item', highlighted.item]);
+    }
 
     if (currentIndex <= 2) {
         this.$results.scrollTop(0);
-    } else if (offsetDelta > this.$results.outerHeight() || offsetDelta < 0) {
+        return;
+    }
+
+    var $highlighted = this.$results.find('.select2-results__option--highlighted');
+
+    var resultsOffset = this.$results.offset().top;
+    var highlightedOffset = $highlighted.offset().top;
+
+    // distance of $highlighted from top of visible dropdown area
+    var offsetDelta = highlightedOffset - resultsOffset;
+
+
+    if (offsetDelta > this.$results.outerHeight() - $highlighted.outerHeight(false) || offsetDelta < 0) {
+        // scrollTop: number of hidden pixels of dropdown
+        // nextOffset: setting scrollTop to this means the item will be the first in the dropdown
+        var nextOffset = this.$results.scrollTop() + offsetDelta;
+
+        // don't jump all the way to the top, keep the two previous elements visible
+        nextOffset -= $highlighted.outerHeight(false) * 2;
+
         this.$results.scrollTop(nextOffset);
     }
 };
