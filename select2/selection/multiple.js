@@ -33,14 +33,15 @@ MultipleSelection.prototype.create = function(model, dom) {
     });
 }
 
-MultipleSelection.prototype.unselect = function(evt, data, pos) {
+// called by the view when clicking the "x" of an item
+MultipleSelection.prototype.unselect = function(evt, normalized, pos) {
     if (this.options.get('disabled')) {
         return;
     }
 
     this.emit('unselect', {
         originalEvent: evt,
-        data: data,
+        item: normalized.item,
         pos: pos
     });
 

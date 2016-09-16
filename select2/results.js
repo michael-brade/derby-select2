@@ -1,6 +1,6 @@
 'use strict';
 var $ = require('jquery');
-
+var _findIndex = require('lodash/findIndex')
 
 function Results() {}
 
@@ -17,9 +17,11 @@ Results.prototype.view = __dirname + "/results.html";
 
 Results.prototype.init = function(model) {
     this.core = this.parent; // alias to make it more obvious
+    this.options = model.at("options");
 
     model.ref("options", this.core.model.at("options"));
     model.ref("results", this.core.model.at("results"));
+    model.ref("selections", this.core.model.at("selections"));
 };
 
 // called on open
@@ -45,35 +47,20 @@ Results.prototype.hideMessages = function() {
 };
 
 
-// hmm... maybe do it in selection base.js?
-Results.prototype.selected = function(data, selections) {
-    if (data.id && !data.children && !data.disabled) {
-        if (data in selections) { // TODO
-            return 'true';
-        } else {
-            return 'false';
-        }
-    }
-};
-
-
 Results.prototype.highlightFirstItem = function () {
-    var $options = this.$results
-        .find('.select2-results__option[aria-selected]');
+    var highlight;
+    var selections = this.model.get('selections');
 
-    // TODO: do this on model change: data.on("all", ....) and selections.on...
-    var $selected = $options.filter('[aria-selected=true]');
-
-    // Check if there are any selected options
-    if ($selected.length > 0) {
-        // If there are selected options, highlight the first
-        $selected.first().trigger('mouseenter');
+    // Check if there are any selected results
+    if (selections.length > 0) {
+        // If there are selected results, highlight the first
+        highlight = selections[0];
     } else {
-        // If there are no selected options, highlight the first option
-        // in the dropdown
-        $options.first().trigger('mouseenter');
+        // If there are no selected results, highlight the first option in the dropdown
+        highlight = this.model.get('results')[0];
     }
 
+    this.model.set('highlighted', highlight);
     this.ensureHighlightVisible();
 };
 
@@ -112,7 +99,7 @@ Results.prototype.bind = function(core) {
         var highlighted = self.model.get('highlighted');
         var results = self.model.get('results');
 
-        var currentIndex = results.indexOf(highlighted);
+        var currentIndex = _findIndex(results, ['item', highlighted.item]);
 
         // If we are already at the top, don't move further
         if (currentIndex === 0) {
@@ -122,7 +109,7 @@ Results.prototype.bind = function(core) {
         var nextIndex = currentIndex - 1;
 
         // If none are highlighted, highlight the first
-        if (highlighted === null) {
+        if (highlighted === undefined) {
             nextIndex = 0;
         }
 
@@ -134,7 +121,7 @@ Results.prototype.bind = function(core) {
         var highlighted = self.model.get('highlighted');
         var results = self.model.get('results');
 
-        var currentIndex = results.indexOf(highlighted);
+        var currentIndex = _findIndex(results, ['item', highlighted.item]);
 
         var nextIndex = currentIndex + 1;
 
@@ -152,23 +139,13 @@ Results.prototype.bind = function(core) {
     };
 
     var results_toggleFn = function() {
-        var $highlighted = self.getHighlightedResults();
-
-        if ($highlighted.length === 0) {
-            return;
-        }
-
-        $highlighted.trigger('mouseup');
+        var highlighted = self.model.get('highlighted');
+        self.select(highlighted);
     };
 
     var results_selectFn = function() {
-        var $highlighted = self.getHighlightedResults();
-
-        if ($highlighted.length === 0) {
-            return;
-        }
-
-        $highlighted.trigger('mouseup');
+        var highlighted = self.model.get('highlighted');
+        self.select(highlighted);
     };
 
 
@@ -180,8 +157,8 @@ Results.prototype.bind = function(core) {
     core.on('results:next', results_nextFn);
 
     core.on('results:message', results_messageFn);
-    core.on('results:toggle', results_toggleFn);
 
+    core.on('results:toggle', results_toggleFn);
     core.on('results:select', results_selectFn);
 
     this.on('destroy', function () {
@@ -193,39 +170,39 @@ Results.prototype.bind = function(core) {
         core.removeListener('results:next', results_nextFn);
 
         core.removeListener('results:message', results_messageFn);
-        core.removeListener('results:toggle', results_toggleFn);
 
+        core.removeListener('results:toggle', results_toggleFn);
         core.removeListener('results:select', results_selectFn);
     });
 };
 
 Results.prototype.select = function(data, evt) {
-    if (data.children || data.disabled) return;
+    if (!data || data.children || data.disabled) return;
 
-    // TODO use another way to determine selection status! use model,
-    // then reuse this function for "results:select/toggle" above
-    if ($(evt.target).attr('aria-selected') === 'true') {
+    if (data.selected) {
         if (this.options.get('multiple')) {
             this.emit('unselect', {
                 originalEvent: evt,
-                data: data          // TODO: with duplicates we don't know pos, so choose the last
+                item: data.item     // TODO: with duplicates we don't know pos, so choose the last
             });
         } else {
             this.emit('close', {}); // do nothing in single selection if already selected
         }
-    } else if ($(evt.target).attr('aria-selected') === 'false') {
+    } else {
         this.emit('select', {
             originalEvent: evt,     // TODO: check if originalEvent can actually be used (see CloseOnSelect)
-            data: data
+            item: data.item
         });
     }
 };
 
-Results.prototype.focus = function(data, evt) {
+// data is the normalized item from "results" model path
+Results.prototype.highlight = function(data, evt) {
     if (data.children || data.disabled) return;
 
     this.model.set("highlighted", data);
 };
+
 
 Results.prototype.getHighlightedResults = function() {
     return this.$results.find('.select2-results__option--highlighted');

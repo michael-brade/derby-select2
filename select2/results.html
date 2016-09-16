@@ -2,6 +2,7 @@
     * results
     * options.multiple
     * message
+    * loading
 -->
 
 <index:>
@@ -31,23 +32,34 @@
     </li>
 
 
-<!-- attributes: data
-data can be anything, but if it is an object, those attributes are used:
+<!-- attributes: item; it can be anything, but if it is an object, those attributes are used and should be
+     supplied to select2 as input:
   * id
   * title
   * children
   * disabled
+        * selected
+
+data: {
+    item: item,
+    id: item.id,
+    title: item.title,
+    children: item.children,
+    disabled: item.disabled,
+    selected: true/false
+}
+
  -->
 <results-option:>
-    <li id="{{@data.id}}" class="select2-results__option{{if highlighted === @data}} select2-results__option--highlighted{{/}}"
+    <li id="{{@data.id}}" class="select2-results__option{{if highlighted.item === @data.item}} select2-results__option--highlighted{{/}}"
             title="{{@data.title}}"
             role="{{@data.children ? 'group' : 'treeitem'}}"
 
-            on-mouseenter="focus(@data, $event)"
+            on-mouseenter="highlight(@data, $event)"
             on-mouseup="select(@data, $event)"
 
             aria-label="{{if @data.children}}{{@data.text}}{{/}}"
-            aria-selected="{{if !@data.children && !@data.disabled}}false{{/}}"
+            aria-selected="{{!@data.children && !@data.disabled && @data.selected ? 'true' : 'false'}}"
             aria-disabled="{{@data.disabled}}">
 
         {{if @data.children}}
@@ -61,13 +73,12 @@ data can be anything, but if it is an object, those attributes are used:
                 {{/}}
             </ul>
         {{else}}
-            <view name="{{options.resultsTemplate}}" item="{{@data}}" />
+            <view name="{{options.resultsTemplate}}" item="{{@data.item}}" />
         {{/}}
 
     </li>
 
 
+<!-- plain item display; users have to provide a different view to change/"normalize" display of an item -->
 <results-template:>
-    {{@item}}
-    <!-- {{@item.text}}   -->
-    <!-- TODO: if data.text is null, the option should be set to display:none... -->
+    {{@item.text}}

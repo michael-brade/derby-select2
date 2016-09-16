@@ -65,6 +65,9 @@ Select2.prototype.init = function(model) {
     // enabled/disabled is kept in the options
     this.options.setNull("disabled", false);
 
+    // theme
+    this.options.setNull("theme", "default");
+
     // default dataAdapter is ModelAdapter
     this.options.setNull("dataAdapter", ModelAdapter);
 
@@ -75,25 +78,8 @@ Select2.prototype.init = function(model) {
     this.options.setNull("resultsAdapter", "results");
     this.options.setNull("resultsTemplate", "results-template");
 
-    this.options.setNull("theme", "default");
-
-    this.options.setNull("sorter", function(a, b) {
-        return a - b;
-    });
-
-    this.options.setNull("normalizer", function(item) {
-        return {
-            "id": item.toString(),
-            "text": item.toString()
-            //title
-            //children
-            //disabled
-        };
-    });
-
-
-    var DataAdapter = this.options.get('dataAdapter');
-    this.dataAdapter = new DataAdapter(this, this.options);
+    // instantiate data adapter
+    this.dataAdapter = new (this.options.get('dataAdapter'))(this, this.options);
 };
 
 Select2.prototype.create = function(model, dom) {

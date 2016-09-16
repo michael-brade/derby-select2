@@ -10,8 +10,7 @@
                 <li id="{{#selection.id}}" class="select2-selection__choice" title="{{#selection.title || #selection.text}}">
                     <span class="select2-selection__choice__remove" role="presentation"
                         on-click="unselect($event, #selection, #pos)">&times;</span>
-
-                    <view name="{{options.selectionTemplate}}" item="{{#selection}}" />
+                    <view name="{{options.selectionTemplate}}" item="{{#selection.item}}" />
                 </li>
             {{/}}
 
