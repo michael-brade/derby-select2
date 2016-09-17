@@ -79,10 +79,15 @@ Search.prototype.createPlaceholder = function(decorated, placeholder) {
     this.$search.attr('placeholder', placeholder.text);
 };
 
+Search.prototype.clearSearch = function() {
+    this.$search.val('');
+    this.handleSearch();
+}
+
 Search.prototype.handleSearch = function() {
     this.resizeSearch();
 
-    this.parent.emit('query', {
+    this.emit('query', {
         term: this.$search.val()
     });
 };
@@ -95,11 +100,9 @@ Search.prototype.searchRemoveChoice = function() {
     this.handleSearch();
 };
 
-// TODO: not called by anyone! should only be called by Backspace unselection!
-//
 // put the text representation of the last unselected item into the search
-Search.prototype.unselected = function(decorated, item) {
-    this.$search.val(item.text); // TODO  grmbl - normalize in general?
+Search.prototype.unselected = function(normalized) {
+    this.$search.val(normalized.text);
 };
 
 Search.prototype.resizeSearch = function() {

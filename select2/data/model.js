@@ -83,7 +83,7 @@ function ModelAdapter(core) {
     });
 
 
-
+    // adapt normalizer: add selected property for results
     var normalizeResultsFn = function(item) {
         var normalized = options.get("normalizer")(item);
         normalized["selected"] = undefined !== model.get('selections').find(function(selected) { return selected.item === item; });
@@ -162,18 +162,20 @@ ModelAdapter.prototype.move = function(params) {
 //      pos
 // }
 ModelAdapter.prototype.unselect = function(params) {
+    // "value" (output path) is always an array
 
-    // value (output path) is always an array
-    // remove from array at pos, or the last pos that item === pos
+    // remove from array at pos
     var pos = params.pos;
 
     if (pos == undefined) {
         if (params.item == undefined) {
-            // TODO instead: this.emit("unselected", data.text);
-            console.error("ModelAdapter: unselect: no item or pos given: params=", params);
+            // remove last item
+            var item = this.model.pop("value");
+            this.emit("unselected", this.options.get("normalizer")(item));
             return;
         }
 
+        // remove last pos that item === pos
         pos = this.model.get("value").lastIndexOf(params.item);
     }
 
@@ -182,5 +184,5 @@ ModelAdapter.prototype.unselect = function(params) {
         return;
     }
 
-    var data = this.model.remove("value", pos);
+    this.model.remove("value", pos);
 };
