@@ -63,7 +63,9 @@ Select2.prototype.init = function(model) {
     // enabled/disabled is kept in the options
     this.options.setNull("disabled", false);
 
+    // default settings
     this.options.setNull("tabindex", 0);
+    this.options.setNull("duplicates", false);
 
     // theme
     this.options.setNull("theme", "default");

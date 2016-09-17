@@ -183,18 +183,21 @@ Results.prototype.bind = function(core) {
 Results.prototype.select = function(data, evt) {
     if (!data || data.children || data.disabled) return;
 
-    if (data.selected) {
-        if (this.options.get('multiple')) {
-            this.emit('unselect', {
-                originalEvent: evt,
-                item: data.item     // TODO: with duplicates we don't know pos, so choose the last
-            });
-        } else {
-            this.emit('close', {}); // do nothing in single selection if already selected
-        }
-    } else {
+    if (!data.selected || this.options.get('multiple') && this.options.get('duplicates'))
+    {
         this.emit('select', {
             originalEvent: evt,     // TODO: check if originalEvent can actually be used (see CloseOnSelect)
+            item: data.item
+        });
+    }
+    else if (!this.options.get('multiple'))
+    {
+        this.emit('close', {}); // do nothing in single selection if already selected
+    }
+    else if (!this.options.get('duplicates'))
+    {
+        this.emit('unselect', { // unselect if we can't have duplicates
+            originalEvent: evt,
             item: data.item
         });
     }
