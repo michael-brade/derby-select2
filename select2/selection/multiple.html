@@ -3,7 +3,7 @@
 
 <index:>
     <span as="selection" class="select2-selection select2-selection--multiple {{@class}}" role="combobox"
-            aria-haspopup="true" aria-expanded="false"
+            aria-haspopup="true" aria-expanded="{{open ? 'true' : 'false'}}" aria-activedescendant="{{highlighted.id}}"
             title="">  <!-- TODO: which title to set? -->
         <ul id="{{@id}}" class="select2-selection__rendered">
             {{each selections as #selection, #pos}}

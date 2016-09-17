@@ -16,6 +16,7 @@ module.exports = Search;
 Search.prototype.view = __dirname + '/search.html';
 
 Search.prototype.init = function(model) {
+    model.ref("highlighted", this.parent.model.at("highlighted"));
 };
 
 Search.prototype.create = function(model, dom) {
@@ -34,26 +35,17 @@ Search.prototype.bind = function(core) {
 
     var close = function() {
         self.$search.val('');
-        self.$search.removeAttr('aria-activedescendant');
-        if (core.hasFocus())
-            self.search.focus();
-    }
-
-    var results_focus = function (params) {
-        self.$search.attr('aria-activedescendant', params.id);
     }
 
     core.on('open', focus);
     core.on('focus', focus);
     core.on('close', close);
-    core.on('results:focus', results_focus);
 
 
-    this.on('destroy', function () {
+    this.on('destroy', function() {
         core.removeListener('open', focus);
         core.removeListener('focus', focus);
         core.removeListener('close', close);
-        core.removeListener('results:focus', results_focus);
     });
 
 

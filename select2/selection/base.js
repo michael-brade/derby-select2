@@ -17,8 +17,10 @@ BaseSelection.prototype.init = function(model) {
     this.options = this.core.model.at("options")
 
     model.ref("options", this.options);
+    model.ref("open", this.core.model.at("open"));
     model.ref("focus", this.core.model.at("focus"));
     model.ref("selections", this.core.model.at("selections"));
+    model.ref("highlighted", this.core.model.at("highlighted"));
 };
 
 
@@ -37,24 +39,14 @@ BaseSelection.prototype.bind = function() {
     var self = this;
     var core = this.core;
 
-    // TODO: not implemented yet
-    core.on('results:focus', function(params) {
-        self.$selection.attr('aria-activedescendant', params.data._resultId);
-    });
-
     core.on('open', function() {
         var resultsId = core.results.results.id;
-        // When the dropdown is open, aria-expanded="true"
-        self.$selection.attr('aria-expanded', 'true');
         self.$selection.attr('aria-owns', resultsId);
 
         self._attachCloseHandler(core);
     });
 
     core.on('close', function() {
-        // When the dropdown is closed, aria-expanded="false"
-        self.$selection.attr('aria-expanded', 'false');
-        self.$selection.removeAttr('aria-activedescendant');
         self.$selection.removeAttr('aria-owns');
 
         self._detachCloseHandler(core);

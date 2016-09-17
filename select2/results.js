@@ -22,6 +22,7 @@ Results.prototype.init = function(model) {
     model.ref("options", this.core.model.at("options"));
     model.ref("results", this.core.model.at("results"));
     model.ref("selections", this.core.model.at("selections"));
+    model.ref("highlighted", this.core.model.at("highlighted"));
 };
 
 // called on open
@@ -49,7 +50,7 @@ Results.prototype.hideMessages = function() {
 
 
 Results.prototype.highlightFirstItem = function () {
-    this.model.set('highlighted', this.model.get('results')[0]);
+    this.highlight(this.model.get('results')[0]);
     this.ensureHighlightVisible();
 };
 
@@ -103,7 +104,7 @@ Results.prototype.bind = function(core) {
             nextIndex = 0;
         }
 
-        self.model.set('highlighted', results[nextIndex]);
+        self.highlight(results[nextIndex]);
         self.ensureHighlightVisible();
     };
 
@@ -120,7 +121,7 @@ Results.prototype.bind = function(core) {
             return;
         }
 
-        self.model.set('highlighted', results[nextIndex]);
+        self.highlight(results[nextIndex]);
         self.ensureHighlightVisible();
     };
 
@@ -128,7 +129,7 @@ Results.prototype.bind = function(core) {
 
     var results_lastFn = function () {
         var results = self.model.get('results');
-        self.model.set('highlighted', results[results.length-1]);
+        self.highlight(results[results.length-1]);
         self.ensureHighlightVisible();
     };
 
@@ -162,6 +163,7 @@ Results.prototype.bind = function(core) {
     core.on('results:select', results_selectFn);
 
     this.on('destroy', function () {
+        self.model.del('highlighted');
         core.removeListener('query', queryFn);
         core.removeListener('queryEnd', queryEndFn);
         core.removeListener('select', selectFn);

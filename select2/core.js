@@ -34,7 +34,7 @@ var ModelAdapter = require('./data/model');
   Events:
     - open, close, query, queryEnd, select, move, unselect, focus, blur, disable, enable
     - opening, closing, selecting, unselecting
-    - results:select, results:toggle, results:previous, results:next
+    - results:select, results:toggle, results:previous, results:next, results:first, results:last
 */
 
 function Select2() {}
@@ -56,7 +56,7 @@ Select2.prototype.components = [
 Select2.prototype.init = function(model) {
     this.options = model.at("options");
 
-    // state is kept in the model: focus, open
+    // state is kept in the model: focus, open, highlighted
     model.setNull("focus", false);
     model.setNull("open", false);
 
