@@ -83,19 +83,18 @@ function ModelAdapter(core) {
     });
 
 
-    // adapt normalizer: add selected property for results
-    var normalizeResultsFn = function(item) {
-        var normalized = options.get("normalizer")(item);
-        normalized["selected"] = undefined !== model.get('selections').find(function(selected) { return selected.item === item; });
-        return normalized;
-    }
-
     // results: first normalize, then filter & sort (TODO: performance?! always normalize all items???)
-    model.fn("normalizeResultsFn", function(items, filter) {
-        // results needs to be an array, items may be any collection
+    model.fn("normalizeResultsFn", function(items, selections, filter) {
+        // results needs to be an array, items may be any collection, selections is array at "value" (not normalized)
         var results = [];
 
-        // normalize
+        // normalize - adapt normalizer: add selected property for results
+        var normalizeResultsFn = function(item) {
+            var normalized = options.get("normalizer")(item);
+            normalized["selected"] = undefined !== selections.find(function(selected) { return selected === item; });
+            return normalized;
+        }
+
         for (var id in items) {
             results.push(normalizeResultsFn(items[id]));
         }
@@ -117,7 +116,7 @@ util.inherits(ModelAdapter, BaseAdapter);
 
 // only start "results" after opening the dropdown
 ModelAdapter.prototype.start = function() {
-    this.model.start("results", "data", "filter", "normalizeResultsFn");
+    this.model.start("results", "data", "value", "filter", "normalizeResultsFn");
 };
 
 ModelAdapter.prototype.stop = function() {
