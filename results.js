@@ -90,19 +90,18 @@ Results.prototype.bind = function(core) {
         var highlighted = self.model.get('highlighted');
         var results = self.model.get('results');
 
-        var currentIndex = _findIndex(results, ['item', highlighted.item]);
-
-        // If we are already at the top, don't move further
-        if (currentIndex === 0) {
-            return;
-        }
-
-        var nextIndex = currentIndex - 1;
-
         // If none are highlighted, highlight the first
-        if (highlighted === undefined) {
-            nextIndex = 0;
-        }
+        var nextIndex = 0;
+        if (highlighted !== undefined) {
+        	var currentIndex = _findIndex(results, ['item', highlighted.item]);
+
+        	// If we are already at the top, don't move further
+        	if (currentIndex === 0) {
+            	return;
+        	}
+
+        	nextIndex = currentIndex - 1;
+		}
 
         self.highlight(results[nextIndex]);
         self.ensureHighlightVisible();
@@ -112,14 +111,18 @@ Results.prototype.bind = function(core) {
         var highlighted = self.model.get('highlighted');
         var results = self.model.get('results');
 
-        var currentIndex = _findIndex(results, ['item', highlighted.item]);
+        // If none are highlighted, highlight the first
+        var nextIndex = 0;
+        if (highlighted !== undefined) {
+            var currentIndex = _findIndex(results, ['item', highlighted.item]);
 
-        var nextIndex = currentIndex + 1;
+            nextIndex = currentIndex + 1;
 
-        // If we are at the last option, stay there
-        if (nextIndex >= results.length) {
-            return;
-        }
+            // If we are at the last option, stay there
+            if (nextIndex >= results.length) {
+                return;
+            }
+		}
 
         self.highlight(results[nextIndex]);
         self.ensureHighlightVisible();
