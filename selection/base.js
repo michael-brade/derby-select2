@@ -75,13 +75,11 @@ BaseSelection.prototype._attachCloseHandler = function(core) {
         var $all = $('.select2.select2-container--open');
 
         $all.each(function() {
-            var $this = $(this);
-
             if (this == $select[0]) {
                 return;
             }
 
-            var controller = $this.data('controller');
+            var controller = $(this).data('controller');
             controller.close();
         });
     });

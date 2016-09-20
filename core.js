@@ -1,4 +1,6 @@
 'use strict';
+var path = require('path');
+
 var $ = require('jquery');
 
 var Defaults = require('./defaults');
@@ -41,8 +43,8 @@ function Select2() {}
 
 module.exports = Select2;
 
-Select2.prototype.view = __dirname + '/core.html';
-Select2.prototype.style = __dirname + '/../index.css';
+Select2.prototype.view = path.join(__dirname, '/core.html');
+Select2.prototype.style = path.join(__dirname, '/index.css');
 
 Select2.prototype.components = [
     require('./selection/single'),
