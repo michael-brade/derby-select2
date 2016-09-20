@@ -123,13 +123,9 @@ Select2.prototype._registerSelectionEvents = function() {
     var self = this;
     var relayEvents = ['query', 'move', 'unselect'];
 
-    // register toggle and focus
+    // register toggle
     this.selection.on('toggle', function() {
         self.toggleDropdown();
-    });
-
-    this.selection.on('focus', function(params) {
-        self.focus(params);
     });
 
     // relay the rest
@@ -205,25 +201,26 @@ Select2.prototype._registerEvents = function() {
 
     /* focus/blur events */
 
-    this.container.addEventListener('blur', function(evt) {
-
-        // This needs to be delayed as the active element is the body when the tab
-        // key is pressed, possibly along with others.
-        setTimeout(function() {
-            // Don't trigger `blur` if the focus is still in the selection
-            if (self.container == document.activeElement || $.contains(self.container, document.activeElement))
-            {
-                return;
-            }
-
-            self.model.set("focus", false);
-        }, 1);
-
-    }, true);   // capturing phase, blur doesn't bubble
-
     this.container.addEventListener('focus', function(evt) {
         self.focus();
     }, true);   // capturing phase, focus doesn't bubble
+
+    this.container.addEventListener('blur', function(evt) {
+        self.model.set("focus", false);
+    }, true);   // capturing phase, blur doesn't bubble
+
+
+    this.container.addEventListener('mousedown', function(evt) {
+
+        if (self.container == evt.target || $.contains(self.container, evt.target))
+        {
+            // we don't blur if mousedown is prevented, and it is prevented if mousedown happens in the container
+            evt.preventDefault();
+        }
+
+        self.focus();
+    });
+
 
 
     /* keyboard events */
@@ -363,9 +360,5 @@ Select2.prototype.focus = function(evt) {
         return;
     }
 
-    // this needs a delay, otherwise the changes in the view will prevent the click event from firing
-    var self = this;
-    setTimeout(function() {
-        self.model.set("focus", true);
-    }, 200);
+    this.model.set("focus", true);
 };
