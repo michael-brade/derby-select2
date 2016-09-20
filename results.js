@@ -208,7 +208,7 @@ Results.prototype.select = function(data, evt) {
 
 // data is the normalized item from "results" model path
 Results.prototype.highlight = function(data, evt) {
-    if (data.children || data.disabled) return;
+    if (!data || data.children || data.disabled) return;
 
     this.model.set("highlighted", data);
 };
