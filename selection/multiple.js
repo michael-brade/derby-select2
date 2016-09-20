@@ -32,7 +32,7 @@ MultipleSelection.prototype.create = function(model, dom) {
         });
     });
 
-    // register search events
+    // register search events when search is shown (focus)
     this.core.on('focus', function() {
         self.search.on('query', function(params) {
             self.emit('query', params);
@@ -48,9 +48,17 @@ MultipleSelection.prototype.create = function(model, dom) {
             self.search.unselected(params);
     });
 
+
     this.core.on('select', function(params) {
-        if (self.search)
+        if (self.search) {
             self.search.clearSearch();
+        }
+    });
+
+    this.core.on('unselect', function(params) {
+        if (self.search) {
+            self.search.clearSearch();
+        }
     });
 }
 
