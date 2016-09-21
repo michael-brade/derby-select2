@@ -75,16 +75,21 @@ function ModelAdapter(core, options) {
     // TODO: derby: shouldn't it be possible to ref and map the single array elements?
     model.start("selections", "value", function(selected_items) {
         var results = [];
-        for (var id in selected_items) {
-            results.push(options.get("normalizer")(selected_items[id]));
-        }
+        // "value" (selected_items) is array if multiple, otherwise it's a single item
+        if (options.get("multiple"))
+            for (var id in selected_items) {
+                results.push(options.get("normalizer")(selected_items[id]));
+            }
+        else
+            results.push(options.get("normalizer")(selected_items));
+
         return results;
     });
 
 
     // DON'T use model.fn(), it can only set ONE function with a particular name globally!
-    this.normalizeResultsFn = function(items, selections, filter) {
-        // results needs to be an array, items may be any collection, selections is array at "value" (not normalized)
+    this.normalizeResultsFn = function(items, value, filter) {
+        // results needs to be an array, items may be any collection, value is item/array (not normalized)
         var results = [];
 
         // results: first normalize, then filter & sort (TODO: performance?! always normalize all items???)
@@ -92,7 +97,10 @@ function ModelAdapter(core, options) {
         // normalize - adapt normalizer: add selected property for results
         var normalizeResultsFn = function(item) {
             var normalized = options.get("normalizer")(item);
-            normalized["selected"] = selections && undefined !== selections.find(function(selected) { return selected === item; });
+            if (options.get("multiple"))
+                normalized["selected"] = value && undefined !== value.find(function(selected) { return selected === item; });
+            else
+                normalized["selected"] = value === item;
             return normalized;
         }
 
