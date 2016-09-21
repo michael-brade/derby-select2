@@ -1,5 +1,8 @@
 'use strict';
+
+var path = require('path');
 var util = require('util');
+
 var BaseSelection = require('./base');
 var MultipleReorderSelection = require('./multiplereorder');
 var Utils = require('../utils');
@@ -14,7 +17,7 @@ module.exports = MultipleSelection;
 util.inherits(MultipleSelection, BaseSelection);
 
 
-MultipleSelection.prototype.view = __dirname + '/multiple.html';
+MultipleSelection.prototype.view = path.join(__dirname, 'multiple.html');
 
 MultipleSelection.prototype.init = function(model) {
     MultipleSelection.super_.prototype.init.apply(this, arguments);
