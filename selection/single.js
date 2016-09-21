@@ -30,7 +30,7 @@ SingleSelection.prototype.create = function(model, dom) {
     });
 
     this.core.on('focus', function (evt) {
-        if (!this.core.isOpen()) {
+        if (!self.core.isOpen()) {
             self.$selection.focus();
         }
     });
