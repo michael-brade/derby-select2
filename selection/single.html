@@ -8,7 +8,7 @@
         <span id="{{@id}}" class="select2-selection__rendered"
             title="{{selections.length ? (selections[0].title || selections[0].text) : ''}}">
             {{if selections.length}}
-                <view name="{{options.selectionTemplate}}" item="{{selections[0]}}" />
+                <view name="{{options.selectionTemplate}}" item="{{selections[0].item}}" />
             {{/}}
         </span>
 
