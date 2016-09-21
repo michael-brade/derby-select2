@@ -1,6 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
+var path = require('path');
 var KEYS = require('../keys');
 
 /**
@@ -13,7 +13,7 @@ function Search() {}
 
 module.exports = Search;
 
-Search.prototype.view = __dirname + '/search.html';
+Search.prototype.view = path.join(__dirname, 'search.html');
 
 Search.prototype.init = function(model) {
     model.ref("highlighted", this.parent.model.at("highlighted"));
