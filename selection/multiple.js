@@ -26,7 +26,7 @@ MultipleSelection.prototype.create = function(model, dom) {
     MultipleSelection.super_.prototype.create.apply(this, arguments);
 
     var self = this;
-    this.$selection.on('click', function(evt) {
+    this.selection.addEventListener('mouseup', function(evt) {
         self.emit('toggle', {
             originalEvent: evt
         });
