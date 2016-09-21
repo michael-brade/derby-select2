@@ -33,10 +33,9 @@ results contains normalized items and is thus an array of objects with this stru
     }
 
 */
-function ModelAdapter(core) {
+function ModelAdapter(core, options) {
     ModelAdapter.super_.apply(this, arguments);
 
-    var options = core.options;
     var model = core.model;
 
     this.options = options;
@@ -83,15 +82,17 @@ function ModelAdapter(core) {
     });
 
 
-    // results: first normalize, then filter & sort (TODO: performance?! always normalize all items???)
-    model.fn("normalizeResultsFn", function(items, selections, filter) {
+    // DON'T use model.fn(), it can only set ONE function with a particular name globally!
+    this.normalizeResultsFn = function(items, selections, filter) {
         // results needs to be an array, items may be any collection, selections is array at "value" (not normalized)
         var results = [];
+
+        // results: first normalize, then filter & sort (TODO: performance?! always normalize all items???)
 
         // normalize - adapt normalizer: add selected property for results
         var normalizeResultsFn = function(item) {
             var normalized = options.get("normalizer")(item);
-            normalized["selected"] = undefined !== selections.find(function(selected) { return selected === item; });
+            normalized["selected"] = selections && undefined !== selections.find(function(selected) { return selected === item; });
             return normalized;
         }
 
@@ -103,7 +104,7 @@ function ModelAdapter(core) {
         return results
             .filter(options.get("filter")(filter))
             .sort(options.get("sorter"));
-    });
+    };
 }
 
 module.exports = ModelAdapter;
@@ -116,7 +117,7 @@ util.inherits(ModelAdapter, BaseAdapter);
 
 // only start "results" after opening the dropdown
 ModelAdapter.prototype.start = function() {
-    this.model.start("results", "data", "value", "filter", "normalizeResultsFn");
+    this.model.start("results", "data", "value", "filter", this.normalizeResultsFn);
 };
 
 ModelAdapter.prototype.stop = function() {
