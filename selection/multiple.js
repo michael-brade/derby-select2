@@ -35,33 +35,25 @@ MultipleSelection.prototype.create = function(model, dom) {
         });
     });
 
-    // register search events when search is shown (focus)
-    this.core.on('focus', function() {
-        self.search.on('query', function(params) {
-            self.emit('query', params);
-        });
+    this.search.on('query', function(params) {
+        self.emit('query', params);
+    });
 
-        self.search.on('unselect', function(params) {
-            self.emit('unselect', params);
-        });
+    this.search.on('unselect', function(params) {
+        self.emit('unselect', params);
     });
 
     this.core.dataAdapter.on('unselected', function(params) {
-        if (self.search)
-            self.search.unselected(params);
+        self.search.unselected(params);
     });
 
 
     this.core.on('select', function(params) {
-        if (self.search) {
-            self.search.clearSearch();
-        }
+        self.search.clearSearch();
     });
 
     this.core.on('unselect', function(params) {
-        if (self.search) {
-            self.search.clearSearch();
-        }
+        self.search.clearSearch();
     });
 }
 

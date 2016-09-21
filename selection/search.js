@@ -17,13 +17,12 @@ Search.prototype.view = __dirname + '/search.html';
 
 Search.prototype.init = function(model) {
     model.ref("highlighted", this.parent.model.at("highlighted"));
+    this.options = this.parent.options;
 };
 
 Search.prototype.create = function(model, dom) {
     this.$search = $(this.search);
     this.bind(this.parent.core);
-
-    this.search.focus();
 };
 
 Search.prototype.bind = function(core) {
@@ -40,13 +39,6 @@ Search.prototype.bind = function(core) {
     core.on('open', focus);
     core.on('focus', focus);
     core.on('close', close);
-
-
-    this.on('destroy', function() {
-        core.removeListener('open', focus);
-        core.removeListener('focus', focus);
-        core.removeListener('close', close);
-    });
 
 
     this.search.addEventListener('keydown', function(evt) {

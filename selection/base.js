@@ -27,8 +27,6 @@ BaseSelection.prototype.init = function(model) {
 BaseSelection.prototype.create = function(model, dom) {
     this.$selection = $(this.selection);
 
-    this.$selection.attr('tabindex', this.options.get('tabindex'));
-
     var self = this;
     this.on('destroy', function() {
         self._detachCloseHandler(self.core);
@@ -50,14 +48,6 @@ BaseSelection.prototype.bind = function() {
         self.$selection.removeAttr('aria-owns');
 
         self._detachCloseHandler(core);
-    });
-
-    core.on('enable', function() {
-        self.$selection.attr('tabindex', self.options.get('tabindex'));
-    });
-
-    core.on('disable', function() {
-        self.$selection.attr('tabindex', '-1');
     });
 };
 
