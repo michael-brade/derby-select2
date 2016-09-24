@@ -69,5 +69,6 @@ MultipleSelection.prototype.unselect = function(evt, normalized, pos) {
         pos: pos
     });
 
-    // TODO: probably preventPropagation, otherwise unselect opens the dropdown
+    // TODO: make propagation configurable
+    evt.stopPropagation();
 }
