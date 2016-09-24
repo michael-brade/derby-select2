@@ -67,6 +67,7 @@ Select2.prototype.init = function(model) {
 
     // default settings
     this.options.setNull("tabindex", 0);
+    this.options.setNull("multiple", false);
     this.options.setNull("duplicates", false);
 
     // theme
