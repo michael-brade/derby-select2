@@ -1,118 +1,136 @@
-# Select2 component for Derby JS 
+# Select2 component for Derby JS
 
-This is a [DerbyJS](http://github.com/codeparty/derby) component for jQuery Select2 4.0.
-It features some improved usability, and it adds support for re-ordering multi-selections with drag-and-drop.
+This is a [DerbyJS](http://github.com/derbyjs/derby) component for jQuery Select2 4.0.
+
+It features some improved usability, and it adds support for
+
+* re-ordering multi-selections with drag&drop
+* allowing to select an item repeatedly in multi-selection mode
+* supports ES6 and is written in ES6
+
+The html-structure is exactly identical to the jQuery Select2 component, so styles can be simply reused. You will still
+most likely recognize the resemblance to the original jQuery Select2 code, but using Derby, much less code is required.
+
+
+## Installation
+
+### Dependencies
+
+* [Sortable](http://rubaxa.github.io/Sortable)
+
+
+## Usage
+
+### In your app
+
+```javascript
+// Use component published as module
+app.component(require('derby-select2'));
+```
+
+### In your template
+
+```html
+<select2 id="select2-id12345" class="form-control" options="{{select2options}}" data="{{items}}" value="{{data}}" />
+```
 
 
 ## Design
 
-* dataAdapter: class; a simple EventEmitter class
-* selectionAdapter: string; the name of a DerbyJS view (component)
-* resultsAdapter: string; the name of a DerbyJS view (component)
+### Components/Views
 
+There are five main components that make up Select2:
 
-Data flow:
+* "core" is the main view, parent of all others
+* "results" is the contents of the dropdown and shows the selectable items.
+* "selection/multiple" and "selection/single" are the selection views: they show what has already been selected
+* "search" is used to filter the results (by dropdown and multiple)
 
-input: model path "data"
- -> dataAdapter: normalize data items to results
- -> select2 user interaction
- -> dataAdapter on "select", "unselect" writes selections to model path "selections"
+The views can be configured using the following options:
 
-dataAdapter is also the link between "selections" (normalized) and the output model path "value". It reads changes from "value" and writes them to "selections", as well as the other way around.
+* `selectionAdapter`: string; the name of a DerbyJS view (component) that is to be used as selection view
+* `resultsAdapter`: string; the name of a DerbyJS view (component) that should display the selectable items
 
-Thus, dataAdapters do two things:
+Both, the `selectionAdapter` and the `resultsAdapter`, will get an `item` attribute (not normalized) passed.
+If you need to pass and get more data, make the view a component and get the data from the options you passed
+to Select2 by calling `this.parent.model.get('options')`.
 
-  - normalize (from data to results and from value to selections)
-  - add and remove items to and from value using items in data.
+The model is set up using a data adapter; it is configured using:
 
-And, a data adapter filters according to query arguments (paging) and a model path (filtering).
-
-
-Signals:
-
-* opening the dropdown emits "query"
-
-* "query" starts getting the data from the dataAdapter - if no query is necessary, "queryEnd" is emitted right away
-* "query" opens the dropdown
-* query adds "loading" message
-* queryEnd removes "loading" message
+* `dataAdapter`: class; a simple EventEmitter class, needs to set up the model and normalization. And, a data adapter
+  filters according to query arguments (paging) and a model path (filtering).
 
 
 
+### Model
 
-configuration options:
-    resultsTemplate, selectionTemplate:
-        Provide a view name to use. It will get an `item` attribute passed.
+input paths:
+  - "data": an array with all possible selectable items
 
-        If you need to pass and get more data, make the view a component and get the data
-        from the options you passed to Select2 by calling `this.parent.model.get('options')`
+output paths:
+  - "value": where to store the array with the selected item(s)
+
+configuration path:
+  - "options": where all the Select2 options are stored
+
+model paths for internal Select2 use:
+  - focus (bool): true if Select2 has focus
+  - open (bool): true if dropdown open
+  - results (array): filtered and sorted selectable items to show in dropdown
+  - selections (array): selected items
+  - highlighted: the currently highlighted item
 
 
 
-NOT TO BE PUBLISHED, NOTES:
-===========================
+### Events/Signals
 
-Core:
-  receives all keypresses and reacts to Esc (close), Space (toggle selection), Return (select),
-  Up (next), Down (prev)
+The events that can be emitted are:
 
-Selection:
-  The elements that were selected, or the element that has been selected. You can click on it
-  and thereby deselect it and/or toggle the dropdown. It can receive keypresses and simply
-  forwards them.
+  - open, close, query, queryEnd, select, move, unselect, focus, blur, disable, enable
+  - opening, closing, selecting, unselecting
+  - results:select, results:toggle, results:previous, results:next, results:first, results:last
 
-  signals:
-    keypress
-    toggle
-    unselect (if multiple)
+Explanation:
 
-  slots from container:
-    results:focus (to set aria-activedescendant)
+  * opening the dropdown emits "query"
 
-    open
-    close
-    enable
-    disable
+  * "query" starts getting the data from the dataAdapter - if no query is necessary, "queryEnd" is emitted right away
+  * "query" opens the dropdown
+  * query adds "loading" message
+  * queryEnd removes "loading" message
 
-Results:
-  The dropdown with all selectable items. Can be filtered.
-  The class `select2-results__option--highlighted` is added to a focused (mouseenter) item.
-  When an item is focused, the Selection class has to be informed to set aria-activedescendant.
 
-  model:
-    message
-    results  (TODO)
-    loading
-    current (to hold the currently highlighted/focused element -- update/change it with every
-        mousehover/enter/leave event)
 
-  parent model paths:
-    selections
+### Data flow
 
-  interface:
-    displayMessage
-    showLoading
-    append  (to add items)
+The (default) model data adapter sets up the following references:
 
-  signals:
+* data -> results
+  Takes the items from model path "data" (array) and normalizes, filters, and sorts it to "results" (array).
 
-  slots from container:
-    results:all
-    results:append
-    query (to show loading until results:all/append)
-    select/unselect: setClasses
-    open
-    close
-    results:toggle (toggle selection of current element)
-    results:select (select current element)
-    results:previous
-    results:next
-    results:focus
-    results:message
+* data -> value
+  On select/move/unselect events it copies or moves the item of the event to value, or deletes the item from value.
 
-  self:
-    mouseup
-    mouseenter
+* value -> selections
+  Takes input from model path "value" and normalizes it to "selections".
+
+
+Normalization is internal to Select2, and it means how to get those attributes: `id`, `title`, `text`, `children`, `disabled`.
+
+"results" contains normalized items and is thus an array of objects with this structure:
+
+```
+data: {
+    item: <original item>,
+    id: item.id,
+    title: item.title,
+    text: item.text,
+    children: item.children,
+    disabled: item.disabled,
+    selected: true/false
+}
+```
+
 
 
 ## Differences to jQuery Select2
@@ -130,50 +148,10 @@ Results:
   And an array can be passed using the model.
 
 
-### Additional features
-
-- reorder the selection with drag&drop
-- select an item multiple times if "duplicates" is enabled
-
-
-
-
-## Dependencies
-
-* [Sortable](http://rubaxa.github.io/Sortable)
-
-
-## Usage
-
-### In your app
-
-```javascript
-// Use component published as module
-app.component(require('derby-select2'));
-```
-
-### In your template
-
-```html
-<view name="d-select2" fixed attr="{{entity.attributes.users}}" value="{{data}}"></view>
-```
-
-Supported attributes:
-
-attribute | meaning
-------|------
-fixed | boolean; if given, no new items may be added (allowing that is not implemented yet)
-value | model path where to store the selections, e.g. `"{{data}}"`
-attr  | an attribute object of an entity, this determines the items that can be selected
-
-
-## TODO
-
-Turn this component into an actual Derby view to make it reactive instead of using select2's jQuery DOM rendering code.
 
 
 ## License
 
 MIT
 
-Copyright (c) 2015 Michael Brade
+Copyright (c) 2015-2016 Michael Brade
