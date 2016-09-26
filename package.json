@@ -42,7 +42,9 @@
     }
   },
   "scripts": {
-    "build": "export DEST=dist;export ASSETS='.*.scss|.*.html|./README.md|./package.json';find \\( -path './node_modules*' -o -path \"./$DEST\" \\) -prune -o -name '*.js' -print0| xargs -n1 -P8 -0 sh -c 'echo Compiling and minifying $0...;mkdir -p \"$DEST/`dirname $0`\";`# babel --presets es2015 \"$0\" | uglifyjs - -cm -o \"$DEST/$0\"`;babel --presets es2015 \"$0\" > \"$DEST/$0\";';echo \"\u001b[01;32mCopying assets...\u001b[00m\";find \\( -path './node_modules*' -o -path \"./$DEST\" \\) -prune -o -regextype posix-egrep -regex $ASSETS -print0| xargs -n1 -0 sh -c 'mkdir -p \"$DEST/`dirname \"$0\"`\";cp -a \"$0\" \"$DEST/$0\"';echo \"\u001b[01;32mDone!\u001b[00m\";",
+    "prebuild": "npm run clean; touch .create_stash && git stash save --include-untracked \"npm build stash\";",
+    "build": "export DEST=dist;export ASSETS='.*.scss|.*.html|./README.md|./package.json';find \\( -path './node_modules*' -o -path \"./$DEST\" \\) -prune -o -name '*.js' -print0| xargs -n1 -P8 -0 sh -c 'echo Compiling and minifying $0...;mkdir -p \"$DEST/`dirname $0`\";babel --presets es2015 \"$0\" | uglifyjs - -cm -o \"$DEST/$0\";';echo \"\u001b[01;32mCopying assets...\u001b[00m\";find \\( -path './node_modules*' -o -path \"./$DEST\" \\) -prune -o -regextype posix-egrep -regex $ASSETS -print0| xargs -n1 -0 sh -c 'mkdir -p \"$DEST/`dirname \"$0\"`\";cp -a \"$0\" \"$DEST/$0\"';echo \"\u001b[01;32mDone!\u001b[00m\";",
+    "postbuild": "git stash pop --index && rm .create_stash;",
     "clean": "rm -rf dist;",
     "test": "echo \"TODO: no tests specified yet\" && exit 1;",
     "prepublish": "npm run clean; npm run build;",

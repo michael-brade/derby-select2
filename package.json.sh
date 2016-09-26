@@ -49,7 +49,7 @@ scripts:
 
     # make sure a stash will be created and stash everything not committed
     # beware: --all would be really correct, but it also removes node_modules, so use --include-untracked instead
-    # prebuild: 'npm run clean; touch .create_stash && git stash save --include-untracked "npm build stash";'
+    prebuild: 'npm run clean; touch .create_stash && git stash save --include-untracked "npm build stash";'
 
     # build the distribution under dist: create directory structure, transpile, uglify
     # TODO: compile scss to dist/css
@@ -61,8 +61,7 @@ scripts:
         | xargs -n1 -P8 -0 sh -c '
             echo Compiling and minifying $0...;
             mkdir -p \"$DEST/`dirname $0`\";
-            `# babel --presets es2015 \"$0\" | uglifyjs - -cm -o \"$DEST/$0\"`;
-            babel --presets es2015 \"$0\" > \"$DEST/$0\";
+            babel --presets es2015 \"$0\" | uglifyjs - -cm -o \"$DEST/$0\";
         ';
 
         echo \"\033[01;32mCopying assets...\033[00m\";
@@ -75,7 +74,7 @@ scripts:
         echo \"\033[01;32mDone!\033[00m\";
     "
     # restore the original situation
-    # postbuild: 'git stash pop --index && rm .create_stash;'
+    postbuild: 'git stash pop --index && rm .create_stash;'
 
     clean: "rm -rf dist;"   # the ; at the end is very important! otherwise "npm run clean ." would delete everything
 
