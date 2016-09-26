@@ -1,10 +1,7 @@
-'use strict';
-var $ = require('jquery');
-var _findIndex = require('lodash/findIndex')
+import path from 'path';
 
-function Results() {}
-
-module.exports = Results;
+import $ from 'jquery';
+import _findIndex from 'lodash/findIndex';
 
 
 /* Results Model paths:
@@ -13,241 +10,238 @@ module.exports = Results;
      results
      highlighted
 */
-Results.prototype.view = __dirname + "/results.html";
+export default class Results
+{
+    init(model) {
+        this.core = this.parent; // alias to make it more obvious
+        this.options = model.at("options");
 
-Results.prototype.init = function(model) {
-    this.core = this.parent; // alias to make it more obvious
-    this.options = model.at("options");
+        model.ref("options", this.core.model.at("options"));
+        model.ref("results", this.core.model.at("results"));
+        model.ref("selections", this.core.model.at("selections"));
+        model.ref("highlighted", this.core.model.at("highlighted"));
+    }
 
-    model.ref("options", this.core.model.at("options"));
-    model.ref("results", this.core.model.at("results"));
-    model.ref("selections", this.core.model.at("selections"));
-    model.ref("highlighted", this.core.model.at("highlighted"));
-};
+    // called on open
+    create(model, dom) {
+        this.$results = $(this.results);
+        this.bind(this.core);
 
-// called on open
-Results.prototype.create = function(model, dom) {
-    this.$results = $(this.results);
-    this.bind(this.core);
+        this.ensureHighlightVisible();
+    }
 
-    this.ensureHighlightVisible();
-};
+    /* A message can be a function and have arguments, so params is an object with attributes message and args. */
+    displayMessage(params) {
+        this.hideLoading();
 
-/* A message can be a function and have arguments, so params is an object with attributes
-message and args. */
-Results.prototype.displayMessage = function(params) {
-    this.hideLoading();
+        // var message = this.options.get('translations').get(params.message);
 
-//    var message = this.options.get('translations').get(params.message);
+        /*this.model.set("message", message(params.args));*/
+        this.model.set("message", "nothing here");
+    }
 
-    /*this.model.set("message", message(params.args));*/
-    this.model.set("message", "nothing here");
-};
+    hideMessages() {
+        this.model.del("message");
+    }
 
-Results.prototype.hideMessages = function() {
-    this.model.del("message");
-};
+    highlightFirstItem() {
+        this.highlight(this.model.get('results')[0]);
+        this.ensureHighlightVisible();
+    }
 
+    showLoading(params) {
+        /*var loadingMore = this.options.get('translations').get('searching');
+        this.model.set("loading", loadingMore(params));*/
+        this.model.set("loading", "loading...");
+    }
 
-Results.prototype.highlightFirstItem = function () {
-    this.highlight(this.model.get('results')[0]);
-    this.ensureHighlightVisible();
-};
+    hideLoading() {
+        this.model.del("loading");
+    }
 
-Results.prototype.showLoading = function(params) {
-    /*var loadingMore = this.options.get('translations').get('searching');
-    this.model.set("loading", loadingMore(params));*/
-    this.model.set("loading", "loading...");
-};
+    bind(core) {
+        const queryFn = params => {
+            this.hideMessages();
+            this.showLoading(params);
+        };
 
-Results.prototype.hideLoading = function() {
-    this.model.del("loading");
-};
+        const queryEndFn = params => {
+            this.hideLoading();
+            this.highlightFirstItem();
+        };
 
-Results.prototype.bind = function(core) {
-    var self = this;
+        const selectFn = () => {
+            this.highlightFirstItem();
+        };
 
-    var queryFn = function(params) {
-        self.hideMessages();
-        self.showLoading(params);
-    };
+        const unselectFn = () => {
+            this.highlightFirstItem();
+        };
 
-    var queryEndFn = function(params) {
-        self.hideLoading();
-        self.highlightFirstItem();
-    };
+        const results_previousFn = () => {
+            const highlighted = this.model.get('highlighted');
+            const results = this.model.get('results');
 
-    // no real need for the following two--except to trigger mouseenter...
-    var selectFn = function() {
-        self.highlightFirstItem();
-    };
+            // If none are highlighted, highlight the first
+            let nextIndex = 0;
+            if (highlighted !== undefined) {
+                const currentIndex = _findIndex(results, ['item', highlighted.item]);
 
-    var unselectFn = function() {
-        self.highlightFirstItem();
-    };
+                // If we are already at the top, don't move further
+                if (currentIndex === 0) {
+                    return;
+                }
 
-    var results_previousFn = function() {
-        var highlighted = self.model.get('highlighted');
-        var results = self.model.get('results');
-
-        // If none are highlighted, highlight the first
-        var nextIndex = 0;
-        if (highlighted !== undefined) {
-        	var currentIndex = _findIndex(results, ['item', highlighted.item]);
-
-        	// If we are already at the top, don't move further
-        	if (currentIndex === 0) {
-            	return;
-        	}
-
-        	nextIndex = currentIndex - 1;
-		}
-
-        self.highlight(results[nextIndex]);
-        self.ensureHighlightVisible();
-    };
-
-    var results_nextFn = function() {
-        var highlighted = self.model.get('highlighted');
-        var results = self.model.get('results');
-
-        // If none are highlighted, highlight the first
-        var nextIndex = 0;
-        if (highlighted !== undefined) {
-            var currentIndex = _findIndex(results, ['item', highlighted.item]);
-
-            nextIndex = currentIndex + 1;
-
-            // If we are at the last option, stay there
-            if (nextIndex >= results.length) {
-                return;
+                nextIndex = currentIndex - 1;
             }
-		}
 
-        self.highlight(results[nextIndex]);
-        self.ensureHighlightVisible();
-    };
+            this.highlight(results[nextIndex]);
+            this.ensureHighlightVisible();
+        };
 
-    var results_firstFn = this.highlightFirstItem.bind(this);
+        const results_nextFn = () => {
+            const highlighted = this.model.get('highlighted');
+            const results = this.model.get('results');
 
-    var results_lastFn = function () {
-        var results = self.model.get('results');
-        self.highlight(results[results.length-1]);
-        self.ensureHighlightVisible();
-    };
+            // If none are highlighted, highlight the first
+            let nextIndex = 0;
+            if (highlighted !== undefined) {
+                const currentIndex = _findIndex(results, ['item', highlighted.item]);
 
-    var results_messageFn = function(params) {
-        self.displayMessage(params);
-    };
+                nextIndex = currentIndex + 1;
 
-    var results_toggleFn = function() {
-        var highlighted = self.model.get('highlighted');
-        self.select(highlighted);
-    };
+                // If we are at the last option, stay there
+                if (nextIndex >= results.length) {
+                    return;
+                }
+            }
 
-    var results_selectFn = function() {
-        var highlighted = self.model.get('highlighted');
-        self.select(highlighted);
-    };
+            this.highlight(results[nextIndex]);
+            this.ensureHighlightVisible();
+        };
+
+        const results_firstFn = this.highlightFirstItem.bind(this);
+
+        const results_lastFn = () => {
+            const results = this.model.get('results');
+            this.highlight(results[results.length-1]);
+            this.ensureHighlightVisible();
+        };
+
+        const results_messageFn = params => {
+            this.displayMessage(params);
+        };
+
+        const results_toggleFn = () => {
+            const highlighted = this.model.get('highlighted');
+            this.select(highlighted);
+        };
+
+        const results_selectFn = () => {
+            const highlighted = this.model.get('highlighted');
+            this.select(highlighted);
+        };
 
 
-    core.on('query', queryFn);
-    core.on('queryEnd', queryEndFn);
-    core.on('select', selectFn);
-    core.on('unselect', unselectFn);
-    core.on('results:previous', results_previousFn);
-    core.on('results:next', results_nextFn);
-    core.on('results:first', results_firstFn);
-    core.on('results:last', results_lastFn);
+        core.on('query', queryFn);
+        core.on('queryEnd', queryEndFn);
+        core.on('select', selectFn);
+        core.on('unselect', unselectFn);
+        core.on('results:previous', results_previousFn);
+        core.on('results:next', results_nextFn);
+        core.on('results:first', results_firstFn);
+        core.on('results:last', results_lastFn);
 
-    core.on('results:message', results_messageFn);
+        core.on('results:message', results_messageFn);
 
-    core.on('results:toggle', results_toggleFn);
-    core.on('results:select', results_selectFn);
+        core.on('results:toggle', results_toggleFn);
+        core.on('results:select', results_selectFn);
 
-    this.on('destroy', function () {
-        self.model.del('highlighted');
-        core.removeListener('query', queryFn);
-        core.removeListener('queryEnd', queryEndFn);
-        core.removeListener('select', selectFn);
-        core.removeListener('unselect', unselectFn);
-        core.removeListener('results:previous', results_previousFn);
-        core.removeListener('results:next', results_nextFn);
-        core.removeListener('results:first', results_firstFn);
-        core.removeListener('results:last', results_lastFn);
+        this.on('destroy', () => {
+            this.model.del('highlighted');
+            core.removeListener('query', queryFn);
+            core.removeListener('queryEnd', queryEndFn);
+            core.removeListener('select', selectFn);
+            core.removeListener('unselect', unselectFn);
+            core.removeListener('results:previous', results_previousFn);
+            core.removeListener('results:next', results_nextFn);
+            core.removeListener('results:first', results_firstFn);
+            core.removeListener('results:last', results_lastFn);
 
-        core.removeListener('results:message', results_messageFn);
+            core.removeListener('results:message', results_messageFn);
 
-        core.removeListener('results:toggle', results_toggleFn);
-        core.removeListener('results:select', results_selectFn);
-    });
-};
-
-Results.prototype.select = function(data, evt) {
-    if (!data || data.children || data.disabled) return;
-
-    if (!data.selected || this.options.get('multiple') && this.options.get('duplicates'))
-    {
-        this.emit('select', {
-            originalEvent: evt,     // TODO: check if originalEvent can actually be used (see CloseOnSelect)
-            item: data.item
+            core.removeListener('results:toggle', results_toggleFn);
+            core.removeListener('results:select', results_selectFn);
         });
     }
-    else if (!this.options.get('multiple'))
-    {
-        this.emit('close', {}); // do nothing in single selection if already selected
-    }
-    else if (!this.options.get('duplicates'))
-    {
-        this.emit('unselect', { // unselect if we can't have duplicates
-            originalEvent: evt,
-            item: data.item
-        });
-    }
-};
 
-// data is the normalized item from "results" model path
-Results.prototype.highlight = function(data, evt) {
-    if (!data || data.children || data.disabled) return;
+    select(data, evt) {
+        if (!data || data.children || data.disabled) return;
 
-    this.model.set("highlighted", data);
-};
-
-
-Results.prototype.ensureHighlightVisible = function(currentIndex) {
-    var highlighted = this.model.get('highlighted');
-
-    if (highlighted === undefined) {
-        return;
+        if (!data.selected || this.options.get('multiple') && this.options.get('duplicates'))
+        {
+            this.emit('select', {
+                originalEvent: evt,     // TODO: check if originalEvent can actually be used (see CloseOnSelect)
+                item: data.item
+            });
+        }
+        else if (!this.options.get('multiple'))
+        {
+            this.emit('close', {}); // do nothing in single selection if already selected
+        }
+        else if (!this.options.get('duplicates'))
+        {
+            this.emit('unselect', { // unselect if we can't have duplicates
+                originalEvent: evt,
+                item: data.item
+            });
+        }
     }
 
-    if (currentIndex === undefined) {
-        var results = this.model.get('results');
-        var currentIndex = _findIndex(results, ['item', highlighted.item]);
+    // data is the normalized item from "results" model path
+    highlight(data, evt) {
+        if (!data || data.children || data.disabled) return;
+
+        this.model.set("highlighted", data);
     }
 
-    if (currentIndex <= 2) {
-        this.$results.scrollTop(0);
-        return;
+    ensureHighlightVisible(currentIndex) {
+        const highlighted = this.model.get('highlighted');
+
+        if (highlighted === undefined) {
+            return;
+        }
+
+        if (currentIndex === undefined) {
+            const results = this.model.get('results');
+            var currentIndex = _findIndex(results, ['item', highlighted.item]);
+        }
+
+        if (currentIndex <= 2) {
+            this.$results.scrollTop(0);
+            return;
+        }
+
+        const $highlighted = this.$results.find('.select2-results__option--highlighted');
+
+        const resultsOffset = this.$results.offset().top;
+        const highlightedOffset = $highlighted.offset().top;
+
+        // distance of $highlighted from top of visible dropdown area
+        const offsetDelta = highlightedOffset - resultsOffset;
+
+
+        if (offsetDelta > this.$results.outerHeight() - $highlighted.outerHeight(false) || offsetDelta < 0) {
+            // scrollTop: number of hidden pixels of dropdown
+            // nextOffset: setting scrollTop to this means the item will be the first in the dropdown
+            let nextOffset = this.$results.scrollTop() + offsetDelta;
+
+            // don't jump all the way to the top, keep the two previous elements visible
+            nextOffset -= $highlighted.outerHeight(false) * 2;
+
+            this.$results.scrollTop(nextOffset);
+        }
     }
+}
 
-    var $highlighted = this.$results.find('.select2-results__option--highlighted');
-
-    var resultsOffset = this.$results.offset().top;
-    var highlightedOffset = $highlighted.offset().top;
-
-    // distance of $highlighted from top of visible dropdown area
-    var offsetDelta = highlightedOffset - resultsOffset;
-
-
-    if (offsetDelta > this.$results.outerHeight() - $highlighted.outerHeight(false) || offsetDelta < 0) {
-        // scrollTop: number of hidden pixels of dropdown
-        // nextOffset: setting scrollTop to this means the item will be the first in the dropdown
-        var nextOffset = this.$results.scrollTop() + offsetDelta;
-
-        // don't jump all the way to the top, keep the two previous elements visible
-        nextOffset -= $highlighted.outerHeight(false) * 2;
-
-        this.$results.scrollTop(nextOffset);
-    }
-};
+Results.prototype.view = path.join(__dirname, 'results.html');

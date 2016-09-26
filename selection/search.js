@@ -1,7 +1,5 @@
-'use strict';
-
-var path = require('path');
-var KEYS = require('../keys');
+import path from 'path';
+import KEYS from '../keys';
 
 /**
  * Component to input search queries. Simply not shown when core is disabled, and will delegate focus, so no tabindex
@@ -9,99 +7,96 @@ var KEYS = require('../keys');
  *
  * Emitted events: query, unselect
  */
-function Search() {}
-
-module.exports = Search;
-
-Search.prototype.view = path.join(__dirname, 'search.html');
-
-Search.prototype.init = function(model) {
-    model.ref("highlighted", this.parent.model.at("highlighted"));
-    this.options = this.parent.options;
-};
-
-Search.prototype.create = function(model, dom) {
-    this.$search = $(this.search);
-    this.bind(this.parent.core);
-};
-
-Search.prototype.bind = function(core) {
-    var self = this;
-
-    var focus = function() {
-        self.search.focus();
+export default class Search
+{
+    init(model) {
+        model.ref("highlighted", this.parent.model.at("highlighted"));
+        this.options = this.parent.options;
     }
 
-    var close = function() {
-        self.$search.val('');
+    create(model, dom) {
+        this.$search = $(this.search);
+        this.bind(this.parent.core);
     }
 
-    core.on('open', focus);
-    core.on('focus', focus);
-    core.on('close', close);
+    bind(core) {
+        const focus = () => {
+            this.search.focus();
+        };
+
+        const close = () => {
+            this.$search.val('');
+        };
+
+        core.on('open', focus);
+        core.on('focus', focus);
+        core.on('close', close);
 
 
-    this.search.addEventListener('keydown', function(evt) {
-        var key = evt.which;
+        this.search.addEventListener('keydown', evt => {
+            const key = evt.which;
 
-        if (key === KEYS.BACKSPACE && self.$search.val() === '') {
-            evt.stopPropagation();
-            evt.preventDefault();
-            self.searchRemoveChoice();
-        }
-    });
+            if (key === KEYS.BACKSPACE && this.$search.val() === '') {
+                evt.stopPropagation();
+                evt.preventDefault();
+                this.searchRemoveChoice();
+            }
+        });
 
-    // input event: emitted only when query string has changed
-    this.search.addEventListener('input', function(evt) {
-        self.handleSearch();
-    });
-};
+        // input event: emitted only when query string has changed
+        this.search.addEventListener('input', evt => {
+            this.handleSearch();
+        });
+    }
 
+    // this method will only be called by the placeholder decoration (if it is used)
+    createPlaceholder(decorated, placeholder) {
+        this.$search.attr('placeholder', placeholder.text);
+    }
 
-// this method will only be called by the placeholder decoration (if it is used)
-Search.prototype.createPlaceholder = function(decorated, placeholder) {
-    this.$search.attr('placeholder', placeholder.text);
-};
+    clearSearch() {
+        this.$search.val('');
+        this.handleSearch();
+    }
 
-Search.prototype.clearSearch = function() {
-    this.$search.val('');
-    this.handleSearch();
+    handleSearch() {
+        this.resizeSearch();
+
+        this.emit('query', {
+            term: this.$search.val()
+        });
+    }
+
+    searchRemoveChoice() {
+        this.emit('unselect', {
+            // not passing any data removes the last choice and emits unselected
+        });
+
+        this.handleSearch();
+    }
+
+    // put the text representation of the last unselected item into the search
+    unselected(normalized) {
+        this.$search.val(normalized.text);
+    }
+
+    resizeSearch() {
+        let width = '';
+
+        // if (this.$search.attr('placeholder') !== '') {
+        //     width = this.$selection.find('.select2-selection__rendered').innerWidth();
+        // } else {
+            const minimumWidth = this.$search.val().length + 1;
+
+            width = `${minimumWidth * 0.75}em`;
+        // }
+
+        this.$search.css('width', width);
+
+        // TODO: try this too:
+        //this.$search.prop('size', this.$search.val().length);
+    }
 }
 
-Search.prototype.handleSearch = function() {
-    this.resizeSearch();
 
-    this.emit('query', {
-        term: this.$search.val()
-    });
-};
-
-Search.prototype.searchRemoveChoice = function() {
-    this.emit('unselect', {
-        // not passing any data removes the last choice and emits unselected
-    });
-
-    this.handleSearch();
-};
-
-// put the text representation of the last unselected item into the search
-Search.prototype.unselected = function(normalized) {
-    this.$search.val(normalized.text);
-};
-
-Search.prototype.resizeSearch = function() {
-    var width = '';
-
-    // if (this.$search.attr('placeholder') !== '') {
-    //     width = this.$selection.find('.select2-selection__rendered').innerWidth();
-    // } else {
-        var minimumWidth = this.$search.val().length + 1;
-
-        width = (minimumWidth * 0.75) + 'em';
-    // }
-
-    this.$search.css('width', width);
-
-    // TODO: try this too:
-    //this.$search.prop('size', this.$search.val().length);
-};
+Search.prototype.view = path.join(__dirname, 'search.html');

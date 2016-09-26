@@ -1,37 +1,29 @@
-'use strict';
-var util = require('util');
-var BaseSelection = require('./base');
+import path from 'path';
 
+import BaseSelection from './base';
 
-function SingleSelection() {
-    SingleSelection.super_.apply(this, arguments);
-}
+export default class SingleSelection extends BaseSelection
+{
+    create(model, dom) {
+        super.create(arguments);
 
-module.exports = SingleSelection;
+        this.$selection.on('mousedown', evt => {
+            // Only respond to left clicks
+            if (evt.which !== 1) {
+                return;
+            }
 
-util.inherits(SingleSelection, BaseSelection);
-
-
-SingleSelection.prototype.view = __dirname + '/single.html';
-
-SingleSelection.prototype.create = function(model, dom) {
-    SingleSelection.super_.prototype.create.apply(this, arguments);
-
-    var self = this;
-    this.$selection.on('mousedown', function(evt) {
-        // Only respond to left clicks
-        if (evt.which !== 1) {
-            return;
-        }
-
-        self.emit('toggle', {
-            originalEvent: evt
+            this.emit('toggle', {
+                originalEvent: evt
+            });
         });
-    });
 
-    this.core.on('focus', function (evt) {
-        if (!self.core.isOpen()) {
-            self.$selection.focus();
-        }
-    });
+        this.core.on('focus', evt => {
+            if (!this.core.isOpen()) {
+                this.$selection.focus();
+            }
+        });
+    }
 }
+
+SingleSelection.prototype.view = path.join(__dirname, 'single.html');
