@@ -348,8 +348,8 @@ export default class Select2
 }
 
 
-Select2.prototype.view = path.join(__dirname, '/core.html');
-Select2.prototype.style = path.join(__dirname, '/index.css');
+Select2.prototype.view = path.join(__dirname, '/core');
+Select2.prototype.style = path.join(__dirname, '/index');
 
 Select2.prototype.components = [
     SingleSelection,
