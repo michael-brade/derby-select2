@@ -1,5 +1,7 @@
 import BaseAdapter from './base';
 
+import _escapeRegExp from 'lodash/escapeRegExp';
+
 /* Simple Model Adapter
 
 References:
@@ -54,7 +56,7 @@ export default class ModelAdapter extends BaseAdapter
             "disabled": item.disabled
         }));
 
-        options.setNull("filter", filter => item => item.text.search(filter) != -1);
+        options.setNull("filter", regexp => item => regexp.test(item.text));
 
         options.setNull("sorter", (itemA, itemB) => {
             if (itemA.text < itemB.text)
@@ -103,6 +105,7 @@ export default class ModelAdapter extends BaseAdapter
             }
 
             // filter, sort
+            filter = new RegExp(_escapeRegExp(filter), 'i');
             return results
                 .filter(options.get("filter")(filter))
                 .sort(options.get("sorter"));
