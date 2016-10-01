@@ -195,13 +195,8 @@ export default class Select2
 
 
         this.container.addEventListener('mousedown', evt => {
-
-            if (this.container == evt.target || $.contains(this.container, evt.target))
-            {
-                // we don't blur if mousedown is prevented, and it is prevented if mousedown happens in the container
-                evt.preventDefault();
-            }
-
+            // we don't blur if mousedown is prevented, and it is prevented if mousedown happens in the container
+            evt.preventDefault();
             this.focus();
         });
 
