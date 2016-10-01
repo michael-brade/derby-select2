@@ -8,10 +8,6 @@ import EventEmitter from 'events';
 
 export default class BaseAdapter extends EventEmitter
 {
-    constructor() {
-        super();
-    }
-
     start(params) {
         throw new Error('The `start` method must be defined in child classes.');
     }
