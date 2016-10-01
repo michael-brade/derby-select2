@@ -221,6 +221,7 @@ export default class Select2
                 {
                     this.close();
                     evt.preventDefault();
+                    evt.stopPropagation();
                 }
                 else if (key === KEYS.TAB)
                 {
