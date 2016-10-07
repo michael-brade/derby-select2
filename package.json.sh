@@ -2,7 +2,7 @@
 
 name: 'derby-select2'
 description: 'Native Derby JS replacement for jQuery Select2'
-version: '0.1.0'
+version: '0.2.0'
 
 author:
     name: 'Michael Brade'
@@ -29,6 +29,10 @@ devDependencies:
     'uglify-js': '2.7.x'
     'babel-cli': '6.x'
     'babel-preset-es2015-loose': '6.x'
+
+peerDependencies:
+    'derby': 'michael-brade/derby'
+
 
 
 eslintConfig:
@@ -57,19 +61,22 @@ scripts:
         export DEST=dist;
         export ASSETS='.*\.scss|.*\.html|./README\.md|./package\.json';
 
-        find \\( -path './node_modules*' -o -path \"./$DEST\" \\) -prune -o -name '*.js' -print0
+        find \\( -path './node_modules' -o -path \"./$DEST\" -o -path './test' \\) -prune -o -name '*.js' -print0
         | xargs -n1 -P8 -0 sh -c '
             echo Compiling and minifying $0...;
             mkdir -p \"$DEST/`dirname $0`\";
-            babel --presets es2015 \"$0\" | uglifyjs - -cm -o \"$DEST/$0\";
+            babel --presets es2015-loose \"$0\" | uglifyjs - -cm -o \"$DEST/$0\";
         ';
 
         echo \"\033[01;32mCopying assets...\033[00m\";
-        find \\( -path './node_modules*' -o -path \"./$DEST\" \\) -prune -o -regextype posix-egrep -regex $ASSETS -print0
+        find \\( -path './node_modules' -o -path \"./$DEST\" \\) -prune -o -regextype posix-egrep -regex $ASSETS -print0
         | xargs -n1 -0 sh -c '
             mkdir -p \"$DEST/`dirname \"$0\"`\";
             cp -a \"$0\" \"$DEST/$0\"
         ';
+
+        echo \"\033[01;32mMinifying views...\033[00m\";
+        find \"$DEST\" -name '*.html' -print0 | xargs -n1 -0 perl -i -p0e 's/\\n//g;s/ +/ /g;s/<!--.*?-->//g';
 
         echo \"\033[01;32mDone!\033[00m\";
     "
@@ -82,11 +89,7 @@ scripts:
 
     test: "echo \"TODO: no tests specified yet\" && exit 1;"
 
-    ## publishing - run as "npm run publish"
-
-    prepublish: "npm run clean; npm run build;"
-    publish: "npm publish dist;"
-
+    ## publishing: run "npm run build; cd dist; npm publish"
 
 engines:
     node: '6.x'
