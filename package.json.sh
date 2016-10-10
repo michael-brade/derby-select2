@@ -2,7 +2,7 @@
 
 name: 'derby-select2'
 description: 'Native Derby JS replacement for jQuery Select2'
-version: '0.2.0'
+version: '0.2.3'
 
 author:
     name: 'Michael Brade'
@@ -27,8 +27,9 @@ dependencies:
 devDependencies:
     'node-sass': '3.10.x'
     'uglify-js': '2.7.x'
+    'html-minifier': '3.x'
     'babel-cli': '6.x'
-    'babel-preset-es2015-loose': '6.x'
+    'babel-preset-es2015': '6.x'
 
 peerDependencies:
     'derby': 'michael-brade/derby'
@@ -59,24 +60,33 @@ scripts:
     # TODO: compile scss to dist/css
     build: "
         export DEST=dist;
-        export ASSETS='.*\.scss|.*\.html|./README\.md|./package\.json';
+        export SOURCES='*.js';
+        export VIEWS='*.html';
+        export ASSETS='.*\.scss|./README\.md|./package\.json';
+        export IGNORE=\"./$DEST|./test|./node_modules\";
 
-        find \\( -path './node_modules' -o -path \"./$DEST\" -o -path './test' \\) -prune -o -name '*.js' -print0
+        echo \"\033[01;32mCompiling and minifying...\033[00m\";
+        find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$SOURCES\" -print0
         | xargs -n1 -P8 -0 sh -c '
-            echo Compiling and minifying $0...;
+            echo $0...;
             mkdir -p \"$DEST/`dirname $0`\";
-            babel --presets es2015-loose \"$0\" | uglifyjs - -cm -o \"$DEST/$0\";
-        ';
-
-        echo \"\033[01;32mCopying assets...\033[00m\";
-        find \\( -path './node_modules' -o -path \"./$DEST\" \\) -prune -o -regextype posix-egrep -regex $ASSETS -print0
-        | xargs -n1 -0 sh -c '
-            mkdir -p \"$DEST/`dirname \"$0\"`\";
-            cp -a \"$0\" \"$DEST/$0\"
-        ';
+            babel \"$0\" | uglifyjs - -cm -o \"$DEST/$0\"';
 
         echo \"\033[01;32mMinifying views...\033[00m\";
-        find \"$DEST\" -name '*.html' -print0 | xargs -n1 -0 perl -i -p0e 's/\\n//g;s/ +/ /g;s/<!--.*?-->//g';
+        find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$VIEWS\" -print0
+        | xargs -n1 -P8 -0 sh -c '
+            echo \"$0 -> $DEST/$0\";
+            mkdir -p \"$DEST/`dirname $0`\";
+            html-minifier --config-file .html-minifierrc -o \"$DEST/$0\" \"$0\"'
+        | column -t -c 3;
+
+        echo \"\033[01;32mCopying assets...\033[00m\";
+        find -regextype posix-egrep -regex $IGNORE -prune -o -regex $ASSETS -print0
+        | xargs -n1 -0 sh -c '
+            echo \"$0 -> $DEST/$0\";
+            mkdir -p \"$DEST/`dirname \"$0\"`\";
+            cp -a \"$0\" \"$DEST/$0\"'
+        | column -t -c 3;
 
         echo \"\033[01;32mDone!\033[00m\";
     "

@@ -1,7 +1,7 @@
 {
   "name": "derby-select2",
   "description": "Native Derby JS replacement for jQuery Select2",
-  "version": "0.2.0",
+  "version": "0.2.3",
   "author": {
     "name": "Michael Brade",
     "email": "brade@kde.org"
@@ -24,8 +24,9 @@
   "devDependencies": {
     "node-sass": "3.10.x",
     "uglify-js": "2.7.x",
+    "html-minifier": "3.x",
     "babel-cli": "6.x",
-    "babel-preset-es2015-loose": "6.x"
+    "babel-preset-es2015": "6.x"
   },
   "peerDependencies": {
     "derby": "michael-brade/derby"
@@ -46,7 +47,7 @@
   },
   "scripts": {
     "prebuild": "npm run clean; touch .create_stash && git stash save --include-untracked \"npm build stash\";",
-    "build": "export DEST=dist;export ASSETS='.*.scss|.*.html|./README.md|./package.json';find \\( -path './node_modules' -o -path \"./$DEST\" -o -path './test' \\) -prune -o -name '*.js' -print0| xargs -n1 -P8 -0 sh -c 'echo Compiling and minifying $0...;mkdir -p \"$DEST/`dirname $0`\";babel --presets es2015-loose \"$0\" | uglifyjs - -cm -o \"$DEST/$0\";';echo \"\u001b[01;32mCopying assets...\u001b[00m\";find \\( -path './node_modules' -o -path \"./$DEST\" \\) -prune -o -regextype posix-egrep -regex $ASSETS -print0| xargs -n1 -0 sh -c 'mkdir -p \"$DEST/`dirname \"$0\"`\";cp -a \"$0\" \"$DEST/$0\"';echo \"\u001b[01;32mMinifying views...\u001b[00m\";find \"$DEST\" -name '*.html' -print0 | xargs -n1 -0 perl -i -p0e 's/\\n//g;s/ +/ /g;s/<!--.*?-->//g';echo \"\u001b[01;32mDone!\u001b[00m\";",
+    "build": "export DEST=dist;export SOURCES='*.js';export VIEWS='*.html';export ASSETS='.*.scss|./README.md|./package.json';export IGNORE=\"./$DEST|./test|./node_modules\";echo \"\u001b[01;32mCompiling and minifying...\u001b[00m\";find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$SOURCES\" -print0| xargs -n1 -P8 -0 sh -c 'echo $0...;mkdir -p \"$DEST/`dirname $0`\";babel \"$0\" | uglifyjs - -cm -o \"$DEST/$0\"';echo \"\u001b[01;32mMinifying views...\u001b[00m\";find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$VIEWS\" -print0| xargs -n1 -P8 -0 sh -c 'echo \"$0 -> $DEST/$0\";mkdir -p \"$DEST/`dirname $0`\";html-minifier --config-file .html-minifierrc -o \"$DEST/$0\" \"$0\"'| column -t -c 3;echo \"\u001b[01;32mCopying assets...\u001b[00m\";find -regextype posix-egrep -regex $IGNORE -prune -o -regex $ASSETS -print0| xargs -n1 -0 sh -c 'echo \"$0 -> $DEST/$0\";mkdir -p \"$DEST/`dirname \"$0\"`\";cp -a \"$0\" \"$DEST/$0\"'| column -t -c 3;echo \"\u001b[01;32mDone!\u001b[00m\";",
     "postbuild": "git stash pop --index && rm .create_stash;",
     "clean": "rm -rf dist;",
     "test": "echo \"TODO: no tests specified yet\" && exit 1;"
