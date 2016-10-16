@@ -109,11 +109,16 @@ export default class Select2
     }
 
     _registerSelectionEvents() {
-        const relayEvents = ['query', 'move', 'unselect'];
+        const relayEvents = ['move', 'unselect'];
 
         // register toggle
         this.selection.on('toggle', () => {
             this.toggleDropdown();
+        });
+
+        this.selection.on('query', params => {
+            this.emit('open', {});
+            this.emit('query', params);
         });
 
         // relay the rest
