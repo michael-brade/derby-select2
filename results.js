@@ -12,6 +12,10 @@ import _findIndex from 'lodash/findIndex';
 */
 export default class Results
 {
+    static view = {
+        file: path.join(__dirname, 'results.html')
+    }
+
     init(model) {
         this.core = this.parent; // alias to make it more obvious
         this.options = model.at("options");
@@ -243,5 +247,3 @@ export default class Results
         }
     }
 }
-
-Results.prototype.view = path.join(__dirname, 'results.html');

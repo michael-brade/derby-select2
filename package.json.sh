@@ -20,20 +20,30 @@ repository:
 
 dependencies:
     # utils
-    lodash: '4.x'
-    jquery: '3.x'
+    lodash: '4.17.x'
+    jquery: '3.4.x'
     mixwith: '*'
 
 devDependencies:
-    'node-sass': '3.10.x'
-    'uglify-js': '2.7.x'
-    'html-minifier': '3.x'
-    'babel-cli': '6.x'
-    'babel-preset-es2015': '6.x'
+    'node-sass': '4.13.x'
+    'uglify-js': '3.6.x'
+    'html-minifier': '4.x'
+
+    '@babel/core': '7.7.x'
+    '@babel/register': '7.7.x'
+    '@babel/preset-env': '7.7.x'
 
 peerDependencies:
     'derby': 'michael-brade/derby'
 
+
+babel:
+    presets:
+        * '@babel/preset-env'
+            targets:
+                node: 'current'
+                browsers: '> 0.5%, not dead'
+        ...
 
 
 eslintConfig:

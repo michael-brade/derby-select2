@@ -41,6 +41,18 @@ import Results from './results';
 */
 export default class Select2
 {
+    static view = {
+        file: path.join(__dirname, '/core'),
+        style: path.join(__dirname, '/index'),
+        dependencies: [
+            SingleSelection,
+            MultipleSelection,
+            Search,
+            Results
+        ]
+    }
+
+
     // TODO: put global defaults somewhere, accessible, changable
 
     init(model) {
@@ -348,15 +360,5 @@ export default class Select2
     }
 }
 
-
-Select2.prototype.view = path.join(__dirname, '/core');
-Select2.prototype.style = path.join(__dirname, '/index');
-
-Select2.prototype.components = [
-    SingleSelection,
-    MultipleSelection,
-    Search,
-    Results
-];
 
 export { Select2 };
