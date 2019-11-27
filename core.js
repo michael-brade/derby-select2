@@ -42,13 +42,14 @@ import Results from './results';
 export default class Select2
 {
     static view = {
+        is: 'select2',
         file: path.join(__dirname, '/core'),
         style: path.join(__dirname, '/index'),
         dependencies: [
-            SingleSelection,
-            MultipleSelection,
-            Search,
-            Results
+            [ 'select2:single', SingleSelection ],
+            [ 'select2:multiple', MultipleSelection ],
+            [ 'select2:search', Search ],
+            [ 'select2:results', Results ]
         ]
     }
 

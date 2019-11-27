@@ -4,6 +4,11 @@ import BaseSelection from './base';
 
 export default class SingleSelection extends BaseSelection
 {
+    static view = {
+        is: 'single',
+        file: path.join(__dirname, 'single.html')
+    }
+
     create(model, dom) {
         super.create(arguments);
 
@@ -25,5 +30,3 @@ export default class SingleSelection extends BaseSelection
         });
     }
 }
-
-SingleSelection.prototype.view = path.join(__dirname, 'single.html');

@@ -13,6 +13,7 @@ import _findIndex from 'lodash/findIndex';
 export default class Results
 {
     static view = {
+        is: 'results',
         file: path.join(__dirname, 'results.html')
     }
 

@@ -32,12 +32,16 @@ devDependencies:
     '@babel/core': '7.7.x'
     '@babel/register': '7.7.x'
     '@babel/preset-env': '7.7.x'
+    '@babel/plugin-proposal-class-properties': '7.7.x'
 
 peerDependencies:
     'derby': 'michael-brade/derby'
 
 
 babel:
+    plugins:
+        * '@babel/plugin-proposal-class-properties'
+        ...
     presets:
         * '@babel/preset-env'
             targets:

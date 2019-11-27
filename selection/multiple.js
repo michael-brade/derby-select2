@@ -7,6 +7,11 @@ import MultipleReorderSelection from './multiplereorder';
 
 export default class MultipleSelection extends mix(BaseSelection).with(MultipleReorderSelection)
 {
+    static view = {
+        is: 'multiple',
+        file: path.join(__dirname, 'multiple.html')
+    }
+
     create(model, dom) {
         super.create(arguments);
 
@@ -54,5 +59,3 @@ export default class MultipleSelection extends mix(BaseSelection).with(MultipleR
         evt.stopPropagation();
     }
 }
-
-MultipleSelection.prototype.view = path.join(__dirname, 'multiple.html');

@@ -3,12 +3,17 @@ import KEYS from '../keys';
 
 /**
  * Component to input search queries. Simply not shown when core is disabled, and will delegate focus, so no tabindex
- * neccessary.
+ * necessary.
  *
  * Emitted events: query, unselect
  */
 export default class Search
 {
+    static view = {
+        is: 'search',
+        file: path.join(__dirname, 'search.html')
+    }
+
     init(model) {
         model.ref("highlighted", this.parent.model.at("highlighted"));
         this.options = this.parent.options;
@@ -97,6 +102,3 @@ export default class Search
         //this.$search.prop('size', this.$search.val().length);
     }
 }
-
-
-Search.prototype.view = path.join(__dirname, 'search.html');
