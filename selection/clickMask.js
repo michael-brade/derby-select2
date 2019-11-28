@@ -1,27 +1,26 @@
-var $ = require('jquery');
+import $ from 'jquery';
 
-function ClickMask() {}
+/* lays a mask over the document to catch clicks anywhere but on the dropown */
+export default class ClickMask {
+    bind(decorate, container) {
+        const self = this;
 
-ClickMask.prototype.bind = function(decorate, container) {
-    var self = this;
+        decorate.call(this, container);
 
-    decorate.call(this, container);
+        this.$mask = $(
+            '<div class="select2-close-mask"></div>'
+        );
 
-    this.$mask = $(
-        '<div class="select2-close-mask"></div>'
-    );
+        this.$mask.on('mousedown touchstart click', () => {
+            self.emit('close', {});
+        });
+    }
 
-    this.$mask.on('mousedown touchstart click', function() {
-        self.emit('close', {});
-    });
-};
+    _attachCloseHandler(decorate, container) {
+        $(document.body).append(this.$mask);
+    }
 
-ClickMask.prototype._attachCloseHandler = function(decorate, container) {
-    $(document.body).append(this.$mask);
-};
-
-ClickMask.prototype._detachCloseHandler = function(deocrate, container) {
-    this.$mask.detach();
-};
-
-module.exports = ClickMask;
+    _detachCloseHandler(deocrate, container) {
+        this.$mask.detach();
+    }
+}

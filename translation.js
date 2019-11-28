@@ -5,34 +5,33 @@ function __do_not_call() {
     require('./i18n/*.js', {mode: 'expand', resolve: 'strip-ext'});
 }
 
-function Translation(dict) {
-    this.dict = dict || {};
-}
+export default class Translation {
 
-Translation.prototype.all = function() {
-    return this.dict;
-};
+    static _cache = {}
 
-Translation.prototype.get = function(key) {
-    return this.dict[key];
-};
-
-Translation.prototype.extend = function(translation) {
-    this.dict = $.extend({}, translation.all(), this.dict);
-};
-
-// Static functions
-
-Translation._cache = {};
-
-Translation.loadPath = function(path) {
-    if (!(path in Translation._cache)) {
-        var translations = require(path);
-
-        Translation._cache[path] = translations;
+    constructor(dict) {
+        this.dict = dict || {};
     }
 
-    return new Translation(Translation._cache[path]);
-};
+    all() {
+        return this.dict;
+    }
 
-module.exports = Translation;
+    get(key) {
+        return this.dict[key];
+    }
+
+    extend(translation) {
+        this.dict = $.extend({}, translation.all(), this.dict);
+    }
+
+    static loadPath(path) {
+        if (!(path in Translation._cache)) {
+            var translations = require(path);
+
+            Translation._cache[path] = translations;
+        }
+
+        return new Translation(Translation._cache[path]);
+    }
+}
