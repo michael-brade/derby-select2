@@ -37,10 +37,9 @@ export default class ModelAdapter extends BaseAdapter
     constructor(core, options) {
         super(core, options);
 
-        const model = core.model;
+        this.model = core.model;
 
         this.options = options;
-        this.model = model;
 
         // default functions: filter, sorter, and normalizer
 
@@ -69,15 +68,15 @@ export default class ModelAdapter extends BaseAdapter
 
 
         // TODO: derby: shouldn't it be possible to ref and map the single array elements?
-        model.start("selections", "value", selected_items => {
+        this.model.start("selections", "value", selected_items => {
             const results = [];
             // "value" (selected_items) is array if multiple, otherwise it's a single item
             if (options.get("multiple"))
-                for (const id in selected_items) {
+                for (const id in selected_items)
                     results.push(options.get("normalizer")(selected_items[id]));
-                }
             else
-                results.push(options.get("normalizer")(selected_items));
+                if (selected_items)
+                    results.push(options.get("normalizer")(selected_items));
 
             return results;
         });
@@ -126,7 +125,7 @@ export default class ModelAdapter extends BaseAdapter
 
     query(query) {
         this.model.set("filter", query.term || "");
-        setTimeout(() => { this.emit("queryEnd", {}); }, 1);
+        setTimeout(() => { this.emit("queryEnd", {}) }, 1);
     }
 
     // select event:
