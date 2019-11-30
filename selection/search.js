@@ -37,6 +37,12 @@ export default class Search
         core.on('focus', focus);
         core.on('close', close);
 
+        this.on('destroy', () => {
+            core.removeListener('open', focus);
+            core.removeListener('focus', focus);
+            core.removeListener('close', close);
+        });
+
 
         this.search.addEventListener('keydown', evt => {
             const key = evt.which;
