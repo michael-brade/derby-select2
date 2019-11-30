@@ -88,7 +88,7 @@ scripts:
         | xargs -n1 -P8 -0 sh -c '
             echo $0...;
             mkdir -p \"$DEST/`dirname $0`\";
-            babel \"$0\" | uglifyjs - -cm -o \"$DEST/$0\"';
+            babel \"$0\" | uglifyjs -cm -o \"$DEST/$0\"';
 
         echo \"\033[01;32mMinifying views...\033[00m\";
         find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$VIEWS\" -print0
