@@ -1,4 +1,4 @@
-# Select2 component for Derby JS
+# Select2 component for DerbyJS
 
 This is a [DerbyJS](http://github.com/derbyjs/derby) component for jQuery Select2 4.0.
 
@@ -16,7 +16,7 @@ most likely recognize the resemblance to the original jQuery Select2 code, but u
 
 ### Dependencies
 
-* [Sortable](http://rubaxa.github.io/Sortable)
+* [Sortable](https://sortablejs.github.io/Sortable/)
 
 
 ## Usage

@@ -1,7 +1,7 @@
 #!/usr/local/bin/lsc -cj
 
 name: 'derby-select2'
-description: 'Native Derby JS replacement for jQuery Select2'
+description: 'Native DerbyJS replacement for jQuery Select2'
 version: '0.2.3'
 
 author:
