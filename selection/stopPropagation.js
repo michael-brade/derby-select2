@@ -1,34 +1,34 @@
-function StopPropagation() {}
+export default (superclass) => class extends superclass
+{
+    bind() {
+        if (super.bind)
+            super.bind(arguments);
 
-StopPropagation.prototype.bind = function(decorated, container) {
-    decorated.call(this, container);
+        const stoppedEvents = [
+            'blur',
+            'change',
+            'click',
+            'dblclick',
+            'focus',
+            'focusin',
+            'focusout',
+            'input',
+            'keydown',
+            'keyup',
+            'keypress',
+            'mousedown',
+            'mouseenter',
+            'mouseleave',
+            'mousemove',
+            'mouseover',
+            'mouseup',
+            'search',
+            'touchend',
+            'touchstart'
+        ];
 
-    var stoppedEvents = [
-        'blur',
-        'change',
-        'click',
-        'dblclick',
-        'focus',
-        'focusin',
-        'focusout',
-        'input',
-        'keydown',
-        'keyup',
-        'keypress',
-        'mousedown',
-        'mouseenter',
-        'mouseleave',
-        'mousemove',
-        'mouseover',
-        'mouseup',
-        'search',
-        'touchend',
-        'touchstart'
-    ];
-
-    this.$selection.on(stoppedEvents.join(' '), function(evt) {
-        evt.stopPropagation();
-    });
-};
-
-module.exports = StopPropagation;
+        this.$selection.on(stoppedEvents.join(' '), evt => {
+            evt.stopPropagation();
+        });
+    }
+}
