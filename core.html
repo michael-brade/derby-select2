@@ -31,17 +31,13 @@ model paths:
 
             <!-- what has already been selected, the current selection -->
             <span class="selection">
-                <view as="selection" id="select2-{{#id}}-selection" name="{{options.selectionAdapter}}" class="{{@class ? @class : ''}}" />
+                <view is="{{options.selectionAdapter}}" as="selection" id="select2-{{#id}}-selection" class="{{@class ? @class : ''}}" />
             </span>
 
             <!-- what is possible to be selected -->
             {{if open}}
-                <span class="dropdown-wrapper" aria-hidden="true">
-                    <span as="dropdown" class="select2-dropdown select2-dropdown--below" dir="{{options.dir}}">
-                        <span class="select2-results">
-                            <view as="results" id="select2-{{#id}}-results" name="{{options.resultsAdapter}}" />
-                        </span>
-                    </span>
+                <span as="dropdown" class="select2-dropdown select2-dropdown--below" dir="{{options.dir}}">
+                    <view is="{{options.resultsAdapter}}" as="results" id="select2-{{#id}}-results" />
                 </span>
             {{/}}
 

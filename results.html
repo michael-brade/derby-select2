@@ -6,38 +6,44 @@
 -->
 
 <index:>
-    <ul as="results" id="{{@id}}" class="select2-results__options"
-        role="tree" aria-multiselectable="{{options.multiple ? 'true' : 'false'}}" aria-expanded="true">
+    {{if options.multiple == false}}
+        <view is="dropdown:search" />
+    {{/}}
 
-        {{if message}}
-            <view name="results-message" message="{{message}}" />
-        {{else}}
-            {{each results as #data}}
-                <view name="results-option" data="{{#data}}" />
+    <span class="select2-results">
+        <ul as="results" id="{{@id}}" class="select2-results__options" role="listbox"
+            aria-multiselectable="{{options.multiple ? 'true' : 'false'}}" aria-expanded="true">
+
+            {{if message}}
+                <view is="results-message" message="{{message}}" />
             {{else}}
-                <view name="results-message" message="{{displayMessage({ message: 'noResults' })}}" />
-            {{/each}}
-        {{/}}
+                {{each results as #data}}
+                    <view is="results-option" data="{{#data}}" />
+                {{else}}
+                    <view is="results-message" message="{{displayMessage({ message: 'noResults' })}}" />
+                {{/each}}
+            {{/}}
 
-        {{if loading}}
-            <li role="treeitem" class="select2-results__option" aria-disabled="true">
-                {{loading}}
-            </li>
-        {{/}}
-    </ul>
+            {{if loading}}
+                <li role="treeitem" class="select2-results__option" aria-disabled="true">
+                    {{loading}}
+                </li>
+            {{/}}
+        </ul>
+    </span>
 
 <results-message:>
-    <li role="treeitem" aria-live="assertive" class="select2-results__option select2-results__message">
+    <li role="alert" aria-live="assertive" class="select2-results__option select2-results__message">
         {{@message}}
     </li>
 
 
 <!-- attributes: item; it can be anything, but if it is an object, those attributes are used and should be
      supplied to select2 as input:
-  * id
-  * title
-  * children
-  * disabled
+        * id
+        * title
+        * children
+        * disabled
         * selected
 
 data: {
@@ -64,16 +70,16 @@ data: {
 
         {{if @data.children}}
             <strong class="select2-results__group">
-                <view name="results-template" data="{{@data}}" />
+                <view is="results-template" data="{{@data}}" />
             </strong>
 
             <ul class="select2-results__options select2-results__options--nested">
                 {{each @data.children as #child}}
-                    <view name="results-option" data="{{#child}}" />
+                    <view is="results-option" data="{{#child}}" />
                 {{/}}
             </ul>
         {{else}}
-            <view name="{{options.resultsTemplate}}" item="{{@data.item}}" />
+            <view is="{{options.resultsTemplate}}" item="{{@data.item}}" />
         {{/}}
 
     </li>

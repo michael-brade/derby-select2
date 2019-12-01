@@ -8,7 +8,8 @@ import ModelAdapter from './data/model';
 // subcomponents
 import SingleSelection from './selection/single';
 import MultipleSelection from './selection/multiple';
-import Search from './selection/search';
+import { default as SelectionSearch } from './selection/search';
+import { default as DropdownSearch } from './dropdown/search';
 import Results from './results';
 
 
@@ -48,13 +49,14 @@ export default class Select2
         dependencies: [
             [ 'select2:single', SingleSelection ],
             [ 'select2:multiple', MultipleSelection ],
-            [ 'select2:search', Search ],
+            [ 'select2:selection:search', SelectionSearch ],
+            [ 'select2:dropdown:search', DropdownSearch ],
             [ 'select2:results', Results ]
         ]
     }
 
 
-    // TODO: put global defaults somewhere, accessible, changable
+    // TODO: put global defaults somewhere, accessible, changeable
 
     init(model) {
         this.options = model.at("options");

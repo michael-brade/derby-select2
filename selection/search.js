@@ -1,4 +1,5 @@
 import path from 'path';
+var $ = require('jquery');
 import KEYS from '../keys';
 
 /**
@@ -10,7 +11,7 @@ import KEYS from '../keys';
 export default class Search
 {
     static view = {
-        is: 'search',
+        is: 'selection:search',
         file: path.join(__dirname, 'search.html')
     }
 
