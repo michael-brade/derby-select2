@@ -1,7 +1,7 @@
 <index:>
-    <span as="searchContainer" class="select2-search select2-search--dropdown">
-        <input as="search" class="select2-search__field" type="search" tabindex="-1"
+    <span class="select2-search select2-search--dropdown">
+        <input as="search" class="select2-search__field" type="search" tabindex="{{options.tabindex}}"
          autocomplete="off" autocorrect="off" autocapitalize="none"
-         spellcheck="false" role="searchbox" aria-autocomplete="list"
+         spellcheck="false" role="searchbox" aria-autocomplete="list" aria-activedescendant="{{highlighted.id}}"
          value="{{filter}}" />
     </span>

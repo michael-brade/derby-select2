@@ -1,6 +1,11 @@
 import path from 'path';
 var $ = require('jquery');
 
+/**
+ * Search input in the dropdown, usually only for single selection mode.
+ * Since it is part of the dropdown, which shows directly on open, it cannot (doesn't need to) receive
+ * an open event from core. Simply use create as open, destroy as close.
+ */
 export default class Search
 {
     static view = {
@@ -9,24 +14,24 @@ export default class Search
     }
 
     init(model) {
+        model.ref("highlighted", this.parent.model.at("highlighted"));
         this.options = this.parent.options;
     }
 
     create(model, dom) {
         this.$search = $(this.search);
-        this.$searchContainer = $(this.searchContainer);
         this.bind(this.parent.core);
+
+        this.$search.attr('aria-controls', this.parent.core.id + '-results');
+
+        this.$search.trigger('focus');
     }
 
     bind(core) {
-        var self = this;
+        this.$search.on('keydown', evt => {
+            this.emit('keypress', evt);
 
-        var resultsId = core.id + '-results';
-
-        this.$search.on('keydown', function(evt) {
-            self.emit('keypress', evt);
-
-            self._keyUpPrevented = evt.isDefaultPrevented();
+            this._keyUpPrevented = evt.isDefaultPrevented();
         });
 
         // Workaround for browsers which do not support the `input` event
@@ -37,54 +42,21 @@ export default class Search
             $(this).off('keyup');
         });
 
-        this.$search.on('keyup input', function(evt) {
-            self.handleSearch(evt);
+        this.$search.on('keyup input', evt => {
+            this.handleSearch(evt);
         });
 
-        core.on('open', function() {
-            self.$search.attr('tabindex', 0);
-            self.$search.attr('aria-controls', resultsId);
 
-            self.$search.trigger('focus');
+        // bind to core events
 
-            window.setTimeout(function() {
-                self.$search.trigger('focus');
-            }, 0);
-        });
+        const focus = () => {
+            this.$search.trigger('focus');
+        };
 
-        core.on('close', function() {
-            self.$search.attr('tabindex', -1);
-            self.$search.removeAttr('aria-controls');
-            self.$search.removeAttr('aria-activedescendant');
+        core.on('focus', focus);
 
-            self.$search.val('');
-            self.$search.trigger('blur');
-        });
-
-        core.on('focus', function() {
-            if (!core.isOpen()) {
-                self.$search.trigger('focus');
-            }
-        });
-
-        core.on('results:all', function(params) {
-            if (params.query.term == null || params.query.term === '') {
-                var showSearch = self.showSearch(params);
-
-                if (showSearch) {
-                    self.$searchContainer.removeClass('select2-search--hide');
-                } else {
-                    self.$searchContainer.addClass('select2-search--hide');
-                }
-            }
-        });
-
-        core.on('results:focus', function(params) {
-            if (params.data._resultId) {
-                self.$search.attr('aria-activedescendant', params.data._resultId);
-            } else {
-                self.$search.removeAttr('aria-activedescendant');
-            }
+        this.on('destroy', () => {
+            core.removeListener('focus', focus);
         });
     }
 
@@ -98,9 +70,5 @@ export default class Search
         }
 
         this._keyUpPrevented = false;
-    }
-
-    showSearch(_, params) {
-        return true;
     }
 }
