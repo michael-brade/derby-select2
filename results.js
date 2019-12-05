@@ -147,6 +147,7 @@ export default class Results
             this.select(highlighted);
         };
 
+        this.search.on('query', param => this.emit('query', param));
 
         core.on('query', queryFn);
         core.on('queryEnd', queryEndFn);

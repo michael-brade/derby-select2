@@ -146,8 +146,8 @@ export default class Select2
 
     // forward and emit results events as if from Select2
     _registerResultsEvents() {
-        // TOOD: can also emit query/queryEnd with infiniteScroll - not implementd yet
-        const relayEvents = ['select', 'unselect', 'close'];
+        // TOOD: can also emit query/queryEnd with infiniteScroll - not implemented yet
+        const relayEvents = ['select', 'unselect', 'query', 'close'];
 
         relayEvents.forEach(evt => {
             this.results.on(evt, params => {
