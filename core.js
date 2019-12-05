@@ -91,8 +91,6 @@ export default class Select2
     }
 
     create(model, dom) {
-        this.$dropdown = $(this.dropdown);
-
         // attach the select2 controller to the container to be able to identify it later and close
         // all the other dropdowns; selection/base uses it
         // TODO: is there a better way? Derby global events or so?

@@ -29,7 +29,6 @@ export default class Results
 
     // called on open
     create(model, dom) {
-        this.$results = $(this.results);
         this.bind(this.core);
 
         this.ensureHighlightVisible();
@@ -218,34 +217,36 @@ export default class Results
             return;
         }
 
+        const $results = $(this.results);
+
         if (currentIndex === undefined) {
             const results = this.model.get('results');
             var currentIndex = _findIndex(results, ['item', highlighted.item]);
         }
 
         if (currentIndex <= 2) {
-            this.$results.scrollTop(0);
+            $results.scrollTop(0);
             return;
         }
 
-        const $highlighted = this.$results.find('.select2-results__option--highlighted');
+        const $highlighted = $results.find('.select2-results__option--highlighted');
 
-        const resultsOffset = this.$results.offset().top;
+        const resultsOffset = $results.offset().top;
         const highlightedOffset = $highlighted.offset().top;
 
         // distance of $highlighted from top of visible dropdown area
         const offsetDelta = highlightedOffset - resultsOffset;
 
 
-        if (offsetDelta > this.$results.outerHeight() - $highlighted.outerHeight(false) || offsetDelta < 0) {
+        if (offsetDelta > $results.outerHeight() - $highlighted.outerHeight(false) || offsetDelta < 0) {
             // scrollTop: number of hidden pixels of dropdown
             // nextOffset: setting scrollTop to this means the item will be the first in the dropdown
-            let nextOffset = this.$results.scrollTop() + offsetDelta;
+            let nextOffset = $results.scrollTop() + offsetDelta;
 
             // don't jump all the way to the top, keep the two previous elements visible
             nextOffset -= $highlighted.outerHeight(false) * 2;
 
-            this.$results.scrollTop(nextOffset);
+            $results.scrollTop(nextOffset);
         }
     }
 }
