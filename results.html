@@ -20,7 +20,7 @@
                 {{each results as #data}}
                     <view is="results-option" data="{{#data}}" />
                 {{else}}
-                    <view is="results-message" message="{{displayMessage({ message: 'noResults' })}}" />
+                    <view is="results-message" message="noResults" />
                 {{/each}}
             {{/}}
 
