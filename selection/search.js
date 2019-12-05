@@ -23,6 +23,8 @@ export default class Search
     create(model, dom) {
         this.$search = $(this.search);
         this.bind(this.parent.core);
+
+        this.$search.attr('aria-controls', this.parent.core.id + '-results');
     }
 
     bind(core) {

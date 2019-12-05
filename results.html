@@ -59,7 +59,7 @@ data: {
 <results-option:>
     <li id="{{@data.id}}" class="select2-results__option{{if highlighted.item === @data.item}} select2-results__option--highlighted{{/}}"
             title="{{@data.title}}"
-            role="{{@data.children ? 'group' : 'treeitem'}}"
+            role="{{@data.children ? 'group' : 'option'}}"
 
             on-mouseenter="highlight(@data, $event)"
             on-mouseup="select(@data, $event)"

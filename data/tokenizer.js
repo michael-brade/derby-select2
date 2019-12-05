@@ -57,7 +57,7 @@ Tokenizer.prototype.query = function(decorated, params, callback) {
         // Replace the search term if we have the search box
         if (this.$search.length) {
             this.$search.val(tokenData.term);
-            this.$search.focus();
+            this.$search.trigger('focus');
         }
 
         params.term = tokenData.term;

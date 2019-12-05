@@ -18,7 +18,7 @@ CloseOnSelect.prototype._selectTriggered = function(_, evt) {
     var originalEvent = evt.originalEvent;
 
     // Don't close if the control key is being held
-    if (originalEvent && originalEvent.ctrlKey) {
+    if (originalEvent && (originalEvent.ctrlKey || originalEvent.metaKey)) {
         return;
     }
 

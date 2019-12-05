@@ -292,7 +292,8 @@ export default class Select2
             'open': 'opening',
             'close': 'closing',
             'select': 'selecting',
-            'unselect': 'unselecting'
+            'unselect': 'unselecting',
+            'clear': 'clearing'
         };
 
         if (args === undefined) {

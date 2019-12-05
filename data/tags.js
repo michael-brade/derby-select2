@@ -107,8 +107,6 @@ Tags.prototype.insertTag = function(_, data, tag) {
 };
 
 Tags.prototype._removeOldTags = function(_) {
-    var tag = this._lastTag;
-
     var $options = this.$element.find('option[data-select2-tag]');
 
     $options.each(function() {
