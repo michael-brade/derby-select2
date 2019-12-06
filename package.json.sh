@@ -113,6 +113,10 @@ scripts:
 
     clean: "rm -rf dist;"   # the ; at the end is very important! otherwise "npm run clean ." would delete everything
 
+    ## demo
+
+    demo: "npm run build; browserify -x Sortable -s Select2 dist/core.js -d -o demo/select2.js;"
+
     ## testing
 
     test: 'echo "TODO: no tests specified yet";'

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Derby Select2 Demo</title>
+
+    <script src="/jquery.js"></script>
+    <script src="/Sortable.js"></script>
+
+    <script src="/derby-standalone.js"></script>
+
+    <script>
+        derby.App.prototype.getTemplate = function(filename) {
+            console.warn("get template", filename)
+
+            var el = document.getElementById(filename);
+            if (el) return el;
+
+            var result = undefined;
+
+            $.ajax({
+                method: 'GET',
+                url: filename,
+                async: false
+            })
+            .done(function(response) {
+                result = response;
+            })
+            .fail(function() { })
+
+            return result;
+        };
+    </script>
+
+    <script src="/select2.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <script id="/select2-demo.html" type="text/template">
+        <Body:>
+            <div class="container">
+                <h1>Derby Select2 Demo</h1>
+
+                <h3>Simple single selection element</h3>
+
+                <h4>Default</h4>
+
+                <div>
+                    <view is="select2" id="select2-{{@id}}" options="{{_page.singleConf}}"
+                        data="{{_page.items}}" value="{{_page.selectedSingle}}" />
+
+                    <view is="select2" id="select2-{{@id}}" options="{{_page.singleConfDisabled}}"
+                        data="{{_page.items}}" value="{{_page.selectedSingle}}" />
+                </div>
+
+                <!-- <div>{{JSON.stringify(_page.singleConf)}}</div> -->
+
+                <h4>Bootstrap</h4>
+
+                <div class="row">
+                        <div class="col-xs-6">
+                            <view is="select2" id="select2-{{@id}}" class="form-control" options="{{_page.singleConfB}}"
+                                data="{{_page.items}}" value="{{_page.selectedSingle}}" />
+                        </div>
+                        <div class="col-xs-6">
+                            <view is="select2" id="select2-{{@id}}" class="form-control" options="{{_page.singleConfDisabledB}}"
+                                data="{{_page.items}}" value="{{_page.selectedSingle}}" />
+                        </div>
+                    </div>
+
+
+                <div style="margin-top: 10px">selected: <view is="show-item" item="{{_page.selectedSingle}}" /></div>
+
+
+                <h3>Multi-selection elements</h3>
+
+                <h4>Default</h4>
+
+                <div>
+                    <view is="select2" id="select2-{{@id}}" options="{{_page.multiConf}}"
+                        data="{{_page.items}}" value="{{_page.selectedMulti}}" />
+
+                    <view is="select2" id="select2-{{@id}}" options="{{_page.multiConfDisabled}}"
+                        data="{{_page.items}}" value="{{_page.selectedMulti}}" />
+                </div>
+
+                <h4>Bootstrap</h4>
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <view is="select2" id="select2-{{@id}}" class="form-control" options="{{_page.multiConfB}}"
+                            data="{{_page.items}}" value="{{_page.selectedMulti}}" />
+                    </div>
+                    <div class="col-xs-6">
+                        <view is="select2" id="select2-{{@id}}" class="form-control" options="{{_page.multiConfDisabledB}}"
+                            data="{{_page.items}}" value="{{_page.selectedMulti}}" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- <div>selected: {{_page.selected}}</div> -->
+                </div>
+            </div>
+
+
+        <show-item:>
+            {{@item.text}}
+    </script>
+
+
+
+    <script>
+        // create the Derby app
+        var app = derby.createApp()
+
+        // Load templates from id
+        app.loadViews('/select2-demo.html')
+        app.component(Select2.Select2)
+
+        // create the page
+        var page = app.createPage()
+
+        page.model.set("_page.items", [
+            { id: 1, text: "first item" },
+            { id: 2, text: "second item" },
+            { id: 3, text: "third item" },
+            { id: 4, text: "fourth item" },
+        ])
+
+        // config for every select2
+        var base = {
+            theme: "default", //"classic",
+            normalizer: function(item) {
+                return {
+                    item: item,
+                    id: item.id,
+                    title: "",
+                    text: item.text
+                }
+            },
+            resultsTemplate: "show-item",
+            selectionTemplate: "show-item"
+        }
+
+        page.model.set("_page.singleConf", Object.assign({}, base, {
+            multiple: false
+        }))
+
+        page.model.set("_page.singleConfDisabled", Object.assign({}, page.model.get('_page.singleConf'), {
+            disabled: true
+        }))
+
+        page.model.set("_page.singleConfB", Object.assign({}, page.model.get('_page.singleConf'), {
+            theme: "bootstrap"
+        }))
+
+        page.model.set("_page.singleConfDisabledB", Object.assign({}, page.model.get('_page.singleConfDisabled'), {
+            theme: "bootstrap"
+        }))
+
+
+        page.model.set("_page.multiConf", Object.assign({}, base, {
+            multiple: true
+        }))
+
+        page.model.set("_page.multiConfDisabled", Object.assign({}, page.model.get('_page.multiConf'), {
+            disabled: true
+        }))
+
+        page.model.set("_page.multiConfB", Object.assign({}, page.model.get('_page.multiConf'), {
+            theme: "bootstrap"
+        }))
+
+        page.model.set("_page.multiConfDisabledB", Object.assign({}, page.model.get('_page.multiConfDisabled'), {
+            theme: "bootstrap"
+        }))
+
+
+        // Append the rendered template to the document. It could be inserted in any DOM location
+        document.body.appendChild(page.getFragment('Body'))
+    </script>
+
+</body>
+
+</html>
