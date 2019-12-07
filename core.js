@@ -73,6 +73,13 @@ export default class Select2
         this.options.setNull("multiple", false);
         this.options.setNull("duplicates", false);
 
+        // store original tabindex
+        this.options.set("_tabindex", this.options.get("tabindex"));
+
+        if (this.options.get("disabled")) {
+            this.options.set("tabindex", -1);
+        }
+
         // theme
         this.options.setNull("theme", "default");
 
@@ -191,8 +198,10 @@ export default class Select2
                     this.close();
                 }
                 this.model.set("focus", false);
+                this.options.set("tabindex", -1);
                 this.emit('disable', {});
             } else {
+                this.options.set("tabindex", this.options.set("_tabindex"));
                 this.emit('enable', {});
                 // if we have focus already, notify everything
                 if (this.container == document.activeElement || $.contains(this.container, document.activeElement))
