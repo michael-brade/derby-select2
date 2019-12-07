@@ -8,13 +8,13 @@
             {{each selections as #selection, #pos}}
                 <li id="{{#selection.id}}" class="select2-selection__choice" title="{{#selection.title || #selection.text}}">
                     <span class="select2-selection__choice__remove" role="presentation"
-                        on-click="unselect($event, #selection, #pos)">&times;</span>
+                        on-mouseup="unselect($event, #selection, #pos)">&times;</span>
                     <view is="{{options.selectionTemplate}}" item="{{#selection.item}}" />
                 </li>
-            {{/}}
+            {{/each}}
 
             <!-- TODO: make this configurable in options? no search, different search view component? -->
-            <li as="searchContainer" class="select2-search select2-search--inline">
+            <li class="select2-search select2-search--inline">
                 <view is="selection:search" as="search" />
             </li>
         </ul>

@@ -1,4 +1,4 @@
-var KEYS = {
+export default {
     BACKSPACE: 8,
     TAB: 9,
     ENTER: 13,
@@ -16,6 +16,4 @@ var KEYS = {
     RIGHT: 39,
     DOWN: 40,
     DELETE: 46
-};
-
-module.exports = KEYS;
+}
