@@ -15,7 +15,7 @@ export default class MultipleSelection extends mix(BaseSelection).with(MultipleR
     create(model, dom) {
         super.create(arguments);
 
-        this.selection.addEventListener('mouseup', evt => {
+        this.selection.addEventListener('mousedown', evt => {
             this.emit('toggle', {
                 originalEvent: evt
             });

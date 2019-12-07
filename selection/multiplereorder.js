@@ -1,7 +1,7 @@
 import Sortable from 'sortablejs';
 
 /**
- *  MultipleReorderSelection: allow reodering a selection via drag&drop
+ *  MultipleReorderSelection: allow reordering a selection via drag&drop
  */
 export default (superclass) => class extends superclass
 {
@@ -21,6 +21,7 @@ export default (superclass) => class extends superclass
         const sortable = Sortable.create(this.selection.getElementsByClassName('select2-selection__rendered')[0], {
             animation: 200,
             filter: '.select2-search',
+            preventOnFilter: false,
             disabled: this.core.options.get('disabled'),
             onEnd: evt => {
                 this.core.focus();
