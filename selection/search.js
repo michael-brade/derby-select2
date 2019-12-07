@@ -1,5 +1,5 @@
 import path from 'path';
-var $ = require('jquery');
+import $ from 'jquery';
 import KEYS from '../keys';
 
 /**

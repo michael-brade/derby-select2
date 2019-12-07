@@ -1,4 +1,4 @@
-var $ = require('jquery');
+import $ from 'jquery';
 
 // just for browserify
 function __do_not_call() {

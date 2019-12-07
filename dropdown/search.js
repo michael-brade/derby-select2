@@ -1,5 +1,5 @@
 import path from 'path';
-var $ = require('jquery');
+import $ from 'jquery';
 
 /**
  * Search input in the dropdown, usually only for single selection mode.
