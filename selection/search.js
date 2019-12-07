@@ -16,8 +16,9 @@ export default class Search
     }
 
     init(model) {
-        model.ref("highlighted", this.parent.model.at("highlighted"));
         this.options = this.parent.options;
+        model.ref("options",     this.parent.model.at("options"));
+        model.ref("highlighted", this.parent.model.at("highlighted"));
     }
 
     create(model, dom) {
