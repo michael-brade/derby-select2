@@ -1,0 +1,18 @@
+<import: src="./template.html" ns="">
+
+<index:>
+    <span as="selection" class="select2-selection select2-selection--single {{@class}}" role="textbox" tabindex="{{options.tabindex}}"
+            aria-haspopup="true" aria-expanded="{{open ? 'true' : 'false'}}" aria-activedescendant="{{highlighted.id}}"
+            aria-labelledby="{{@id}}" aria-readonly="true" title="">  <!-- TODO: which title to set? -->
+
+        <span id="{{@id}}" class="select2-selection__rendered"
+            title="{{selections.length ? (selections[0].title || selections[0].text) : ''}}">
+            {{if selections.length}}
+                <view is="{{options.selectionTemplate}}" item="{{selections[0].item}}" />
+            {{/}}
+        </span>
+
+        <span class="select2-selection__arrow" role="presentation">
+            <b role="presentation"></b>
+        </span>
+    </span>

@@ -1,0 +1,92 @@
+<!-- results needs to have its own controller; used model paths:
+    * results
+    * options.multiple
+    * message
+    * loading
+-->
+
+<index:>
+    {{if options.multiple == false}}
+        <view is="dropdown:search" as="search" />
+    {{/}}
+
+    <span class="select2-results">
+        <ul as="results" id="{{@id}}" class="select2-results__options" role="listbox"
+            aria-multiselectable="{{options.multiple ? 'true' : 'false'}}" aria-expanded="true">
+
+            {{if message}}
+                <view is="results-message" message="{{message}}" />
+            {{else}}
+                {{each results as #data}}
+                    <view is="results-option" data="{{#data}}" />
+                {{else}}
+                    <view is="results-message" message="noResults" />
+                {{/each}}
+            {{/}}
+
+            {{if loading}}
+                <li role="treeitem" class="select2-results__option" aria-disabled="true">
+                    {{loading}}
+                </li>
+            {{/}}
+        </ul>
+    </span>
+
+<results-message:>
+    <li role="alert" aria-live="assertive" class="select2-results__option select2-results__message">
+        <!-- TODO: @message is a function in i18n? only if not, then display directly. Use function: getMessage or i18n() or so...
+        Same with loading... -->
+        {{@message}}
+    </li>
+
+
+<!-- attributes: item; it can be anything, but if it is an object, those attributes are used and should be
+     supplied to select2 as input:
+        * id
+        * title
+        * children
+        * disabled
+        * selected
+
+data: {
+    item: item,
+    id: item.id,
+    title: item.title,
+    children: item.children,
+    disabled: item.disabled,
+    selected: true/false
+}
+
+ -->
+<results-option:>
+    <li id="{{@data.id}}" class="select2-results__option{{if highlighted.item === @data.item}} select2-results__option--highlighted{{/}}"
+            title="{{@data.title}}"
+            role="{{@data.children ? 'group' : 'option'}}"
+
+            on-mouseenter="highlight(@data, $event)"
+            on-mouseup="select(@data, $event)"
+
+            aria-label="{{if @data.children}}{{@data.text}}{{/}}"
+            aria-selected="{{!@data.children && !@data.disabled && @data.selected ? 'true' : 'false'}}"
+            aria-disabled="{{@data.disabled}}">
+
+        {{if @data.children}}
+            <strong class="select2-results__group">
+                <view is="results-template" data="{{@data}}" />
+            </strong>
+
+            <ul class="select2-results__options select2-results__options--nested">
+                {{each @data.children as #child}}
+                    <view is="results-option" data="{{#child}}" />
+                {{/}}
+            </ul>
+        {{else}}
+            <view is="{{options.resultsTemplate}}" item="{{@data.item}}" />
+        {{/}}
+
+    </li>
+
+
+<!-- plain item display; users have to provide a different view to change/"normalize" display of an item -->
+<results-template:>
+    {{@item.text}}

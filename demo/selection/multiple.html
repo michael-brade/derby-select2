@@ -1,0 +1,21 @@
+<import: src="./template.html" ns="">
+
+<index:>
+    <span as="selection" class="select2-selection select2-selection--multiple {{@class}}" role="combobox"
+            aria-haspopup="true" aria-expanded="{{open ? 'true' : 'false'}}" aria-activedescendant="{{highlighted.id}}"
+            title="">  <!-- TODO: which title to set? -->
+        <ul id="{{@id}}" class="select2-selection__rendered">
+            {{each selections as #selection, #pos}}
+                <li id="{{#selection.id}}" class="select2-selection__choice" title="{{#selection.title || #selection.text}}">
+                    <span class="select2-selection__choice__remove" role="presentation"
+                        on-mouseup="unselect($event, #selection, #pos)">&times;</span>
+                    <view is="{{options.selectionTemplate}}" item="{{#selection.item}}" />
+                </li>
+            {{/each}}
+
+            <!-- TODO: make this configurable in options? no search, different search view component? -->
+            <li class="select2-search select2-search--inline">
+                <view is="selection:search" as="search" />
+            </li>
+        </ul>
+    </span>

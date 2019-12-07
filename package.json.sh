@@ -119,7 +119,16 @@ scripts:
 
     ## demo
 
-    demo: "npm run build; browserify -s Select2 dist/core.js -o demo/select2.js; cp dist/index.css demo/css/index.css;"
+    demo: "
+        npm run build;
+        export DEST=demo;
+        cd dist; browserify -s Select2 core.js -o ../$DEST/select2.js; cd ..;
+        cp dist/index.css $DEST/css/index.css;
+        mkdir -p $DEST/selection $DEST/dropdown;
+        cp -a selection/*.html $DEST/selection;
+        cp -a dropdown/*.html $DEST/dropdown;
+        cp -a core.html results.html $DEST;
+    "
 
     ## testing
 

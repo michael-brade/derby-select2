@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Derby Select2 Demo</title>
+    <title>DerbyJS Select2 Demo</title>
 
-    <script src="/jquery.js"></script>
-    <script src="/derby-standalone.js"></script>
+    <script src="jquery.js"></script>
+    <script src="derby-standalone.js"></script>
 
     <script>
         derby.App.prototype.getTemplate = function(filename) {
@@ -31,10 +31,10 @@
         };
     </script>
 
-    <script src="/select2.js"></script>
+    <script src="select2.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="/css/index.css">
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
@@ -50,6 +50,8 @@
                 <div>
                     <view is="select2" id="select2-{{@id}}" options="{{_page.singleConf}}"
                         data="{{_page.items}}" value="{{_page.selectedSingle}}" />
+
+                    <span style="margin-right: 20px" />
 
                     <view is="select2" id="select2-{{@id}}" options="{{_page.singleConfDisabled}}"
                         data="{{_page.items}}" value="{{_page.selectedSingle}}" />
@@ -81,6 +83,8 @@
                 <div>
                     <view is="select2" id="select2-{{@id}}" options="{{_page.multiConf}}"
                         data="{{_page.items}}" value="{{_page.selectedMulti}}" />
+
+                    <span style="margin-right: 20px" />
 
                     <view is="select2" id="select2-{{@id}}" options="{{_page.multiConfDisabled}}"
                         data="{{_page.items}}" value="{{_page.selectedMulti}}" />
