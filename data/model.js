@@ -68,7 +68,7 @@ export default class ModelAdapter extends BaseAdapter
 
 
         // TODO: derby: shouldn't it be possible to ref and map the single array elements?
-        this.model.start("selections", "value", selected_items => {
+        this.model.start("selections", ["value"], { copy: 'none' }, selected_items => {
             const results = [];
             // "value" (selected_items) is array if multiple, otherwise it's a single item
             if (options.get("multiple"))
@@ -93,7 +93,7 @@ export default class ModelAdapter extends BaseAdapter
             const normalizeResultsFn = item => {
                 const normalized = options.get("normalizer")(item);
                 if (options.get("multiple"))
-                    normalized["selected"] = value && undefined !== value.find(selected => selected === item);
+                    normalized["selected"] = !!value && undefined !== value.find(selected => selected === item);
                 else
                     normalized["selected"] = value === item;
                 return normalized;
@@ -116,7 +116,7 @@ export default class ModelAdapter extends BaseAdapter
 
     // only start "results" after opening the dropdown
     start() {
-        this.model.start("results", "data", "value", "filter", this.normalizeResultsFn);
+        this.model.start("results", ["data", "value", "filter"], { copy: 'none' }, this.normalizeResultsFn);
     }
 
     stop() {
