@@ -117,11 +117,11 @@ scripts:
 
     clean: "rm -rf dist;"   # the ; at the end is very important! otherwise "npm run clean ." would delete everything
 
-    ## demo
+    ## docs
 
-    demo: "
+    docs: "
         npm run build;
-        export DEST=demo;
+        export DEST=docs;
         cd dist; browserify -s Select2 core.js -o ../$DEST/select2.js; cd ..;
         cp dist/index.css $DEST/css/index.css;
         mkdir -p $DEST/selection $DEST/dropdown;
