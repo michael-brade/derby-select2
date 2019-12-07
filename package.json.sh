@@ -78,7 +78,6 @@ scripts:
     '
 
     # build the distribution under dist: create directory structure, transpile, uglify
-    # TODO: compile scss to dist/css
     build: "
         export DEST=dist;
         export SOURCES='*.js';
@@ -101,6 +100,8 @@ scripts:
             html-minifier --config-file .html-minifierrc -o \"$DEST/$0\" \"$0\"'
         | column -t -c 3;
 
+        sass -I node_modules/bootstrap-sass/assets/stylesheets -I css index.scss -s compressed --no-source-map $DEST/index.css;
+
         echo \"\033[01;32mCopying assets...\033[00m\";
         find -regextype posix-egrep -regex $IGNORE -prune -o -regex $ASSETS -print0
         | xargs -n1 -0 sh -c '
@@ -118,7 +119,7 @@ scripts:
 
     ## demo
 
-    demo: "npm run build; browserify -s Select2 dist/core.js -o demo/select2.js;"
+    demo: "npm run build; browserify -s Select2 dist/core.js -o demo/select2.js; cp dist/index.css demo/css/index.css;"
 
     ## testing
 
