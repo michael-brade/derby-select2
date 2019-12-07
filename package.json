@@ -17,13 +17,15 @@
     "url": "michael-brade/derby-select2"
   },
   "dependencies": {
+    "sortablejs": "1.10.x",
     "lodash": "4.17.x",
     "jquery": "3.4.x",
     "mixwith": "*"
   },
   "devDependencies": {
-    "node-sass": "4.13.x",
-    "uglify-js": "3.6.x",
+    "bootstrap-sass": "3.4.x",
+    "sass": "1.23.x",
+    "uglify-js": "3.7.x",
     "html-minifier": "4.x",
     "@babel/core": "7.7.x",
     "@babel/register": "7.7.x",
@@ -68,7 +70,7 @@
     "build": "export DEST=dist;export SOURCES='*.js';export VIEWS='*.html';export ASSETS='.*.scss|./README.md|./package.json';export IGNORE=\"./$DEST|./test|./node_modules\";echo \"\u001b[01;32mCompiling and minifying...\u001b[00m\";find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$SOURCES\" -print0| xargs -n1 -P8 -0 sh -c 'echo $0...;mkdir -p \"$DEST/`dirname $0`\";babel \"$0\" | uglifyjs -cm -o \"$DEST/$0\"';echo \"\u001b[01;32mMinifying views...\u001b[00m\";find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$VIEWS\" -print0| xargs -n1 -P8 -0 sh -c 'echo \"$0 -> $DEST/$0\";mkdir -p \"$DEST/`dirname $0`\";html-minifier --config-file .html-minifierrc -o \"$DEST/$0\" \"$0\"'| column -t -c 3;echo \"\u001b[01;32mCopying assets...\u001b[00m\";find -regextype posix-egrep -regex $IGNORE -prune -o -regex $ASSETS -print0| xargs -n1 -0 sh -c 'echo \"$0 -> $DEST/$0\";mkdir -p \"$DEST/`dirname \"$0\"`\";cp -a \"$0\" \"$DEST/$0\"'| column -t -c 3;echo \"\u001b[01;32mDone!\u001b[00m\";",
     "postbuild": "git stash pop --index && rm .create_stash;",
     "clean": "rm -rf dist;",
-    "demo": "npm run build; browserify -x Sortable -s Select2 dist/core.js -d -o demo/select2.js;",
+    "demo": "npm run build; browserify -s Select2 dist/core.js -o demo/select2.js;",
     "test": "echo \"TODO: no tests specified yet\";",
     "release": "npm run build; cd dist; npm publish;"
   },

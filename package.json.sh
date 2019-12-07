@@ -19,14 +19,17 @@ repository:
     url: 'michael-brade/derby-select2'
 
 dependencies:
+    sortablejs: '1.10.x'
+
     # utils
     lodash: '4.17.x'
     jquery: '3.4.x'
     mixwith: '*'
 
 devDependencies:
-    'node-sass': '4.13.x'
-    'uglify-js': '3.6.x'
+    'bootstrap-sass': '3.4.x'
+    'sass': '1.23.x'
+    'uglify-js': '3.7.x'
     'html-minifier': '4.x'
 
     '@babel/core': '7.7.x'
@@ -115,7 +118,7 @@ scripts:
 
     ## demo
 
-    demo: "npm run build; browserify -x Sortable -s Select2 dist/core.js -d -o demo/select2.js;"
+    demo: "npm run build; browserify -s Select2 dist/core.js -o demo/select2.js;"
 
     ## testing
 

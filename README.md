@@ -4,20 +4,18 @@ This is a [DerbyJS](http://github.com/derbyjs/derby) component for jQuery Select
 
 It features some improved usability, and it adds support for
 
-* re-ordering multi-selections with drag&drop
+* re-ordering multi-selections with drag&drop using [Sortable](https://sortablejs.github.io/Sortable/)
 * allowing to select an item repeatedly in multi-selection mode
 * supports ES6 and is written in ES6
 
 The html-structure is exactly identical to the jQuery Select2 component, so styles can be simply reused. You will still
 most likely recognize the resemblance to the original jQuery Select2 code, but using Derby, much less code is required.
 
-
 ## Installation
 
-### Dependencies
-
-* [Sortable](https://sortablejs.github.io/Sortable/)
-
+```sh
+npm install derby-select2
+```
 
 ## Usage
 
