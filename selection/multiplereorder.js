@@ -21,6 +21,7 @@ export default (superclass) => class extends superclass
         const sortable = Sortable.create(this.selection.getElementsByClassName('select2-selection__rendered')[0], {
             animation: 200,
             filter: '.select2-search',
+            disabled: this.core.options.get('disabled'),
             onEnd: evt => {
                 this.core.focus();
             },
@@ -50,5 +51,8 @@ export default (superclass) => class extends superclass
                 });
             }
         });
+
+        this.core.on('enable', () => sortable.option('disabled', false));
+        this.core.on('disable', () => sortable.option('disabled', true));
     }
 }
