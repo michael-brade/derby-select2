@@ -181,12 +181,6 @@ export default class Select2
             this.model.set('open', false);
         });
 
-        this.on('query', () => {
-            if (!this.isOpen()) {
-                this.emit('open', {});
-            }
-        });
-
 
         this.model.on('change', 'focus', (value, prev) => {
             if (value === prev) return;
