@@ -162,7 +162,16 @@ export default class Select2
     }
 
     _registerEvents() {
-        // open the dropdown
+        this.on('opening', evt => {
+            if (this.isOpen())
+                evt.prevented = true;
+        });
+
+        this.on('closing', evt => {
+            if (!this.isOpen())
+                evt.prevented = true;
+        });
+
         this.on('open', () => {
             this.model.set('open', true);
             this._registerResultsEvents();
@@ -194,9 +203,7 @@ export default class Select2
             if (value === prev) return;
 
             if (value) {
-                if (this.isOpen()) {
-                    this.close();
-                }
+                this.close();
                 this.model.set("focus", false);
                 this.options.set("tabindex", -1);
                 this.emit('disable', {});
@@ -296,6 +303,9 @@ export default class Select2
      *   });
      */
     emit(name, args) {
+        if (this.options && this.options.get('disabled') && name !== 'enable' && name !== 'disable')
+            return;
+
         const actualEmit = this.__proto__.__proto__.emit;
         const preEmitMap = {
             'open': 'opening',
@@ -338,9 +348,6 @@ export default class Select2
     }
 
     open() {
-        if (this.options.get('disabled') || this.isOpen())
-            return;
-
         this.emit('open', {});
 
         if (this.isOpen())
@@ -348,9 +355,6 @@ export default class Select2
     }
 
     close() {
-        if (!this.isOpen())
-            return;
-
         this.emit('close', {});
     }
 
