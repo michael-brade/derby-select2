@@ -21,7 +21,7 @@ npm install derby-select2
 
 ### In your app
 
-```javascript
+```js
 // Use component published as module
 app.component(require('derby-select2'));
 ```
@@ -59,43 +59,45 @@ The model is set up using a data adapter; it is configured using:
   filters according to query arguments (paging) and a model path (filtering).
 
 
-
 ### Model
 
 input paths:
-  - "data": an array with all possible selectable items
+
+* "data": an array with all possible selectable items
 
 output paths:
-  - "value": where to store the array with the selected item(s)
+
+* "value": where to store the array with the selected item(s)
 
 configuration path:
-  - "options": where all the Select2 options are stored
+
+* "options": where all the Select2 options are stored
 
 model paths for internal Select2 use:
-  - focus (bool): true if Select2 has focus
-  - open (bool): true if dropdown open
-  - results (array): filtered and sorted selectable items to show in dropdown
-  - selections (array): selected items
-  - highlighted: the currently highlighted item
 
+* focus (bool): true if Select2 has focus
+* open (bool): true if dropdown open
+* results (array): filtered and sorted selectable items to show in dropdown
+* selections (array): selected items
+* highlighted: the currently highlighted item (replaces results:focus event)
 
 
 ### Events/Signals
 
 The events that can be emitted are:
 
-  - open, close, query, queryEnd, select, move, unselect, focus, blur, disable, enable
-  - opening, closing, selecting, unselecting
-  - results:select, results:toggle, results:previous, results:next, results:first, results:last
+* open, close, query, queryEnd, select, move, unselect, focus, blur, disable, enable
+* opening, closing, selecting, unselecting
+* results:select, results:toggle, results:previous, results:next, results:first, results:last
 
 Explanation:
 
-  * opening the dropdown emits "query"
+* opening the dropdown emits "query"
 
-  * "query" starts getting the data from the dataAdapter - if no query is necessary, "queryEnd" is emitted right away
-  * "query" opens the dropdown
-  * query adds "loading" message
-  * queryEnd removes "loading" message
+* "query" starts getting the data from the dataAdapter - if no query is necessary, "queryEnd" is emitted right away
+* "query" opens the dropdown
+* query adds "loading" message
+* queryEnd removes "loading" message
 
 
 
@@ -112,12 +114,11 @@ The (default) model data adapter sets up the following references:
 * value -> selections
   Takes input from model path "value" and normalizes it to "selections".
 
-
 Normalization is internal to Select2, and it means how to get those attributes: `id`, `title`, `text`, `children`, `disabled`.
 
 "results" contains normalized items and is thus an array of objects with this structure:
 
-```
+```js
 data: {
     item: <original item>,
     id: item.id,
@@ -129,11 +130,7 @@ data: {
 }
 ```
 
-
-
 ## Differences to jQuery Select2
-
-
 
 * no RelayEvents
 
