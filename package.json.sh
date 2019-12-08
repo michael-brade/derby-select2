@@ -2,7 +2,7 @@
 
 name: 'derby-select2'
 description: 'Native DerbyJS replacement for jQuery Select2'
-version: '0.2.3'
+version: '0.3.0'
 
 author:
     name: 'Michael Brade'
@@ -17,6 +17,33 @@ keywords:
 repository:
     type: 'git'
     url: 'michael-brade/derby-select2'
+
+main: 'core.js'
+
+style: 'index.css'
+
+files:
+    'css/'
+    'data/base.js'
+    'data/model.js'
+    'dropdown/search.js'
+    'dropdown/search.html'
+    'selection/base.js'
+    'selection/single.js'
+    'selection/single.html'
+    'selection/multiple.js'
+    'selection/multiple.html'
+    'selection/multiplereorder.js'
+    'selection/search.js'
+    'selection/search.html'
+    'selection/template.html'
+    'core.js'
+    'core.html'
+    'keys.js'
+    'results.js'
+    'results.html'
+    'index.css'
+
 
 dependencies:
     sortablejs: '1.10.x'
@@ -83,7 +110,7 @@ scripts:
         export SOURCES='*.js';
         export VIEWS='*.html';
         export ASSETS='.*\.scss|./README\.md|./package\.json';
-        export IGNORE=\"./$DEST|./test|./node_modules\";
+        export IGNORE=\"./$DEST|./test|./node_modules|./docs\";
 
         echo \"\033[01;32mCompiling and minifying...\033[00m\";
         find -regextype posix-egrep -regex $IGNORE -prune -o -name \"$SOURCES\" -print0
@@ -138,7 +165,7 @@ scripts:
     release: "npm run build; cd dist; npm publish;"
 
 engines:
-    node: '6.x'
+    node: '12.x'
 
 license: 'MIT'
 

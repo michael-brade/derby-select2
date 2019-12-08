@@ -149,4 +149,4 @@ data: {
 
 MIT
 
-Copyright (c) 2015-2016 Michael Brade
+Copyright (c) 2015-2016, 2019 Michael Brade
