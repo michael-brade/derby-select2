@@ -29,24 +29,10 @@ export default class Search
     }
 
     bind(core) {
-        this.$search.on('keydown', evt => {
-            this.emit('keypress', evt);
-
-            this._keyUpPrevented = evt.isDefaultPrevented();
+        this.model.on('change', 'filter', (value, prev) => {
+            if (value === prev) return;
+            this.handleSearch();
         });
-
-        // Workaround for browsers which do not support the `input` event
-        // This will prevent double-triggering of events for browsers which support
-        // both the `keyup` and `input` events.
-        this.$search.on('input', function(evt) {
-            // Unbind the duplicated `keyup` event
-            $(this).off('keyup');
-        });
-
-        this.$search.on('keyup input', evt => {
-            this.handleSearch(evt);
-        });
-
 
         // bind to core events
 
@@ -62,14 +48,8 @@ export default class Search
     }
 
     handleSearch(evt) {
-        if (!this._keyUpPrevented) {
-            var input = this.$search.val();
-
-            this.emit('query', {
-                term: input
-            });
-        }
-
-        this._keyUpPrevented = false;
+        this.emit('query', {
+            term: this.model.get('filter')
+        });
     }
 }
