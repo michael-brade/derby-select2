@@ -10,12 +10,13 @@
 
     <script>
         derby.App.prototype.getTemplate = function(filename) {
-            console.warn("get template", filename)
-
             var el = document.getElementById(filename);
             if (el) return el;
 
             var result = undefined;
+
+            if (filename[0] === '/')
+                filename = '.' + filename;
 
             $.ajax({
                 method: 'GET',
@@ -38,7 +39,7 @@
 </head>
 
 <body>
-    <script id="/select2-demo.html" type="text/template">
+    <script id="select2-demo.html" type="text/template">
         <Body:>
             <div class="container">
                 <h1>Derby Select2 Demo</h1>
@@ -120,7 +121,7 @@
         var app = derby.createApp()
 
         // Load templates from id
-        app.loadViews('/select2-demo.html')
+        app.loadViews('select2-demo.html')
         app.component(Select2.Select2)
 
         // create the page
