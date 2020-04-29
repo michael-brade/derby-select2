@@ -43,7 +43,7 @@
   "dependencies": {
     "sortablejs": "1.10.x",
     "lodash": "4.17.x",
-    "jquery": "3.4.x",
+    "jquery": "3.5.x",
     "mixwith": "*"
   },
   "devDependencies": {
